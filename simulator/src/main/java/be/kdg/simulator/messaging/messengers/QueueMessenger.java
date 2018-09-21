@@ -1,7 +1,6 @@
 package be.kdg.simulator.messaging.messengers;
 
 import be.kdg.simulator.messaging.generators.MessageGenerator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

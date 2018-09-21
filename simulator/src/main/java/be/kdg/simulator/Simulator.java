@@ -1,6 +1,6 @@
 package be.kdg.simulator;
 
-import be.kdg.simulator.config.MessengerConfig;
+import be.kdg.simulator.config.GeneratorConfig;
 import be.kdg.simulator.messaging.messengers.Messenger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,23 +9,23 @@ import org.springframework.stereotype.Component;
 public class Simulator {
 
     private final Messenger messenger;
-    private final MessengerConfig messengerConfig;
+    private final GeneratorConfig generatorConfig;
 
     private int currentCount = 0;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Simulator(Messenger messenger, MessengerConfig messengerConfig) {
+    public Simulator(Messenger messenger, GeneratorConfig generatorConfig) {
         this.messenger = messenger;
-        this.messengerConfig = messengerConfig;
+        this.generatorConfig = generatorConfig;
     }
 
     @Scheduled(fixedDelay = 1000L)
     public void startSimulation() {
-        if (currentCount < messengerConfig.getRandomMessageCount()) {
+        if (currentCount < generatorConfig.getCount()) {
             messenger.sendMessage();
+            currentCount++;
         } else {
             System.exit(0);
         }
-        currentCount++;
     }
 }
