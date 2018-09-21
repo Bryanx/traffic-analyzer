@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('com.rabbitmq:amqp-client:5.4.1')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
