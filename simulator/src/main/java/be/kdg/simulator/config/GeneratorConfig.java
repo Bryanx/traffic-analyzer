@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+@EnableScheduling
 @Configuration
 public class GeneratorConfig {
 
