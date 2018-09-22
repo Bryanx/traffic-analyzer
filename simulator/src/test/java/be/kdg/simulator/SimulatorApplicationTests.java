@@ -19,7 +19,7 @@ public class SimulatorApplicationTests {
 	@Test
 	public void testMessageGenerator() {
 		CameraMessage cameraMessage = messageGenerator.generate();
-		Assert.assertTrue(cameraMessage.getLicensePlate().matches("^\\d-\\w{3}-\\d{3}$"));
+		Assert.assertTrue(cameraMessage.getLicensePlate().matches("^[1-8]-[A-Z]{3}-[0-9]{2}[1-9]$"));
 	}
 
 }

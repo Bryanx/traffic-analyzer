@@ -7,15 +7,13 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 @ConditionalOnProperty(name = "generator.type", havingValue = "random")
 public class RandomMessageGenerator implements MessageGenerator {
-    private final GeneratorConfig generatorConfig;
-    //Stored in a hashset because it is fast for adding and contains and it doesn't contain duplicates.
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random rnd = new Random();
+    private final GeneratorConfig generatorConfig;
 
     public RandomMessageGenerator(GeneratorConfig generatorConfig) {
         this.generatorConfig = generatorConfig;
@@ -27,14 +25,15 @@ public class RandomMessageGenerator implements MessageGenerator {
         return new CameraMessage(cameraId, generateLicensePlate(), LocalDateTime.now());
     }
 
+    //Generates a random license plate [1-8] - [A-Z]3x - [0-9][0-9][1-9]
     private String generateLicensePlate() {
         return String.format("%d-%c%c%c-%d%d%d",
-                rnd.nextInt(10),
+                rnd.nextInt(8) + 1,
                 getRandomChar(), getRandomChar(), getRandomChar(),
                 rnd.nextInt(10), rnd.nextInt(10), rnd.nextInt(10));
     }
 
     private char getRandomChar() {
-        return (char) (rnd.nextInt(('Z' - 'A') + 1) + 'A');
+        return ALPHABET.charAt(rnd.nextInt(ALPHABET.length()));
     }
 }
