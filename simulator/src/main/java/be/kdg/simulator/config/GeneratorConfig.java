@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationProperties(prefix = "generator.message")
 @Configuration
 public class GeneratorConfig {
+    //TODO: Add validation
     private int count;
     private int maxid;
 }
