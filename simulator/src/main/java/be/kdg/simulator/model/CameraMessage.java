@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
 @Setter(AccessLevel.NONE)
 @AllArgsConstructor
 public class CameraMessage {
-    private int id;
+    private int cameraId;
     private String licensePlate;
     private LocalDateTime timestamp;
 
     @Override
     public String toString() {
-        return String.format("Camera Message %d %s %s", id, licensePlate,
+        return String.format("Camera %d spotted: %s at %s", cameraId, licensePlate,
                 timestamp.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
     }
 }
