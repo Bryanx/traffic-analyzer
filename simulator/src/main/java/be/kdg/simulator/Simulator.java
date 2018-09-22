@@ -19,7 +19,7 @@ public class Simulator {
         this.generatorConfig = generatorConfig;
     }
 
-    @Scheduled(fixedDelay = 1000L)
+    @Scheduled(fixedDelayString = "${messenger.frequency}")
     public void startSimulation() {
         if (currentCount < generatorConfig.getCount()) {
             messenger.sendMessage();
