@@ -14,6 +14,8 @@ import java.util.concurrent.ScheduledFuture;
 
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
+    private static final long BUSY_PERIOD_FREQUENCY = 100;
+    private static final int POOL_SIZE = 100;
     private final Simulator simulator;
     private final GeneratorConfig generatorConfig;
     private final TaskScheduler scheduler;
@@ -26,7 +28,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
     }
 
     /**
-     * Trigger the start of the jobs.
+     * Configure all scheduled tasks. This triggers the new configured jobs.
      */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -38,30 +40,38 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
     @Bean
     public Executor taskExecutor() {
-        return Executors.newScheduledThreadPool(100);
+        return Executors.newScheduledThreadPool(POOL_SIZE);
     }
 
     /**
-     * Starts the High traffic period based on the busy period config.
+     * Starts the High traffic period based on each busy period in application.properties
      */
-    public void startCronJob() {
-        scheduler.schedule(() -> {
-            System.out.println("High traffic period started.");
-            stopSimulation();
-            startSimulation(generatorConfig.getPeakfrequency());
-        }, new CronTrigger(generatorConfig.getStartBusyPeriodCronFormat()));
-        scheduler.schedule(() -> {
-            System.out.println("High traffic period ended.");
-            stopSimulation();
-            startSimulation(generatorConfig.getFrequency());
-        }, new CronTrigger(generatorConfig.getEndBusyPeriodCronFormat()));
+    private void startCronJob() {
+        for (String busyPeriod : generatorConfig.getBusyperiod()) {
+            scheduler.schedule(() -> resetSimulation(BUSY_PERIOD_FREQUENCY, "High traffic period started."),
+                    new CronTrigger(generatorConfig.getStartBusyPeriodCronFormat(busyPeriod)));
+            scheduler.schedule(() -> resetSimulation(generatorConfig.getFrequency(), "High traffic period ended."),
+                    new CronTrigger(generatorConfig.getEndBusyPeriodCronFormat(busyPeriod)));
+
+        }
     }
 
-    public void startSimulation(long frequency) {
+    /**
+     * Stop and start the simulation with a new frequency
+     * @param newFrequency The new frequency of the delay between each simulated message
+     * @param logMessage A log message to note what was changed.
+     */
+    private void resetSimulation(long newFrequency, String logMessage) {
+        System.out.println(logMessage);
+        stopSimulation();
+        startSimulation(newFrequency);
+    }
+
+    private void startSimulation(long frequency) {
         scheduledSimulation = scheduler.scheduleWithFixedDelay(simulator::startSimulation, frequency);
     }
 
-    public void stopSimulation() {
+    private void stopSimulation() {
         scheduledSimulation.cancel(true);
     }
 }
