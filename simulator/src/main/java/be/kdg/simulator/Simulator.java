@@ -1,17 +1,14 @@
 package be.kdg.simulator;
 
 import be.kdg.simulator.messaging.messengers.Messenger;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
 @Component
 public class Simulator {
 
     private final Messenger messenger;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public Simulator(Messenger messenger) {
-        this.messenger = messenger;
-    }
 
     public void startSimulation() {
         messenger.sendMessage();

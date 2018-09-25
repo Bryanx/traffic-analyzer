@@ -15,7 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConfigurationProperties(prefix = "generator.message")
 @Configuration
 public class GeneratorConfig {
-    private int maxid = 10;
+    private int maxid = 3;
     private long frequency = 1000;
     private String[] busyperiod;
 
