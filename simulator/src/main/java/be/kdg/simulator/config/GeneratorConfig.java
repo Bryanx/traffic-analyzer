@@ -27,16 +27,4 @@ public class GeneratorConfig {
         scheduler.initialize();
         return scheduler;
     }
-
-    public String getStartBusyPeriodCronFormat(String period) {
-        String startHour = period.split("-")[0].split(":")[0];
-        String startMinutes = period.split("-")[0].split(":")[1];
-        return String.format("0 %s %s * * *", startMinutes, startHour);
-    }
-
-    public String getEndBusyPeriodCronFormat(String period) {
-        String startHour = period.split("-")[1].split(":")[0];
-        String startMinutes = period.split("-")[1].split(":")[1];
-        return String.format("0 %s %s * * *", startMinutes, startHour);
-    }
 }
