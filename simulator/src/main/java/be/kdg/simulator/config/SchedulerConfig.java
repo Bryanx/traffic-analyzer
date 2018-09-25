@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 
@@ -30,20 +31,18 @@ public class SchedulerConfig implements SchedulingConfigurer {
         this.generatorConfig = generatorConfig;
     }
 
+    @Bean
+    public Executor taskExecutor() {
+        return Executors.newScheduledThreadPool(POOL_SIZE);
+    }
+
     /**
      * Configure all scheduled tasks. This triggers the new configured jobs.
      */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         startSimulation(generatorConfig.getFrequency());
-        if (generatorConfig.getBusyperiod() != null) {
-            startCronJob();
-        }
-    }
-
-    @Bean
-    public Executor taskExecutor() {
-        return Executors.newScheduledThreadPool(POOL_SIZE);
+        startCronJob();
     }
 
     /**
@@ -60,12 +59,12 @@ public class SchedulerConfig implements SchedulingConfigurer {
      * Stop and start the simulation with a new frequency
      * @param newFrequency The new frequency of the delay between each simulated message
      */
-    private void resetSimulation(long newFrequency, String message, String time) {
+    private void resetSimulation(long newFrequency, String message, String timeToReset) {
         scheduler.schedule(() -> {
             System.out.println(message);
             stopSimulation();
             startSimulation(newFrequency);
-        }, new CronTrigger(convertTimeToCron(time)));
+        }, new CronTrigger(convertTimeToCron(timeToReset)));
     }
 
     private void startSimulation(long frequency) {

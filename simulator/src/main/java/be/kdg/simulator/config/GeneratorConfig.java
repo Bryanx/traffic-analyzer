@@ -15,9 +15,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConfigurationProperties(prefix = "generator.message")
 @Configuration
 public class GeneratorConfig {
-    //TODO: Add validation
-    private int maxid;
-    private long frequency;
+    private int maxid = 10;
+    private long frequency = 1000;
     private String[] busyperiod;
 
     @Bean
@@ -26,5 +25,13 @@ public class GeneratorConfig {
         scheduler.setPoolSize(100);
         scheduler.initialize();
         return scheduler;
+    }
+
+    public void setFrequency(String frequency) {
+        if (!frequency.equals("")) this.frequency = Long.parseLong(frequency);
+    }
+
+    public void setMaxid(String maxid) {
+        if (!maxid.equals("")) this.maxid = Integer.parseInt(maxid);
     }
 }
