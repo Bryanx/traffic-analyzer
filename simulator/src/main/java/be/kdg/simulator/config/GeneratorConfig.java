@@ -11,21 +11,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Getter
 @Setter
-@EnableScheduling
 @ConfigurationProperties(prefix = "generator.message")
 @Configuration
 public class GeneratorConfig {
     private int maxid = 3;
     private long frequency = 1000;
     private String[] busyperiod;
-
-    @Bean
-    public TaskScheduler configureTasks() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(100);
-        scheduler.initialize();
-        return scheduler;
-    }
 
     public void setFrequency(String frequency) {
         if (!frequency.equals("")) this.frequency = Long.parseLong(frequency);
