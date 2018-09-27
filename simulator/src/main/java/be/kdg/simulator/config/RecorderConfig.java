@@ -1,7 +1,9 @@
 package be.kdg.simulator.config;
 
+import be.kdg.simulator.config.schedulers.SimulationScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,9 +13,9 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class RecorderConfig {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecorderConfig.class);
     private String path = "simulator/log/recorder.log";
-    private int tryCount = 0;
+    private int tryCount = 1;
     private int maxTries = 3;
 
     public void record(String msg) {
@@ -22,9 +24,16 @@ public class RecorderConfig {
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")),
                     msg));
         } catch (IOException e) {
-            //try with a different path
-            path = "log/recorder.log";
-            if (++tryCount == maxTries) e.printStackTrace();
+            handleIOException(e);
         }
+    }
+
+    private void handleIOException(IOException e) {
+        LOGGER.warn("Failed create/update recorder log file in path: '" + path);
+        if (tryCount == 1) {
+            path = "log/recorder.log";
+            LOGGER.warn("Retrying with a different path: " + path);
+        }
+        if (++tryCount == maxTries) LOGGER.error(e.getMessage(),e);
     }
 }

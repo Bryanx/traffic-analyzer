@@ -1,8 +1,11 @@
 package be.kdg.simulator.messaging.messengers;
 
 import be.kdg.simulator.config.RecorderConfig;
+import be.kdg.simulator.messaging.generators.FileGenerator;
 import be.kdg.simulator.messaging.generators.MessageGenerator;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConditionalOnProperty(name = "messenger.type", havingValue = "queue")
 public class QueueMessenger implements Messenger {
+    public static final Logger LOGGER = LoggerFactory.getLogger(QueueMessenger.class);
     private final RabbitTemplate rabbitTemplate;
     private final RecorderConfig recorder;
     private final Queue queue;
@@ -19,9 +23,9 @@ public class QueueMessenger implements Messenger {
 
     @Override
     public void sendMessage() {
-        System.out.println("Sending message to queue");
         String msg = messageGenerator.generate().toString();
+        LOGGER.info("Sending message to queue: ", msg);
+        recorder.record(String.format("Sending message to queue: %s", msg));
         rabbitTemplate.convertAndSend(queue.getName(), msg);
-        recorder.record(String.format("Message was sent to queue: %s", msg));
     }
 }

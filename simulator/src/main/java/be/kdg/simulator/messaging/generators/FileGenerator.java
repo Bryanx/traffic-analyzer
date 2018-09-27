@@ -2,6 +2,8 @@ package be.kdg.simulator.messaging.generators;
 
 import be.kdg.simulator.config.schedulers.SimulationScheduler;
 import be.kdg.simulator.model.CameraMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
@@ -18,7 +20,7 @@ import java.util.stream.Stream;
 @Component
 @ConditionalOnProperty(name = "generator.type", havingValue = "file")
 public class FileGenerator implements MessageGenerator {
-
+    public static final Logger LOGGER = LoggerFactory.getLogger(FileGenerator.class);
     private static final String FILE_PATH = "simulator/src/main/resources/messages/cameramessages.csv";
     private final SimulationScheduler simulationScheduler;
     private List<CameraMessage> messages = new ArrayList<>();
@@ -45,18 +47,23 @@ public class FileGenerator implements MessageGenerator {
                         int id = Integer.parseInt(splittedLine[0]);
                         String plate = splittedLine[1];
                         int delay = Integer.parseInt(splittedLine[2]);
-                        messages.add(new CameraMessage(id, plate, LocalDateTime.now(), delay));
+                        CameraMessage newMsg = new CameraMessage(id, plate, LocalDateTime.now(), delay);
+                        if (messages.add(newMsg)) {
+                            LOGGER.info("Message succesfully loaded: {}", newMsg);
+                        }
                     });
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(),e);
         }
     }
 
     private void scheduleNextMessage() {
         int delay = 2000;
-        if (lineCounter == messages.size()) System.exit(0);
-        if (lineCounter + 1 < messages.size()) delay = messages.get(lineCounter + 1).getDelay();
-        simulationScheduler.stopSimulation();
+        if (lineCounter == messages.size()) {
+            System.exit(0);
+        } else if (lineCounter + 1 < messages.size()) {
+            delay = messages.get(lineCounter + 1).getDelay();
+        }
         simulationScheduler.resetSimulationWithDelay(delay);
     }
 }

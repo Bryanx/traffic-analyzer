@@ -13,7 +13,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
 
-    @Autowired( required=false )
+    @Autowired(required = false)
     private HighTrafficScheduler highTrafficScheduler;
 
     private final SimulationScheduler simulationScheduler;
