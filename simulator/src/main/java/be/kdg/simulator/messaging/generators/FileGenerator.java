@@ -4,6 +4,7 @@ import be.kdg.simulator.config.schedulers.SimulationScheduler;
 import be.kdg.simulator.model.CameraMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -29,16 +30,10 @@ public class FileGenerator implements MessageGenerator {
 
     @Override
     public CameraMessage generate() {
-        if (lineCounter >= messages.size()) System.exit(0);
-        CameraMessage message = messages.get(lineCounter++);
-        try {
-            //TODO: Changing the scheduler delay from here doesn't seem to be working, this is a temp fix.
-            if (lineCounter == 0) simulationScheduler.resetSimulation(0);
-            Thread.sleep(message.getDelay());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        scheduleNextMessage();
+        CameraMessage message = messages.get(lineCounter);
         message.setTimestamp(LocalDateTime.now());
+        lineCounter++;
         return message;
     }
 
@@ -55,5 +50,13 @@ public class FileGenerator implements MessageGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void scheduleNextMessage() {
+        int delay = 2000;
+        if (lineCounter == messages.size()) System.exit(0);
+        if (lineCounter + 1 < messages.size()) delay = messages.get(lineCounter + 1).getDelay();
+        simulationScheduler.stopSimulation();
+        simulationScheduler.resetSimulationWithDelay(delay);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 
 @RequiredArgsConstructor
@@ -28,5 +29,10 @@ public class SimulationScheduler {
     public void resetSimulation(long newFrequency) {
         stopSimulation();
         startSimulation(newFrequency);
+    }
+
+    public void resetSimulationWithDelay(long delay) {
+        stopSimulation();
+        scheduler.schedule(simulator::startSimulation, new Date(System.currentTimeMillis() + delay));
     }
 }
