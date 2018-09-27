@@ -1,19 +1,25 @@
 package be.kdg.simulator.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Setter;
-import lombok.AccessLevel;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Data
-@Setter(AccessLevel.NONE)
 @AllArgsConstructor
 public class CameraMessage {
+    @NonNull
     private int cameraId;
+    @NonNull
     private String licensePlate;
     private LocalDateTime timestamp;
+    private int delay;
+
+    public CameraMessage(int cameraId, String licensePlate, LocalDateTime timestamp) {
+        this.cameraId = cameraId;
+        this.licensePlate = licensePlate;
+        this.timestamp = timestamp;
+    }
 
     @Override
     public String toString() {
