@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(name = "messenger.type", havingValue = "queue")
 public class QueueMessenger implements Messenger {
     private final RabbitTemplate rabbitTemplate;
-    private RecorderConfig recorder;
-    private Queue queue;
+    private final RecorderConfig recorder;
+    private final Queue queue;
     private final MessageGenerator messageGenerator;
 
     @Override
