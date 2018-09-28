@@ -35,6 +35,10 @@ public class SimulationScheduler {
         startSimulation(newFrequency);
     }
 
+    /**
+     * Wait a certain period of time before starting the simulation again.
+     * @param delay in ms
+     */
     public void resetSimulationWithDelay(long delay) {
         stopSimulation();
         Date scheduleDate = new Date(System.currentTimeMillis() + delay);

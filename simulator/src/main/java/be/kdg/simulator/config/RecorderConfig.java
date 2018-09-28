@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Class for storing messages that were sent to the queue in a seperate file.
+ */
 @Configuration
 public class RecorderConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderConfig.class);
