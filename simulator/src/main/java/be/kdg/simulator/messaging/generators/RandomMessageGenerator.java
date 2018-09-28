@@ -1,7 +1,6 @@
 package be.kdg.simulator.messaging.generators;
 
 import be.kdg.simulator.config.GeneratorConfig;
-import be.kdg.simulator.config.schedulers.SimulationScheduler;
 import be.kdg.simulator.model.CameraMessage;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -18,12 +17,12 @@ import java.util.*;
 public class RandomMessageGenerator implements MessageGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomMessageGenerator.class);
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final Random rnd = new Random();
+    private static final Random RND = new Random();
     private final GeneratorConfig generatorConfig;
 
     @Override
     public CameraMessage generate() {
-        int cameraId = rnd.nextInt(generatorConfig.getMaxid()) + 1;
+        int cameraId = RND.nextInt(generatorConfig.getMaxid()) + 1;
         CameraMessage message = new CameraMessage(cameraId, generateLicensePlate(), LocalDateTime.now());
         LOGGER.info("Generated new CameraMessage {}", message);
         return message;
@@ -34,12 +33,12 @@ public class RandomMessageGenerator implements MessageGenerator {
      */
     private String generateLicensePlate() {
         return String.format("%d-%c%c%c-%d%d%d",
-                rnd.nextInt(8) + 1,
+                RND.nextInt(8) + 1,
                 getRandomChar(), getRandomChar(), getRandomChar(),
-                rnd.nextInt(10), rnd.nextInt(10), rnd.nextInt(10));
+                RND.nextInt(10), RND.nextInt(10), RND.nextInt(10));
     }
 
     private char getRandomChar() {
-        return ALPHABET.charAt(rnd.nextInt(ALPHABET.length()));
+        return ALPHABET.charAt(RND.nextInt(ALPHABET.length()));
     }
 }
