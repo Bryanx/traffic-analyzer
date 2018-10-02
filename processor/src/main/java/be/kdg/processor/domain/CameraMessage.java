@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,8 +18,9 @@ public class CameraMessage {
     @GeneratedValue
     private Long id;
 
-    @Column
-    private int cameraId;
+    @ManyToOne(targetEntity = Camera.class)
+    @JoinColumn(name = "camera_id")
+    private Camera camera;
 
     @Column
     private String licensePlate;
@@ -30,11 +28,14 @@ public class CameraMessage {
     @Column(name = "`timestamp`")
     private LocalDateTime timestamp;
 
-    private int delay;
+    public CameraMessage(String licensePlate, LocalDateTime timestamp) {
+        this.licensePlate = licensePlate;
+        this.timestamp = timestamp;
+    }
 
     @Override
     public String toString() {
-        return String.format("Camera %d spotted: %s at %s", cameraId, licensePlate,
+        return String.format("Camera %d spotted: %s at %s", camera.getId(), licensePlate,
                 timestamp.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
     }
 }
