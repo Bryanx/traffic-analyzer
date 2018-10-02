@@ -17,7 +17,7 @@ public class XmlConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlConverter.class);
     private final XmlMapper mapper = new XmlMapper();
 
-    public CameraMessage xmlToCameraMessage(String xml) {
+    public CameraMessage unmarshal(String xml) {
         try {
             mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             mapper.registerModule(new JavaTimeModule());
