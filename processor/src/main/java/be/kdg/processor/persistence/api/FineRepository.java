@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ICameraMessageRepo extends JpaRepository<CameraMessage, Integer> {
+public interface FineRepository extends JpaRepository<CameraMessage, Integer> {
 }
