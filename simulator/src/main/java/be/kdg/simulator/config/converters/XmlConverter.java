@@ -1,6 +1,5 @@
 package be.kdg.simulator.config.converters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -8,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
 
 @Component
 public class XmlConverter {
@@ -17,10 +16,10 @@ public class XmlConverter {
 
     public String objectToXML(Object object) {
         try {
-            xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
             xmlMapper.registerModule(new JavaTimeModule());
             return xmlMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             LOGGER.error(e.getMessage(),e);
         }
         return "";

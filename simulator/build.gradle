@@ -23,7 +23,9 @@ repositories {
 }
 
 dependencies {
+	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
 	compile('com.fasterxml.jackson.datatype.jsr310.JavaTimeModule')
+	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
 	compile('com.rabbitmq:amqp-client:5.4.1')
 	compile("org.springframework.boot:spring-boot-starter-amqp")
 	compileOnly('org.projectlombok:lombok:1.18.2')
