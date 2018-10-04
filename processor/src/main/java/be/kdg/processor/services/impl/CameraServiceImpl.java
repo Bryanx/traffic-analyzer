@@ -17,8 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Service("cameraMessageService")
@@ -35,32 +38,11 @@ public class CameraServiceImpl implements CameraService {
 
     @RabbitHandler
     @Override
-    public void receiveCameraMessage(String msg) {
-        LOGGER.info("received message: {}", msg);
-        CameraMessageDTO xmldto = ioConverter.readXml(msg);
-        CameraMessage message = new CameraMessage(xmldto.getLicensePlate(),xmldto.getTimestamp());
-
-        String json = proxyCameraService.get(xmldto.getCameraId());
-        JsonObject dto = ioConverter.readJson(json);
-        CameraCouple couple = ioConverter.jsonToObjects(dto);
-        if (couple == null) {
-            Camera camera = new Camera(dto);
-        }
-
-        //Message comes in.
-        //Get camera id from message and send to proxy, get camera details and couple details.
-        //Store message in local buffer.
-        //create camera en couple in db.
-    }
-
-    private void createCameraCoupleAndMessage(CameraCouple couple, Camera camera, CameraMessage message) {
-        camera.addCameraMessage(message);
-        if (couple != null) {
-            couple.addCamera(camera);
-            createCameraCouple(couple);
-        } else {
-            createCamera(camera);
-        }
+    public void receiveCameraMessage(String xmlMessage) {
+        LOGGER.info("Received message: {}", xmlMessage);
+        CameraMessageDTO dtoMessage = ioConverter.readXml(xmlMessage);
+        buffer.add(new CameraMessage(dtoMessage.getLicensePlate(),dtoMessage.getTimestamp()));
+        createCameraCoupleFromProxy(dtoMessage.getCameraId());
     }
 
     @Override
@@ -81,5 +63,22 @@ public class CameraServiceImpl implements CameraService {
     @Override
     public CameraCouple createCameraCouple(CameraCouple couple) {
         return cameraCoupleRepository.save(couple);
+    }
+
+    private void createCameraCoupleFromProxy(int cameraId) {
+        String json = proxyCameraService.get(cameraId);
+        JsonObject jsonObject = ioConverter.readJson(json);
+        CameraCouple couple = ioConverter.jsonToObjects(jsonObject);
+        if (couple == null) {
+            createCamera(new Camera(jsonObject));
+        } else {
+            createCameraCouple(couple);
+        }
+    }
+
+    @Scheduled(fixedDelayString = "${buffer.config.timebetween}")
+    public void emptyBuffer() {
+        List<CameraMessage> messages = buffer.empty();
+        LOGGER.info("Took " + messages.size() + " messages from the buffer.");
     }
 }

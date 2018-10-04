@@ -43,6 +43,7 @@ public class IoConverter {
             couple.addCamera(new Camera(segment.get("connectedCameraId").getAsLong()));
             return couple;
         }
+        LOGGER.error("Failed to convert to jsonObject: {}", jsonObject);
         return null;
     }
 }
