@@ -28,8 +28,8 @@ public class CameraCouple {
     private int distance;
 
     public CameraCouple(JsonObject input) {
-        this.maxSpeed = input.getAsJsonObject("segment").get("speed").getAsInt();
-        this.distance = input.getAsJsonObject("location").get("distance").getAsInt();
+        this.maxSpeed = input.get("speedLimit").getAsInt();
+        this.distance = input.get("distance").getAsInt();
     }
 
     public void addCamera(Camera camera) {

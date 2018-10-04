@@ -3,7 +3,6 @@ package be.kdg.processor.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,6 +26,10 @@ public class CameraMessage {
 
     @Column(name = "`timestamp`")
     private LocalDateTime timestamp;
+
+    @ManyToOne(targetEntity = Fine.class)
+    @JoinColumn(name = "fine_id")
+    private Fine fine;
 
     public CameraMessage(String licensePlate, LocalDateTime timestamp) {
         this.licensePlate = licensePlate;

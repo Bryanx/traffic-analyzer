@@ -1,6 +1,7 @@
 package be.kdg.processor.services.impl;
 
 import be.kdg.processor.config.converters.IoConverter;
+import be.kdg.processor.config.helpers.CameraMessageBuffer;
 import be.kdg.processor.config.helpers.CameraMessageDTO;
 import be.kdg.processor.domain.Camera;
 import be.kdg.processor.domain.CameraCouple;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
@@ -27,24 +27,40 @@ import org.springframework.transaction.annotation.Transactional;
 public class CameraServiceImpl implements CameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraServiceImpl.class);
     private final IoConverter ioConverter;
-    private final ProxyCameraService cameraService;
+    private final ProxyCameraService proxyCameraService;
     private final CameraMessageRepository cameraMessageRepository;
     private final CameraRepository cameraRepository;
     private final CameraCoupleRepository cameraCoupleRepository;
+    private final CameraMessageBuffer buffer;
 
     @RabbitHandler
+    @Override
     public void receiveCameraMessage(String msg) {
         LOGGER.info("received message: {}", msg);
         CameraMessageDTO xmldto = ioConverter.readXml(msg);
         CameraMessage message = new CameraMessage(xmldto.getLicensePlate(),xmldto.getTimestamp());
-        String json = cameraService.get(xmldto.getCameraId());
 
-        final JsonObject dto = ioConverter.readJson(json);
-        CameraCouple couple = new CameraCouple(dto);
-        Camera camera = new Camera(dto);
+        String json = proxyCameraService.get(xmldto.getCameraId());
+        JsonObject dto = ioConverter.readJson(json);
+        CameraCouple couple = ioConverter.jsonToObjects(dto);
+        if (couple == null) {
+            Camera camera = new Camera(dto);
+        }
+
+        //Message comes in.
+        //Get camera id from message and send to proxy, get camera details and couple details.
+        //Store message in local buffer.
+        //create camera en couple in db.
+    }
+
+    private void createCameraCoupleAndMessage(CameraCouple couple, Camera camera, CameraMessage message) {
         camera.addCameraMessage(message);
-        couple.addCamera(camera);
-        createCameraCouple(couple);
+        if (couple != null) {
+            couple.addCamera(camera);
+            createCameraCouple(couple);
+        } else {
+            createCamera(camera);
+        }
     }
 
     @Override
