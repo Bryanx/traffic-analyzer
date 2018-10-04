@@ -2,7 +2,6 @@ package be.kdg.simulator.messaging.messengers;
 
 import be.kdg.simulator.config.RecorderConfig;
 import be.kdg.simulator.config.converters.XmlConverter;
-import be.kdg.simulator.messaging.generators.MessageGenerator;
 import be.kdg.simulator.model.CameraMessage;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -20,12 +19,10 @@ public class QueueMessenger implements Messenger {
     private final RabbitTemplate rabbitTemplate;
     private final RecorderConfig recorder;
     private final Queue queue;
-    private final MessageGenerator messageGenerator;
     private final XmlConverter xmlConverter;
 
     @Override
-    public void sendMessage() {
-        CameraMessage msg = messageGenerator.generate();
+    public void sendMessage(CameraMessage msg) {
         LOGGER.info("Sending message to queue: {}", msg);
         recorder.record(String.format("Sending message to queue: %s", msg));
         String xmlConverted = xmlConverter.objectToXML(msg);
