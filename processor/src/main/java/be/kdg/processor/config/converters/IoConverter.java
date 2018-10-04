@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class IoConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(IoConverter.class);
-    private final XmlMapper xmlMapper = new XmlMapper();
+    private final XmlMapper xmlMapper;
 
     public CameraMessageDTO readXml(String xml) {
         try {
