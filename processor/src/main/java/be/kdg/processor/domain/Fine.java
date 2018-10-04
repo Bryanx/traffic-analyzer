@@ -1,19 +1,30 @@
 package be.kdg.processor.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.Data;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 @Entity
 public class Fine {
-
-    @Column(nullable = false)
     @Id
     @GeneratedValue
-    private Integer fineId;
+    private Integer id;
 
     @Column
-    private String description;
+    private FineType type;
 
+    @Column
+    private double price;
+
+    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.DETACH, orphanRemoval = false)
+    private List<CameraMessage> cameraMessages = new ArrayList<>();
+
+    public Fine(FineType type, double price, List<CameraMessage> cameraMessages) {
+        this.type = type;
+        this.price = price;
+        this.cameraMessages = cameraMessages;
+    }
 }
