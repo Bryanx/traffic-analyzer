@@ -16,9 +16,9 @@ import java.util.List;
 public class CameraCouple {
     @Id
     @GeneratedValue
-    private Long id;
+    private int id;
 
-    @OneToMany(targetEntity = Camera.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = Camera.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cameraCouple")
     private List<Camera> cameras = new ArrayList<>();
 
     @Column

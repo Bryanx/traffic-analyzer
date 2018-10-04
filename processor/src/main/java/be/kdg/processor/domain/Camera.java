@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Camera {
     @Id
-    private Long id;
+    private int id;
 
     @Column
     private double latitude;
@@ -26,19 +26,19 @@ public class Camera {
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    @ManyToOne(targetEntity = CameraCouple.class)
+    @ManyToOne(targetEntity = CameraCouple.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "cameracouple_id")
     private CameraCouple cameraCouple;
 
     public Camera(JsonObject input) {
-        this.id = input.get("cameraId").getAsLong();
+        this.id = input.get("cameraId").getAsInt();
         if (input.getAsJsonObject("location") != null) {
             this.latitude = input.getAsJsonObject("location").get("lat").getAsDouble();
             this.longitude = input.getAsJsonObject("location").get("long").getAsDouble();
         }
     }
 
-    public Camera(long cameraId) {
+    public Camera(int cameraId) {
         this.id = cameraId;
     }
 

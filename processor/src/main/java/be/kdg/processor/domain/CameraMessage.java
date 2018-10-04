@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class CameraMessage {
     @Id
     @GeneratedValue
-    private Long id;
+    private int id;
 
     @ManyToOne(targetEntity = Camera.class)
     @JoinColumn(name = "camera_id")
@@ -38,6 +38,10 @@ public class CameraMessage {
 
     @Override
     public String toString() {
+        if (camera == null) {
+            return String.format("CameraMessage: %s at %s", licensePlate,
+                    timestamp.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
+        }
         return String.format("Camera %d spotted: %s at %s", camera.getId(), licensePlate,
                 timestamp.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
     }

@@ -19,12 +19,20 @@ public class Fine {
     @Column
     private double price;
 
+    @Column
+    double actualSpeed;
+
+    @Column
+    double maxSpeed;
+
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.DETACH, orphanRemoval = false)
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    public Fine(FineType type, double price, List<CameraMessage> cameraMessages) {
+    public Fine(FineType type, double price, double actualSpeed, double maxSpeed, List<CameraMessage> cameraMessages) {
         this.type = type;
         this.price = price;
+        this.actualSpeed = actualSpeed;
+        this.maxSpeed = maxSpeed;
         this.cameraMessages = cameraMessages;
     }
 }
