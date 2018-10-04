@@ -6,6 +6,7 @@ import be.kdg.simulator.model.CameraMessage;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpIOException;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,6 +27,11 @@ public class QueueMessenger implements Messenger {
         LOGGER.info("Sending message to queue: {}", msg);
         recorder.record(String.format("Sending message to queue: %s", msg));
         String xmlConverted = xmlConverter.objectToXML(msg);
-        rabbitTemplate.convertAndSend(queue.getName(), xmlConverted);
+        try {
+            rabbitTemplate.convertAndSend(queue.getName(), xmlConverted);
+        } catch (AmqpIOException e) {
+            LOGGER.error("Please check your internet connection, " + e.getMessage());
+            System.exit(1);
+        }
     }
 }
