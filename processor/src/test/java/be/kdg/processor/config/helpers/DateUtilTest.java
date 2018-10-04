@@ -1,0 +1,26 @@
+package be.kdg.processor.config.helpers;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class DateUtilTest {
+
+    @Autowired
+    DateUtil dateUtil;
+
+    @Test
+    public void getMillisBetweenDates() {
+        LocalDateTime date1 = LocalDateTime.of(2000,1,1,15,0);
+        LocalDateTime date2 = LocalDateTime.of(2000,1,1,16,1);
+        assertEquals(60000, dateUtil.getMillisBetweenDates(date1, date2), 50);
+    }
+}
