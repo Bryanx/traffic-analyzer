@@ -3,16 +3,18 @@ package be.kdg.simulator.config.converters;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 @Component
 public class XmlConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlConverter.class);
-    private final XmlMapper xmlMapper = new XmlMapper();
+    private final XmlMapper xmlMapper;
 
     public String objectToXML(Object object) {
         try {

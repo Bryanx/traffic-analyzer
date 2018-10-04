@@ -1,5 +1,6 @@
 package be.kdg.simulator.config;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -18,5 +19,10 @@ public class GeneralConfig {
         scheduler.setPoolSize(POOL_SIZE);
         scheduler.initialize();
         return scheduler;
+    }
+
+    @Bean
+    public XmlMapper xmlMapper() {
+        return new XmlMapper();
     }
 }
