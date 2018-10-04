@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,14 +13,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Component
 @ConditionalOnProperty(name = "generator.type", havingValue = "file")
 public class FileGenerator implements MessageGenerator {
     public static final Logger LOGGER = LoggerFactory.getLogger(FileGenerator.class);
-    private static final String FILE_PATH = "simulator/src/main/resources/messages/cameramessages.csv";
+    private static final String FILE_PATH = "simulator/files/cameramessages.csv";
     private final SimulationScheduler simulationScheduler;
     private List<CameraMessage> messages = new ArrayList<>();
     public static int lineCounter = 0;
