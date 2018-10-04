@@ -10,8 +10,8 @@ public interface CameraService {
     CameraMessage createCameraMessage(CameraMessage cameraMessage);
     void deleteCameraMessage(CameraMessage cameraMessage);
 
-    Camera createCamera(Camera camera);
+    Camera createOrUpdateCamera(Camera camera);
 
-    CameraCouple createCameraCouple(CameraCouple couple);
+    CameraCouple createOrUpdateCameraCouple(CameraCouple couple);
 
 }

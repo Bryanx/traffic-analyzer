@@ -1,7 +1,6 @@
 package be.kdg.processor.config.converters;
 
 import be.kdg.processor.config.helpers.CameraMessageDTO;
-import be.kdg.processor.domain.Camera;
 import be.kdg.processor.domain.CameraCouple;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -39,11 +38,8 @@ public class IoConverter {
         JsonObject segment = jsonObject.getAsJsonObject("segment");
         if (segment != null) {
             couple = new CameraCouple(segment);
-            couple.addCamera(new Camera(jsonObject));
-            couple.addCamera(new Camera(segment.get("connectedCameraId").getAsLong()));
             return couple;
         }
-        LOGGER.error("Failed to convert to jsonObject: {}", jsonObject);
         return null;
     }
 }
