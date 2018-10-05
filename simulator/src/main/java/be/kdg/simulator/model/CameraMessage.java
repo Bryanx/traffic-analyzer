@@ -23,7 +23,7 @@ public class CameraMessage {
 
     @Override
     public String toString() {
-        return String.format("Camera %d spotted: %s at %s", cameraId, licensePlate,
+        return String.format("camera %d spotted: %s at %s", cameraId, licensePlate,
                 timestamp.format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss")));
     }
 }

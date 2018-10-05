@@ -1,11 +1,10 @@
 package be.kdg.processor;
 
-import be.kdg.processor.config.converters.IoConverterTest;
-import be.kdg.processor.config.helpers.DateUtilTest;
-import be.kdg.processor.config.mappers.CameraMessageMapperTest;
-import be.kdg.processor.services.ThirdParty.ProxyCameraServiceImplTest;
-import be.kdg.processor.services.ThirdParty.ProxyLicensePlateServiceImplTest;
-import be.kdg.processor.services.impl.CameraServiceImplTest;
+import be.kdg.processor.camera.CameraMapperTest;
+import be.kdg.processor.camera.proxy.ProxyCameraServiceImplTest;
+import be.kdg.processor.shared.converters.IoConverterTest;
+import be.kdg.processor.shared.utils.DateUtilTest;
+import be.kdg.processor.vehicle.ProxyLicensePlateServiceImplTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -14,7 +13,7 @@ import org.junit.runners.Suite;
         ProxyCameraServiceImplTest.class,
         ProxyLicensePlateServiceImplTest.class,
         DateUtilTest.class,
-        CameraMessageMapperTest.class,
+        CameraMapperTest.class,
         IoConverterTest.class
 })
 public class TestSuite {
