@@ -26,14 +26,14 @@ public class IoConverterTest {
 
     @Test
     public void jsonToObject() {
-        LicensePlateDTO resultDto = ioConverter.jsonToObject(JSON_PLATE_TEST, LicensePlateDTO.class);
+        LicensePlateDTO resultDto = ioConverter.readJson(JSON_PLATE_TEST, LicensePlateDTO.class);
         System.out.println(resultDto);
         assertEquals("Expected licenseplate to be equal after json conversion.", resultDto.getPlateId(), expectedLicensePlate);
     }
 
     @Test
     public void jsonProxyTest() {
-        CameraProxyDTO resultDto = ioConverter.jsonToObject(JSON_PROXY_TEST, CameraProxyDTO.class);
+        CameraProxyDTO resultDto = ioConverter.readJson(JSON_PROXY_TEST, CameraProxyDTO.class);
         System.out.println(resultDto);
         assertEquals("Expected cameraId to be equal after json conversion.", resultDto.getCameraId(), expectedCameraId);
     }

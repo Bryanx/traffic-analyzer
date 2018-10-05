@@ -24,7 +24,7 @@ public class EmissionFineService implements FineService {
         couple.getCameras().forEach(camera -> msgs.addAll(camera.getCameraMessages()));
         msgs.forEach(message -> {
             String json = proxyLicensePlateService.get(message.getLicensePlate());
-//            LicensePlateDTO licensePlateDTO = ioConverter.jsonToObject(json);
+//            LicensePlateDTO licensePlateDTO = ioConverter.readJson(json);
         });
     }
 }

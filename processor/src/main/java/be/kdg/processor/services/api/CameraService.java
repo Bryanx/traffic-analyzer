@@ -16,4 +16,6 @@ public interface CameraService {
 
     CameraCouple createOrUpdateCameraCouple(CameraCouple couple);
     List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple);
+
+    void emptyBuffer();
 }

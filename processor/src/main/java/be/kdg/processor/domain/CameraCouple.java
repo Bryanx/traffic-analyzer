@@ -1,6 +1,5 @@
 package be.kdg.processor.domain;
 
-import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +26,9 @@ public class CameraCouple {
     @Column
     private int distance;
 
-    public CameraCouple(JsonObject input) {
-        this.maxSpeed = input.get("speedLimit").getAsInt();
-        this.distance = input.get("distance").getAsInt();
+    public CameraCouple(int maxSpeed, int distance) {
+        this.maxSpeed = maxSpeed;
+        this.distance = distance;
     }
 
     public void addCamera(Camera camera) {

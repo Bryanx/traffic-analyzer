@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Buffer that stores CameraMessages.
@@ -39,5 +41,9 @@ public class CameraMessageBuffer extends HashSet<CameraMessageDTO> {
     public void clear() {
         LOGGER.info("Removing {} messages from the buffer.", this.size());
         super.clear();
+    }
+
+    public List<CameraMessageDTO> copy() {
+        return new ArrayList<>(this);
     }
 }

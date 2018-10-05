@@ -1,6 +1,5 @@
 package be.kdg.processor.domain;
 
-import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,14 +28,6 @@ public class Camera {
     @ManyToOne(targetEntity = CameraCouple.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "cameracouple_id")
     private CameraCouple cameraCouple;
-
-    public Camera(JsonObject input) {
-        this.id = input.get("cameraId").getAsInt();
-        if (input.getAsJsonObject("location") != null) {
-            this.latitude = input.getAsJsonObject("location").get("lat").getAsDouble();
-            this.longitude = input.getAsJsonObject("location").get("long").getAsDouble();
-        }
-    }
 
     public Camera(int cameraId) {
         this.id = cameraId;

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class CameraMessageMapperTest {
 
     @Autowired
-    private CameraMessageMapper cameraMessageMapper;
+    private CameraMapper cameraMessageMapper;
 
     @Test
     public void convertToEntity() {
@@ -25,7 +25,7 @@ public class CameraMessageMapperTest {
         dto.setDelay(500);
         dto.setLicensePlate("234324");
         dto.setTimestamp(LocalDateTime.of(1900,1,1,1,1,1));
-        CameraMessage msg = cameraMessageMapper.convertToEntity(dto);
+        CameraMessage msg = cameraMessageMapper.msgDtoToMessage(dto);
         System.out.println(dto);
         System.out.println(msg);
         assertEquals(msg.getLicensePlate(), dto.getLicensePlate());
