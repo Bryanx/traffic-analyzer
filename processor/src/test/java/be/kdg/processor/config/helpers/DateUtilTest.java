@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -18,9 +18,9 @@ public class DateUtilTest {
     DateUtil dateUtil;
 
     @Test
-    public void getMillisBetweenDates() {
+    public void getHoursBetweenDates() {
         LocalDateTime date1 = LocalDateTime.of(2000,1,1,15,0);
-        LocalDateTime date2 = LocalDateTime.of(2000,1,1,16,1);
-        assertEquals(60000, dateUtil.getMillisBetweenDates(date1, date2), 50);
+        LocalDateTime date2 = LocalDateTime.of(2000,1,1,16,30);
+        assertEquals(1.5, dateUtil.getHoursBetweenDates(date1, date2), 0.0);
     }
 }
