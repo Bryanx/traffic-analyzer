@@ -12,8 +12,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Component
 public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
-    public static final Logger LOGGER = LoggerFactory.getLogger(ProxyLicensePlateServiceImpl.class);
-    LicensePlateServiceProxy licensePlateServiceProxy;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyLicensePlateServiceImpl.class);
+    private final LicensePlateServiceProxy licensePlateServiceProxy;
 
     @Override
     public String get(String plate) {

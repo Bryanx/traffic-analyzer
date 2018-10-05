@@ -1,8 +1,9 @@
 package be.kdg.processor.services.impl;
 
 import be.kdg.processor.config.converters.IoConverter;
+import be.kdg.processor.config.dtos.CameraMessageDTO;
+import be.kdg.processor.config.dtos.CameraProxyDTO;
 import be.kdg.processor.config.helpers.CameraMessageBuffer;
-import be.kdg.processor.config.helpers.CameraMessageDTO;
 import be.kdg.processor.domain.Camera;
 import be.kdg.processor.domain.CameraCouple;
 import be.kdg.processor.domain.CameraMessage;
@@ -12,7 +13,6 @@ import be.kdg.processor.persistence.api.CameraRepository;
 import be.kdg.processor.services.ThirdParty.ProxyCameraService;
 import be.kdg.processor.services.api.CameraService;
 import be.kdg.processor.services.api.FineService;
-import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +37,13 @@ public class CameraServiceImpl implements CameraService {
     private final CameraRepository cameraRepository;
     private final CameraCoupleRepository cameraCoupleRepository;
     private final CameraMessageBuffer buffer;
-    private final FineService fineService;
+    private final List<FineService> fineServices;
 
     @RabbitHandler
     @Override
     public void receiveCameraMessage(String xmlMessage) {
         LOGGER.info("Received message: {}", xmlMessage);
-        buffer.add(ioConverter.readXml(xmlMessage));
+        buffer.add(ioConverter.readXml(xmlMessage, CameraMessageDTO.class));
     }
 
     @Override
@@ -78,52 +78,46 @@ public class CameraServiceImpl implements CameraService {
         return addedCouple;
     }
 
-    private JsonObject getJsonObjectFromProxy(int cameraId) {
+    @Override
+    public List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple) {
+        List<CameraMessage> messages = new ArrayList<>();
+        couple.getCameras().forEach(camera -> messages.addAll(camera.getCameraMessages()));
+        return messages;
+    }
+
+    //TODO: Use different method than jsonobjects to extract data.
+    private CameraProxyDTO getDto(int cameraId) {
         String json = proxyCameraService.get(cameraId);
-        return ioConverter.readJson(json);
+        return ioConverter.jsonToObject(json, CameraProxyDTO.class);
     }
 
     private CameraCouple createCameraCoupleFromProxy(CameraMessageDTO msg1, CameraMessageDTO msg2) {
-        JsonObject jsonObject = getJsonObjectFromProxy(msg1.getCameraId());
-        JsonObject jsonObject2 = getJsonObjectFromProxy(msg2.getCameraId());
-        if (!messagesAreInSameSegment(jsonObject, jsonObject2, msg1, msg2)) return null;
-        CameraCouple couple = ioConverter.jsonToObjects(jsonObject);
-        Camera camera1 = new Camera(jsonObject);
-        Camera camera2 = new Camera(jsonObject2);
-        camera1.addCameraMessage(new CameraMessage(msg1.getLicensePlate(), msg1.getTimestamp()));
-        camera2.addCameraMessage(new CameraMessage(msg2.getLicensePlate(), msg2.getTimestamp()));
-        couple.addCamera(camera1);
-        couple.addCamera(camera2);
-        return couple;
-    }
+        CameraProxyDTO dto1 = getDto(msg1.getCameraId());
+        CameraProxyDTO dto2 = getDto(msg2.getCameraId());
 
-    private boolean messagesAreInSameSegment(JsonObject jsonObject, JsonObject jsonObject2, CameraMessageDTO msg1, CameraMessageDTO msg2) {
-        boolean sameSegment = false;
-        if (jsonObject.getAsJsonObject("segment") != null) {
-            sameSegment = jsonObject.getAsJsonObject("segment").get("connectedCameraId").getAsInt() == msg2.getCameraId();
-        }
-        if (jsonObject2.getAsJsonObject("segment") != null) {
-            sameSegment = jsonObject2.getAsJsonObject("segment").get("connectedCameraId").getAsInt() == msg1.getCameraId();
-        }
-        return sameSegment;
+        if (!dto1.isInSameSegment(dto2)) return null;
+
+//        CameraCouple couple = ioConverter.jsonToObjects(jsonObject);
+//        if (couple == null) couple = ioConverter.jsonToObjects(jsonObject2);
+//        Camera camera1 = new Camera(jsonObject);
+//        Camera camera2 = new Camera(jsonObject2);
+//        camera1.addCameraMessage(new CameraMessage(msg1.getLicensePlate(), msg1.getTimestamp()));
+//        camera2.addCameraMessage(new CameraMessage(msg2.getLicensePlate(), msg2.getTimestamp()));
+//        couple.addCamera(camera1);
+//        couple.addCamera(camera2);
+        return null;
     }
 
     @Scheduled(fixedDelayString = "${buffer.config.timebetween}000")
     public void emptyBuffer() {
-        buffer.forEach(msg -> {
-            CameraMessageDTO poppedMsg = buffer.popMessageWithSamePlate(msg);
+        CameraMessageBuffer tempBuffer = buffer;
+        buffer.clear();
+        tempBuffer.forEach(msg -> {
+            CameraMessageDTO poppedMsg = tempBuffer.popMessageWithSamePlate(msg);
             if (poppedMsg == null) return;
             CameraCouple couple = createCameraCoupleFromProxy(msg, poppedMsg);
             if (couple == null) return;
-            fineService.checkForFine(couple, getCameraMessagesFromCouple(couple));
+            fineServices.forEach(fineService -> fineService.checkForFine(couple));
         });
-        //clear remaining messages on the buffer:
-//        buffer.clear();
-    }
-
-    private List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple) {
-        List<CameraMessage> messages = new ArrayList<>();
-        couple.getCameras().forEach(camera -> messages.addAll(camera.getCameraMessages()));
-        return messages;
     }
 }
