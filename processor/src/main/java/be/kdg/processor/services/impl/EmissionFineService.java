@@ -28,8 +28,8 @@ public class EmissionFineService implements FineService {
         msgs.forEach(message -> {
             String json = proxyLicensePlateService.get(message.getLicensePlate());
             LicensePlateDTO licensePlateDTO = ioConverter.readJson(json, LicensePlateDTO.class);
-            if ( message.getCamera().getEuroNorm() < licensePlateDTO.getEuroNumber()) {
-                LOGGER.info("Camera detected vehicle below euronorm: " + licensePlateDTO.getPlateId());
+            if (message.getCamera().getEuroNorm() > licensePlateDTO.getEuroNumber()) {
+                LOGGER.info("Camera " + message.getCamera().getId() + " detected vehicle below euronorm: " + licensePlateDTO.getPlateId());
             }
         });
     }
