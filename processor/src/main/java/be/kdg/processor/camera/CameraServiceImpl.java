@@ -7,12 +7,11 @@ import be.kdg.processor.camera.message.CameraMessageBuffer;
 import be.kdg.processor.camera.message.CameraMessageDTO;
 import be.kdg.processor.camera.message.CameraMessageRepository;
 import be.kdg.processor.fine.FineService;
-import be.kdg.processor.shared.converters.IoConverter;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +21,9 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-@RabbitListener(queues = "camera-message-queue")
 @Transactional
 public class CameraServiceImpl implements CameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraServiceImpl.class);
-    private final IoConverter ioConverter;
     private final CameraMessageRepository cameraMessageRepository;
     private final CameraRepository cameraRepository;
     private final CameraCoupleRepository cameraCoupleRepository;
@@ -34,11 +31,11 @@ public class CameraServiceImpl implements CameraService {
     private final List<FineService> fineServices;
     private final CameraMapper cameraMapper;
 
-    @RabbitHandler
+    @RabbitListener(queues = "camera-message-queue")
     @Override
-    public void receiveCameraMessage(String xmlMessage) {
-        LOGGER.info("Received message: {}", xmlMessage);
-        buffer.add(ioConverter.readXml(xmlMessage, CameraMessageDTO.class));
+    public void receiveCameraMessage(@Payload CameraMessageDTO cameraMessageDTO) {
+        LOGGER.info("Received message: {}", cameraMessageDTO);
+//        buffer.add(ioConverter.readXml(xmlMessage, CameraMessageDTO.class));
     }
 
     @Override
