@@ -6,5 +6,5 @@ import lombok.Data;
 public class LicensePlateDTO {
     private String plateId;
     private String nationalNumber;
-    private int euroNumber;
+    private Integer euroNumber;
 }

@@ -1,7 +1,5 @@
 package be.kdg.processor.config.converters;
 
-import be.kdg.processor.config.dtos.CameraMessageDTO;
-import be.kdg.processor.config.dtos.LicensePlateDTO;
 import be.kdg.processor.domain.CameraCouple;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,20 +21,20 @@ public class IoConverter {
     private final XmlMapper xmlMapper;
     private final ObjectMapper objectMapper;
 
-    public LicensePlateDTO jsonToObject(String json) {
+    public <T> T jsonToObject(String json, Class<T> instance) {
         try {
-            return objectMapper.readValue(json, LicensePlateDTO.class);
+            return objectMapper.readValue(json, instance);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;
     }
 
-    public CameraMessageDTO readXml(String xml) {
+    public <T> T readXml(String xml, Class<T> instance) {
         try {
             xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
             xmlMapper.registerModule(new JavaTimeModule());
-            return xmlMapper.readValue(xml, CameraMessageDTO.class);
+            return xmlMapper.readValue(xml, instance);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
