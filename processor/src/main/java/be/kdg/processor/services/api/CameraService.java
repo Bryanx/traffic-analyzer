@@ -4,6 +4,8 @@ import be.kdg.processor.domain.Camera;
 import be.kdg.processor.domain.CameraCouple;
 import be.kdg.processor.domain.CameraMessage;
 
+import java.util.List;
+
 public interface CameraService {
 
     void receiveCameraMessage(String msg);
@@ -13,5 +15,5 @@ public interface CameraService {
     Camera createOrUpdateCamera(Camera camera);
 
     CameraCouple createOrUpdateCameraCouple(CameraCouple couple);
-
+    List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple);
 }
