@@ -22,6 +22,9 @@ public class Camera {
     @Column
     private double longitude;
 
+    @Column
+    private int euroNorm;
+
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 

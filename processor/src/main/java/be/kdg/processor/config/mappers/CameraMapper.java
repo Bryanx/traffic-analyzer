@@ -29,6 +29,7 @@ public class CameraMapper {
     public CameraCouple mapCameraCouple(CameraMessageDTO msg1, CameraMessageDTO msg2) {
         CameraProxyDTO dto1 = getDto(msg1.getCameraId());
         CameraProxyDTO dto2 = getDto(msg2.getCameraId());
+
         if (!dto1.isInSameSegment(dto2)) return null;
         CameraCouple couple;
 
