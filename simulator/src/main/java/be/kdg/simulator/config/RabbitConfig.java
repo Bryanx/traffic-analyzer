@@ -45,6 +45,8 @@ public class RabbitConfig {
     public MarshallingMessageConverter producerMarshallingMessageConverter() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
         jaxb2Marshaller.setClassesToBeBound(CameraMessage.class);
-        return new MarshallingMessageConverter(jaxb2Marshaller);
+        MarshallingMessageConverter marshallingMessageConverter = new MarshallingMessageConverter(jaxb2Marshaller);
+        marshallingMessageConverter.setContentType("application/xml");
+        return marshallingMessageConverter;
     }
 }

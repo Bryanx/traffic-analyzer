@@ -1,4 +1,4 @@
-package be.kdg.simulator.config;
+package be.kdg.simulator.config.converters;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDateTime;
