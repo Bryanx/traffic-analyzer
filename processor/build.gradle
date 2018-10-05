@@ -25,10 +25,7 @@ repositories {
 
 
 dependencies {
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.9.7'
-    compile group: 'org.codehaus.woodstox', name: 'stax2-api', version: '3.0.1'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
-    compile('com.fasterxml.jackson.datatype.jsr310.JavaTimeModule')
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.0"
     compile('com.rabbitmq:amqp-client:5.4.1')
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
     compile files('lib/camera-service-1.0.jar', 'lib/license-plate-service-1.0.jar')
