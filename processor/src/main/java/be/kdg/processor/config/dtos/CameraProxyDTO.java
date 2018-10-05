@@ -12,7 +12,7 @@ public class CameraProxyDTO {
     private Integer euroNorm;
 
     public boolean isInSameSegment(CameraProxyDTO other) {
-        if (other.segment.getConnectedCameraId() == null) return false;
+        if (other.segment == null) return false;
         return other.segment.getConnectedCameraId().equals(this.cameraId);
     }
 }

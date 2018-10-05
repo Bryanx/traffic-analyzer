@@ -89,7 +89,7 @@ public class CameraServiceImpl implements CameraService {
         CameraMessageBuffer tempBuffer = (CameraMessageBuffer) buffer.clone();
         buffer.clear();
         tempBuffer.forEach(msg -> {
-            CameraMessageDTO poppedMsg = tempBuffer.popMessageWithSamePlate(msg);
+            CameraMessageDTO poppedMsg = tempBuffer.getMessageWithSamePlate(msg);
             if (poppedMsg == null) return;
             CameraCouple couple = cameraMapper.mapCameraCouple(msg, poppedMsg);
             if (couple == null) return;

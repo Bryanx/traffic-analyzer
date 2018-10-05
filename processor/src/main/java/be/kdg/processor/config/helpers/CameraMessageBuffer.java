@@ -21,7 +21,7 @@ public class CameraMessageBuffer extends HashSet<CameraMessageDTO> {
     /**
      * Removes a message from the buffer with the same licenseplate, but different cameraId, and returns it.
      */
-    public CameraMessageDTO popMessageWithSamePlate(CameraMessageDTO inputMessage) {
+    public CameraMessageDTO getMessageWithSamePlate(CameraMessageDTO inputMessage) {
         String plate = inputMessage.getLicensePlate();
         CameraMessageDTO message = super.stream()
                 .filter(cameraMessage -> cameraMessage.getLicensePlate().equals(plate) &&
@@ -30,9 +30,7 @@ public class CameraMessageBuffer extends HashSet<CameraMessageDTO> {
                 .orElse(null);
         if (message != null) {
             LOGGER.info("Found 2 CameraMessages with the same licenseplate: " + plate);
-            CameraMessageDTO temp = message;
-            super.remove(temp);
-            return temp;
+            return message;
         }
         return null;
     }
