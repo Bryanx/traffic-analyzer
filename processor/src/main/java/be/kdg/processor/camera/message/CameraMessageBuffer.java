@@ -14,15 +14,15 @@ import java.util.List;
  * If 2 cameramessages with the same licenseplate are found, they are removed from the list.
  */
 @Component
-public class CameraMessageBuffer extends HashSet<CameraMessageDTO> {
+public class CameraMessageBuffer extends HashSet<CameraMessage> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraMessageBuffer.class);
 
     /**
      * Removes a message from the buffer with the same licenseplate, but different cameraId, and returns it.
      */
-    public CameraMessageDTO getMessageWithSamePlate(CameraMessageDTO inputMessage) {
+    public CameraMessage getMessageWithSamePlate(CameraMessage inputMessage) {
         String plate = inputMessage.getLicensePlate();
-        CameraMessageDTO message = super.stream()
+        CameraMessage message = super.stream()
                 .filter(cameraMessage -> cameraMessage.getLicensePlate().equals(plate) &&
                         cameraMessage.getCameraId() != inputMessage.getCameraId())
                 .findAny()
@@ -40,7 +40,7 @@ public class CameraMessageBuffer extends HashSet<CameraMessageDTO> {
         super.clear();
     }
 
-    public List<CameraMessageDTO> copy() {
+    public List<CameraMessage> copy() {
         return new ArrayList<>(this);
     }
 }

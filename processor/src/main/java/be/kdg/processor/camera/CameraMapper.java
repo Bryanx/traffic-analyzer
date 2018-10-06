@@ -2,7 +2,6 @@ package be.kdg.processor.camera;
 
 import be.kdg.processor.camera.couple.CameraCouple;
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.camera.message.CameraMessageDTO;
 import be.kdg.processor.camera.proxy.CameraProxyDTO;
 import be.kdg.processor.camera.proxy.ProxyCameraService;
 import be.kdg.processor.shared.converters.IoConverter;
@@ -17,7 +16,7 @@ public class CameraMapper {
     private final ProxyCameraService proxyCameraService;
     private final IoConverter ioConverter;
 
-    public CameraMessage msgDtoToMessage(CameraMessageDTO msgDto) {
+    public CameraMessage msgDtoToMessage(CameraMessage msgDto) {
         return modelMapper.map(msgDto, CameraMessage.class);
     }
 
@@ -26,7 +25,7 @@ public class CameraMapper {
         return ioConverter.readJson(json, CameraProxyDTO.class);
     }
 
-    public CameraCouple mapCameraCouple(CameraMessageDTO msg1, CameraMessageDTO msg2) {
+    public CameraCouple mapCameraCouple(CameraMessage msg1, CameraMessage msg2) {
         CameraProxyDTO dto1 = getDto(msg1.getCameraId());
         CameraProxyDTO dto2 = getDto(msg2.getCameraId());
 

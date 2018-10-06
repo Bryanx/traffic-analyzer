@@ -4,7 +4,6 @@ import be.kdg.processor.camera.couple.CameraCouple;
 import be.kdg.processor.camera.couple.CameraCoupleRepository;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.message.CameraMessageBuffer;
-import be.kdg.processor.camera.message.CameraMessageDTO;
 import be.kdg.processor.camera.message.CameraMessageRepository;
 import be.kdg.processor.fine.FineService;
 import lombok.AllArgsConstructor;
@@ -33,9 +32,9 @@ public class CameraServiceImpl implements CameraService {
 
     @RabbitListener(queues = "camera-message-queue")
     @Override
-    public void receiveCameraMessage(@Payload CameraMessageDTO cameraMessageDTO) {
-        LOGGER.info("Received message: {}", cameraMessageDTO);
-//        buffer.add(ioConverter.readXml(xmlMessage, CameraMessageDTO.class));
+    public void receiveCameraMessage(@Payload CameraMessage message) {
+        LOGGER.info("Received message: {}", message);
+        buffer.add(message);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class CameraServiceImpl implements CameraService {
 
     @Override
     public Camera createOrUpdateCamera(Camera camera) {
-        if (cameraRepository.findById(camera.getId()).isPresent()) {
+        if (cameraRepository.findById(camera.getCameraId()).isPresent()) {
             return null;
         }
         Camera addedCamera = cameraRepository.save(camera);
@@ -82,7 +81,7 @@ public class CameraServiceImpl implements CameraService {
         CameraMessageBuffer tempBuffer = (CameraMessageBuffer) buffer.clone();
         buffer.clear();
         tempBuffer.forEach(msg -> {
-            CameraMessageDTO poppedMsg = tempBuffer.getMessageWithSamePlate(msg);
+            CameraMessage poppedMsg = tempBuffer.getMessageWithSamePlate(msg);
             if (poppedMsg == null) return;
             CameraCouple couple = cameraMapper.mapCameraCouple(msg, poppedMsg);
             if (couple == null) return;

@@ -1,6 +1,6 @@
 package be.kdg.processor.shared;
 
-import be.kdg.processor.camera.message.CameraMessageDTO;
+import be.kdg.processor.camera.message.CameraMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     @Bean
     public MarshallingMessageConverter producerMarshallingMessageConverter() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setClassesToBeBound(CameraMessageDTO.class);
+        jaxb2Marshaller.setClassesToBeBound(CameraMessage.class);
         return new MarshallingMessageConverter(jaxb2Marshaller);
     }
 

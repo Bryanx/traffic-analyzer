@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Camera {
     @Id
-    private int id;
+    private int cameraId;
 
     @Column
     private double latitude;
@@ -35,7 +35,7 @@ public class Camera {
     private CameraCouple cameraCouple;
 
     public Camera(int cameraId) {
-        this.id = cameraId;
+        this.cameraId = cameraId;
     }
 
     public void addCameraMessage(CameraMessage msg) {

@@ -1,6 +1,5 @@
 package be.kdg.processor;
 
-import be.kdg.processor.camera.CameraMapperTest;
 import be.kdg.processor.camera.proxy.ProxyCameraServiceImplTest;
 import be.kdg.processor.shared.converters.IoConverterTest;
 import be.kdg.processor.shared.utils.DateUtilTest;
@@ -13,7 +12,6 @@ import org.junit.runners.Suite;
         ProxyCameraServiceImplTest.class,
         ProxyLicensePlateServiceImplTest.class,
         DateUtilTest.class,
-        CameraMapperTest.class,
         IoConverterTest.class
 })
 public class TestSuite {
