@@ -15,8 +15,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -64,9 +64,9 @@ public class CameraServiceImpl implements CameraService {
 
     @Override
     public List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple) {
-        List<CameraMessage> messages = new ArrayList<>();
-        couple.getCameras().forEach(camera -> messages.addAll(camera.getCameraMessages()));
-        return messages;
+        return couple.getCameras().stream()
+                .flatMap(camera -> camera.getCameraMessages().stream())
+                .collect(Collectors.toList());
     }
 
     @RabbitListener(queues = "camera-message-queue")
