@@ -37,12 +37,12 @@ public class CameraMessage {
     @JoinColumn(name = "fine_id")
     private Fine fine;
 
+    private int cameraId;
+
     public CameraMessage(String licensePlate, LocalDateTime timestamp) {
         this.licensePlate = licensePlate;
         this.timestamp = timestamp;
     }
-
-    private int cameraId;
 
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     public LocalDateTime getTimestamp() {

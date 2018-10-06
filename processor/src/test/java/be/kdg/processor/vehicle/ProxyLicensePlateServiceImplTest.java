@@ -20,9 +20,8 @@ public class ProxyLicensePlateServiceImplTest {
 
     @Test
     public void get() {
-        String result = proxyLicensePlateService.get(TEST_PLATE);
-        System.out.println(result);
-        assertTrue("Expected to get a result when calling LicensPlateProxyService, but got: " + result,
-                result != null);
+        Vehicle vehicle = proxyLicensePlateService.get(TEST_PLATE);
+        System.out.println(vehicle);
+        assertNotNull(vehicle);
     }
 }

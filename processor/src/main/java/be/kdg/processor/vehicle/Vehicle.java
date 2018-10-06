@@ -2,7 +2,6 @@ package be.kdg.processor.vehicle;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,12 +10,7 @@ import javax.persistence.Id;
 @Data
 public class Vehicle {
     @Id
-    @GeneratedValue
-    private Integer id;
-
-    @Column
-    private String licensePlate;
-
-    @Column
+    private String plateId;
+    private String nationalNumber;
     private int euroNumber;
 }

@@ -1,5 +1,6 @@
 package be.kdg.processor.vehicle;
 
+import be.kdg.processor.shared.converters.IoConverter;
 import be.kdg.sa.services.LicensePlateNotFoundException;
 import be.kdg.sa.services.LicensePlateServiceProxy;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +15,13 @@ import java.io.IOException;
 public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyLicensePlateServiceImpl.class);
     private final LicensePlateServiceProxy licensePlateServiceProxy;
+    private final IoConverter ioConverter;
 
     @Override
-    public String get(String plate) {
+    public Vehicle get(String plate) {
         try {
-            return licensePlateServiceProxy.get(plate);
+            String json = licensePlateServiceProxy.get(plate);
+            return ioConverter.readJson(json, Vehicle.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         } catch (LicensePlateNotFoundException e) {

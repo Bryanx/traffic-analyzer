@@ -1,12 +1,12 @@
 package be.kdg.processor.camera.proxy;
 
+import be.kdg.processor.camera.Camera;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -18,8 +18,8 @@ public class ProxyCameraServiceImplTest {
 
     @Test
     public void get() {
-        String result = proxyCameraService.get(3);
+        Camera result = proxyCameraService.get(1);
         System.out.println(result);
-        assertTrue("Expected to get a result when calling CameraServiceProxy, but got: " + result, result != null);
+        Assert.assertNotNull(result);
     }
 }

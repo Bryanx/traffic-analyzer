@@ -30,13 +30,6 @@ public class CameraServiceImpl implements CameraService {
     private final List<FineService> fineServices;
     private final CameraMapper cameraMapper;
 
-    @RabbitListener(queues = "camera-message-queue")
-    @Override
-    public void receiveCameraMessage(@Payload CameraMessage message) {
-        LOGGER.info("Received message: {}", message);
-        buffer.add(message);
-    }
-
     @Override
     public CameraMessage createCameraMessage(CameraMessage message) {
         CameraMessage addedMsg = cameraMessageRepository.save(message);
@@ -74,6 +67,13 @@ public class CameraServiceImpl implements CameraService {
         List<CameraMessage> messages = new ArrayList<>();
         couple.getCameras().forEach(camera -> messages.addAll(camera.getCameraMessages()));
         return messages;
+    }
+
+    @RabbitListener(queues = "camera-message-queue")
+    @Override
+    public void receiveCameraMessage(@Payload CameraMessage message) {
+        LOGGER.info("Received message: {}", message);
+        buffer.add(message);
     }
 
     @Scheduled(fixedDelayString = "${buffer.config.timebetween}000")

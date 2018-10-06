@@ -1,5 +1,7 @@
 package be.kdg.processor.camera.proxy;
 
+import be.kdg.processor.camera.Camera;
+import be.kdg.processor.shared.converters.IoConverter;
 import be.kdg.sa.services.CameraNotFoundException;
 import be.kdg.sa.services.CameraServiceProxy;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,12 @@ import java.io.IOException;
 public class ProxyCameraServiceImpl implements ProxyCameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyCameraServiceImpl.class);
     private final CameraServiceProxy cameraServiceProxy;
+    private final IoConverter ioConverter;
 
-    public String get(int id) {
+    public Camera get(int id) {
         try {
-            return cameraServiceProxy.get(id);
+            String json = cameraServiceProxy.get(id);
+            return ioConverter.readJson(json, Camera.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         } catch (CameraNotFoundException e) {

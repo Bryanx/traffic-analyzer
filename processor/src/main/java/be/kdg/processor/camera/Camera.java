@@ -1,7 +1,9 @@
 package be.kdg.processor.camera;
 
 import be.kdg.processor.camera.couple.CameraCouple;
+import be.kdg.processor.camera.location.Location;
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.camera.segment.Segment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +20,11 @@ public class Camera {
     @Id
     private int cameraId;
 
-    @Column
-    private double latitude;
+    @OneToOne
+    private Location location;
 
-    @Column
-    private double longitude;
+    @OneToOne
+    private Segment segment;
 
     @Column
     private int euroNorm;
@@ -33,10 +35,6 @@ public class Camera {
     @ManyToOne(targetEntity = CameraCouple.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "cameracouple_id")
     private CameraCouple cameraCouple;
-
-    public Camera(int cameraId) {
-        this.cameraId = cameraId;
-    }
 
     public void addCameraMessage(CameraMessage msg) {
         cameraMessages.add(msg);
