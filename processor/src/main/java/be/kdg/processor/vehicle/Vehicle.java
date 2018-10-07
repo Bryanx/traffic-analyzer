@@ -17,7 +17,7 @@ public class Vehicle {
     private String nationalNumber;
     private int euroNumber;
 
-    @OneToMany(targetEntity = Fine.class)
+    @OneToMany(targetEntity = Fine.class, mappedBy = "vehicle")
     private List<Fine> fines = new ArrayList<>();
 
     public void addFine(Fine fine) {
