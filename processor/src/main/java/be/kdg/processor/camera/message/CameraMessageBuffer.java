@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Buffer that stores CameraMessages.
@@ -22,14 +23,13 @@ public class CameraMessageBuffer extends HashSet<CameraMessage> {
      */
     public CameraMessage getMessageWithSamePlate(CameraMessage inputMessage) {
         String plate = inputMessage.getLicensePlate();
-        CameraMessage message = super.stream()
+        Optional<CameraMessage> message = super.stream()
                 .filter(cameraMessage -> cameraMessage.getLicensePlate().equals(plate) &&
                         cameraMessage.getCameraId() != inputMessage.getCameraId())
-                .findAny()
-                .orElse(null);
-        if (message != null) {
+                .findAny();
+        if (message.isPresent()) {
             LOGGER.info("Found 2 CameraMessages with the same licenseplate: " + plate);
-            return message;
+            return message.get();
         }
         return null;
     }

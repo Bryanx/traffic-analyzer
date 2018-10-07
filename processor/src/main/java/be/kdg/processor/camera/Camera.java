@@ -1,6 +1,5 @@
 package be.kdg.processor.camera;
 
-import be.kdg.processor.camera.couple.CameraCouple;
 import be.kdg.processor.camera.location.Location;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.segment.Segment;
@@ -23,18 +22,14 @@ public class Camera {
     @OneToOne
     private Location location;
 
-    @OneToOne
-    private Segment segment;
-
     @Column
     private int euroNorm;
 
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    @ManyToOne(targetEntity = CameraCouple.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "cameracouple_id")
-    private CameraCouple cameraCouple;
+    @ManyToOne(targetEntity = Segment.class, fetch = FetchType.LAZY)
+    private Segment segment;
 
     public void addCameraMessage(CameraMessage msg) {
         cameraMessages.add(msg);

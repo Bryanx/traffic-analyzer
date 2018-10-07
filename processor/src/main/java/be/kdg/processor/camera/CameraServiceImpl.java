@@ -1,10 +1,10 @@
 package be.kdg.processor.camera;
 
-import be.kdg.processor.camera.couple.CameraCouple;
-import be.kdg.processor.camera.couple.CameraCoupleRepository;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.message.CameraMessageBuffer;
 import be.kdg.processor.camera.message.CameraMessageRepository;
+import be.kdg.processor.camera.proxy.ProxyCameraService;
+import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.fine.FineService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -25,10 +24,9 @@ public class CameraServiceImpl implements CameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraServiceImpl.class);
     private final CameraMessageRepository cameraMessageRepository;
     private final CameraRepository cameraRepository;
-    private final CameraCoupleRepository cameraCoupleRepository;
     private final CameraMessageBuffer buffer;
     private final List<FineService> fineServices;
-    private final CameraMapper cameraMapper;
+    private final ProxyCameraService proxyCameraService;
 
     @Override
     public CameraMessage createCameraMessage(CameraMessage message) {
@@ -52,23 +50,6 @@ public class CameraServiceImpl implements CameraService {
         return addedCamera;
     }
 
-    @Override
-    public CameraCouple createOrUpdateCameraCouple(CameraCouple couple) {
-        if (cameraCoupleRepository.findById(couple.getId()).isPresent()) {
-            return null;
-        }
-        CameraCouple addedCouple = cameraCoupleRepository.save(couple);
-        if (addedCouple != null) LOGGER.info("Added CameraCouple to DB: {}", addedCouple);
-        return addedCouple;
-    }
-
-    @Override
-    public List<CameraMessage> getCameraMessagesFromCouple(CameraCouple couple) {
-        return couple.getCameras().stream()
-                .flatMap(camera -> camera.getCameraMessages().stream())
-                .collect(Collectors.toList());
-    }
-
     @RabbitListener(queues = "camera-message-queue")
     @Override
     public void receiveCameraMessage(@Payload CameraMessage message) {
@@ -83,9 +64,9 @@ public class CameraServiceImpl implements CameraService {
         tempBuffer.forEach(msg -> {
             CameraMessage poppedMsg = tempBuffer.getMessageWithSamePlate(msg);
             if (poppedMsg == null) return;
-            CameraCouple couple = cameraMapper.mapCameraCouple(msg, poppedMsg);
-            if (couple == null) return;
-            fineServices.forEach(fineService -> fineService.checkForFine(couple));
+            Segment segment = proxyCameraService.fetchSegment(msg, poppedMsg);
+            if (segment == null) return;
+            fineServices.forEach(fineService -> fineService.checkForFine(segment));
         });
     }
 }
