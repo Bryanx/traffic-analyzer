@@ -3,11 +3,13 @@ package be.kdg.processor.fine;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.vehicle.Vehicle;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Data
 @Entity
 public class Fine {
@@ -38,6 +40,11 @@ public class Fine {
 
     @ManyToOne(targetEntity = Vehicle.class)
     private Vehicle vehicle;
+
+    public void addCameraMessage(CameraMessage msg) {
+        cameraMessages.add(msg);
+        msg.setFine(this);
+    }
 
     public Fine(FineType type, double price, int euroNorm, int actualNorm) {
         this.type = type;

@@ -3,6 +3,7 @@ package be.kdg.processor.fine;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.shared.utils.DateUtil;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

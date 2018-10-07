@@ -1,11 +1,11 @@
 package be.kdg.processor.camera;
 
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.camera.message.CameraMessageBuffer;
 import be.kdg.processor.camera.message.CameraMessageRepository;
 import be.kdg.processor.camera.proxy.ProxyCameraService;
 import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.fine.FineService;
+import be.kdg.processor.shared.GeneralConfig;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,9 +25,9 @@ public class CameraServiceImpl implements CameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraServiceImpl.class);
     private final CameraMessageRepository cameraMessageRepository;
     private final CameraRepository cameraRepository;
-    private final CameraMessageBuffer buffer;
     private final List<FineService> fineServices;
     private final ProxyCameraService proxyCameraService;
+    private final GeneralConfig generalConfig;
 
     @Override
     public CameraMessage createCameraMessage(CameraMessage message) {
@@ -50,23 +51,36 @@ public class CameraServiceImpl implements CameraService {
         return addedCamera;
     }
 
+    public List<CameraMessage> findAllSince(LocalDateTime since) {
+        return cameraMessageRepository.findAllByTimestampBetween(since, LocalDateTime.now());
+    }
+
     @RabbitListener(queues = "camera-message-queue")
     @Override
     public void receiveCameraMessage(@Payload CameraMessage message) {
         LOGGER.info("Received message: {}", message);
-        buffer.add(message);
+        createCameraMessage(message);
     }
 
-    @Scheduled(fixedDelayString = "${buffer.config.timebetween}000")
+    @Scheduled(fixedDelayString = "${buffer.config.time}000")
     public void emptyBuffer() {
-        CameraMessageBuffer tempBuffer = (CameraMessageBuffer) buffer.clone();
-        buffer.clear();
-        tempBuffer.forEach(msg -> {
-            CameraMessage poppedMsg = tempBuffer.getMessageWithSamePlate(msg);
-            if (poppedMsg == null) return;
-            Segment segment = proxyCameraService.fetchSegment(msg, poppedMsg);
-            if (segment == null) return;
-            fineServices.forEach(fineService -> fineService.checkForFine(segment));
-        });
+        List<CameraMessage> cameraMessages = findAllSince(LocalDateTime.now().minusSeconds(generalConfig.getTime()));
+        if (cameraMessages.size() == 0) return;
+        LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
+
+        CameraMessage matchedMessage = null;
+        for (CameraMessage msg : cameraMessages) {
+            if (matchedMessage == msg) return;
+            for (CameraMessage otherMsg : cameraMessages) {
+                if (msg != otherMsg &&
+                        msg.getLicensePlate().equals(otherMsg.getLicensePlate()) &&
+                        msg.getCameraId() != otherMsg.getCameraId()) {
+                    LOGGER.info("Found 2 CameraMessages with the same licenseplate: " + msg + ", " + otherMsg);
+                    Segment segment = proxyCameraService.fetchSegment(msg, otherMsg);
+                    fineServices.forEach(fineService -> fineService.checkForFine(segment));
+                    matchedMessage = otherMsg;
+                }
+            }
+        }
     }
 }

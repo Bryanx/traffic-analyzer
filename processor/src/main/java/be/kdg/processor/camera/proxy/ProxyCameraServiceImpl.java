@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -40,21 +41,22 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
     /**
      * Gets the cameras for both messages.
      * If one of the cameras is not included in the segment of the other message it is added here.
+     *
      * @return the segment containing both messages.
      */
     @Override
     public Segment fetchSegment(CameraMessage message1, CameraMessage message2) {
-        return Stream.of(message1, message2)
-                .map(this::fetchCamera)
-                .filter(camera -> camera.getSegment() != null)
-                .map(Camera::getSegment)
-                .map(segment -> {
-                    segment.addCamera(message1.getCamera());
-                    segment.addCamera(message2.getCamera());
-                    return segment;
-                })
-                .findFirst()
-                .orElse(null);
+        List<CameraMessage> messages = Arrays.asList(message1, message2);
+        messages.forEach(this::fetchCamera);
+        for (CameraMessage cameraMessage : messages) {
+            Segment segment = cameraMessage.getCamera().getSegment();
+            if (segment != null) {
+                segment.addCamera(message1.getCamera());
+                segment.addCamera(message2.getCamera());
+                return segment;
+            }
+        }
+        return null;
     }
 
 }

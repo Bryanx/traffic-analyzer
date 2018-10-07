@@ -4,6 +4,7 @@ import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.vehicle.ProxyLicensePlateService;
 import be.kdg.processor.vehicle.Vehicle;
+import be.kdg.processor.vehicle.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +19,18 @@ import java.util.List;
 public class EmissionFineService implements FineService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmissionFineService.class);
     private final ProxyLicensePlateService proxyLicensePlateService;
-    private final FineRepository fineRepository;
+    private final VehicleService vehicleService;
 
-    private Fine createFine(int euroNorm, int actualNorm, double price, Vehicle vehicle, List<CameraMessage> msgs) {
+    private void createFine(int euroNorm, int actualNorm, double price, Vehicle vehicle, List<CameraMessage> msgs) {
         LOGGER.info(String.format("Camera %d detected vehicle below euronorm: %s (vehicle euronumber:%d, euronorm:%d).",
                 msgs.get(0).getCameraId(),
                 vehicle.getPlateId(),
                 euroNorm,
                 actualNorm));
-        //TODO: Research FK's
-        return fineRepository.save(new Fine(FineType.EMISSION, price, euroNorm, actualNorm));
+        Fine fine = new Fine(FineType.EMISSION, price, euroNorm, actualNorm);
+        vehicle.addFine(fine);
+        fine.addCameraMessage(msgs.get(0));
+        vehicleService.createVehicle(vehicle);
     }
 
     @Override
