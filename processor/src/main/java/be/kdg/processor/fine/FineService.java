@@ -1,7 +1,7 @@
 package be.kdg.processor.fine;
 
-import be.kdg.processor.camera.couple.CameraCouple;
+import be.kdg.processor.camera.segment.Segment;
 
 public interface FineService {
-    void checkForFine(CameraCouple couple);
+    void checkForFine(Segment couple);
 }

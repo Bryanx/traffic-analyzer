@@ -1,6 +1,7 @@
 package be.kdg.processor.fine;
 
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.vehicle.Vehicle;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,14 +27,29 @@ public class Fine {
     @Column
     double maxSpeed;
 
+    @Column
+    int euroNorm;
+
+    @Column
+    int actualNorm;
+
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.DETACH, orphanRemoval = false)
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    public Fine(FineType type, double price, double actualSpeed, double maxSpeed, List<CameraMessage> cameraMessages) {
+    @ManyToOne(targetEntity = Vehicle.class)
+    private Vehicle vehicle;
+
+    public Fine(FineType type, double price, int euroNorm, int actualNorm) {
+        this.type = type;
+        this.price = price;
+        this.euroNorm = euroNorm;
+        this.actualNorm = actualNorm;
+    }
+
+    public Fine(FineType type, double price, double actualSpeed, double maxSpeed) {
         this.type = type;
         this.price = price;
         this.actualSpeed = actualSpeed;
         this.maxSpeed = maxSpeed;
-        this.cameraMessages = cameraMessages;
     }
 }

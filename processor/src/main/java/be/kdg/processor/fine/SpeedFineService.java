@@ -1,7 +1,7 @@
 package be.kdg.processor.fine;
 
-import be.kdg.processor.camera.couple.CameraCouple;
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.shared.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,17 +21,17 @@ public class SpeedFineService implements FineService {
 
     private Fine createFine(double actualSpeed, double maxSpeed, double price, List<CameraMessage> msgs) {
         LOGGER.info(String.format("Creating fine for %s. Vehicle was driving: %.1f km/h, where only %.1f km/h is allowed",
-                msgs.get(0).getLicensePlate(), actualSpeed, maxSpeed));
-        return fineRepository.save(
-                new Fine(FineType.SPEED, actualSpeed, maxSpeed, price, msgs)
-        );
+                msgs.get(0).getLicensePlate(),
+                actualSpeed,
+                maxSpeed));
+        return fineRepository.save(new Fine(FineType.SPEED, actualSpeed, maxSpeed, price));
     }
 
-    public void checkForFine(CameraCouple couple) {
+    public void checkForFine(Segment segment) {
         List<CameraMessage> msgs = new ArrayList<>();
-        couple.getCameras().forEach(camera -> msgs.addAll(camera.getCameraMessages()));
-        double maxSpeed = couple.getMaxSpeed();
-        double actualSpeed = calculateActualSpeed((double) couple.getDistance(), msgs);
+        segment.getCameras().forEach(camera -> msgs.addAll(camera.getCameraMessages()));
+        double maxSpeed = segment.getSpeedLimit();
+        double actualSpeed = calculateActualSpeed((double) segment.getDistance(), msgs);
         if (actualSpeed > maxSpeed) {
             double price = calculateFinePrice(actualSpeed, maxSpeed);
             createFine(actualSpeed, maxSpeed, price, msgs);
