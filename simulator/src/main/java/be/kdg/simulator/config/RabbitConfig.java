@@ -29,7 +29,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    Queue queue() {
+    public Queue queue() {
         LOGGER.info("Creating new queue with name: " + name);
         return new Queue(name, false);
     }
@@ -41,6 +41,9 @@ public class RabbitConfig {
         return rabbitTemplate;
     }
 
+    /**
+     * Before sending a message it is converted to xml and the content-type is changed to application/xml.
+     */
     @Bean
     public MarshallingMessageConverter producerMarshallingMessageConverter() {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();

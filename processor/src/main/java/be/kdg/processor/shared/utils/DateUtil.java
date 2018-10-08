@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 @Component
 public class DateUtil {
 
-    public static final int MILIS_PER_HOUR = 3600000;
+    public static final int MILISECONDS_PER_HOUR = 3600000;
 
     public double getHoursBetweenDates(LocalDateTime date1, LocalDateTime date2) {
         double milis;
@@ -17,7 +17,6 @@ public class DateUtil {
         } else {
             milis = date2.until(date1, ChronoUnit.MILLIS);
         }
-        return milis / MILIS_PER_HOUR;
-
+        return milis / MILISECONDS_PER_HOUR;
     }
 }

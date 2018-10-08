@@ -9,6 +9,10 @@ import org.springframework.messaging.converter.MarshallingMessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+/**
+ * Here the Jaxb2Marshaller is attached to the rabbitMQ config.
+ * When a message is received the xml is converted to a CameraMessage.
+ */
 @Configuration
 public class RabbitConfig implements RabbitListenerConfigurer {
 
