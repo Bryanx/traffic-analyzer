@@ -7,19 +7,22 @@ import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableRabbit
-@EnableScheduling
-@ConfigurationProperties(prefix = "buffer.config")
 @Getter
 @Setter
+@EnableRabbit
+@EnableScheduling
 @Configuration
 public class GeneralConfig {
-    private int time;
+    @Value("${buffer.config.time}")
+    private int bufferTime;
+
+    @Value("${fine.emission.time.between}")
+    private int emissionFineTimeBetween;
 
     @Bean
     public ObjectMapper objectMapper() {

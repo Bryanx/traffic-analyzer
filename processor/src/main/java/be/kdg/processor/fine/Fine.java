@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Fine {
     @GeneratedValue
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private FineType type;
 
@@ -35,10 +37,17 @@ public class Fine {
     @Column
     int actualNorm;
 
-    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.DETACH, orphanRemoval = false)
+    @Column
+    private LocalDateTime creationDate;
+
+    @Column
+    private boolean approved;
+
+    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "fine")
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    @ManyToOne(targetEntity = Vehicle.class)
+    @ManyToOne(targetEntity = Vehicle.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
     public void addCameraMessage(CameraMessage msg) {
@@ -51,6 +60,7 @@ public class Fine {
         this.price = price;
         this.euroNorm = euroNorm;
         this.actualNorm = actualNorm;
+        this.creationDate = LocalDateTime.now();
     }
 
     public Fine(FineType type, double price, double actualSpeed, double maxSpeed) {
@@ -58,5 +68,6 @@ public class Fine {
         this.price = price;
         this.actualSpeed = actualSpeed;
         this.maxSpeed = maxSpeed;
+        this.creationDate = LocalDateTime.now();
     }
 }

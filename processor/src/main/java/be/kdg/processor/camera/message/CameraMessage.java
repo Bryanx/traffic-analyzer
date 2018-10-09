@@ -25,6 +25,7 @@ public class CameraMessage {
     private int id;
 
     @ManyToOne(targetEntity = Camera.class)
+    @JoinColumn(name = "camera_id_fk")
     private Camera camera;
 
     @Column
@@ -33,7 +34,7 @@ public class CameraMessage {
     @Column(name = "`timestamp`")
     private LocalDateTime timestamp;
 
-    @ManyToOne(targetEntity = Fine.class)
+    @ManyToOne(targetEntity = Fine.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "fine_id")
     private Fine fine;
 

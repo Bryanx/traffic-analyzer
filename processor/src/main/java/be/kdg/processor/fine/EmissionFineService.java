@@ -1,8 +1,8 @@
 package be.kdg.processor.fine;
 
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.camera.segment.Segment;
-import be.kdg.processor.vehicle.ProxyLicensePlateService;
+import be.kdg.processor.shared.GeneralConfig;
+import be.kdg.processor.shared.utils.DateUtil;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.processor.vehicle.VehicleService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,32 +18,50 @@ import java.util.List;
 @Service
 public class EmissionFineService implements FineService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmissionFineService.class);
-    private final ProxyLicensePlateService proxyLicensePlateService;
     private final VehicleService vehicleService;
-
-    private void createFine(int euroNorm, int actualNorm, double price, Vehicle vehicle, List<CameraMessage> msgs) {
-        LOGGER.info(String.format("Camera %d detected vehicle below euronorm: %s (vehicle euronumber:%d, euronorm:%d).",
-                msgs.get(0).getCameraId(),
-                vehicle.getPlateId(),
-                euroNorm,
-                actualNorm));
-        Fine fine = new Fine(FineType.EMISSION, price, euroNorm, actualNorm);
-        vehicle.addFine(fine);
-        fine.addCameraMessage(msgs.get(0));
-        vehicleService.createVehicle(vehicle);
-    }
+    private final DateUtil dateUtil;
+    private final GeneralConfig generalConfig;
+    private final FineRepository fineRepository;
 
     @Override
-    public void checkForFine(Segment segment) {
-        List<CameraMessage> msgs = new ArrayList<>();
-        segment.getCameras().forEach(camera -> msgs.addAll(camera.getCameraMessages()));
-        msgs.forEach(message -> {
-            Vehicle vehicle = proxyLicensePlateService.get(message.getLicensePlate());
+    public void checkForFine(List<CameraMessage> cameraMessages) {
+        cameraMessages.forEach(message -> {
+            Vehicle vehicle = vehicleService.getVehicleByProxyOrDb(message.getLicensePlate());
+            if (alreadyFined(vehicle)) return;
             int euroNorm = message.getCamera().getEuroNorm();
             int actualEuroNorm = vehicle.getEuroNumber();
             if (actualEuroNorm < euroNorm) {
-                createFine(euroNorm, actualEuroNorm,0.0, vehicle, Arrays.asList(message));
+                createFine(new Fine(FineType.EMISSION, 0.0, euroNorm, actualEuroNorm), vehicle, Arrays.asList(message));
             }
         });
+    }
+
+    @Override
+    public void createFine(Fine fine, Vehicle vehicle, List<CameraMessage> cameraMessages) {
+        LOGGER.info(String.format("Creating emissionfine for: Camera %d detected vehicle below euronorm: %s (vehicle euronumber:%d, euronorm:%d).",
+                cameraMessages.get(0).getCameraId(),
+                vehicle.getPlateId(),
+                fine.getActualNorm(),
+                fine.getEuroNorm()));
+        Fine fineOut = fineRepository.saveAndFlush(fine);
+        Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
+        fineOut.setVehicle(vehicleOut);
+        fineOut.addCameraMessage(cameraMessages.get(0));
+        fineRepository.saveAndFlush(fineOut);
+    }
+
+    private boolean alreadyFined(Vehicle vehicle) {
+        LOGGER.info(vehicle.getFines() + "");
+        for (Fine fine : vehicle.getFines()) {
+            LOGGER.info(fine.getType()+ "");
+            if (fine.getType() == FineType.EMISSION) {
+                double hoursSinceFine = dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate());
+                LOGGER.info(hoursSinceFine + " < " + generalConfig.getEmissionFineTimeBetween());
+                if (hoursSinceFine < generalConfig.getEmissionFineTimeBetween()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

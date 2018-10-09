@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -31,9 +30,9 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
             camera.addCameraMessage(message);
             return camera;
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("Camera with id {} forced a communication error.", message.getCameraId());
         } catch (CameraNotFoundException e) {
-            LOGGER.warn(e.getMessage(), e);
+            LOGGER.warn("Camera with id {} not found.", message.getCameraId());
         }
         return null;
     }
@@ -46,9 +45,7 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
      */
     @Override
     public Segment fetchSegment(CameraMessage message1, CameraMessage message2) {
-        List<CameraMessage> messages = Arrays.asList(message1, message2);
-        messages.forEach(this::fetchCamera);
-        for (CameraMessage cameraMessage : messages) {
+        for (CameraMessage cameraMessage : Arrays.asList(message1, message2)) {
             Segment segment = cameraMessage.getCamera().getSegment();
             if (segment != null) {
                 segment.addCamera(message1.getCamera());

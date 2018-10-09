@@ -19,17 +19,22 @@ public class Camera {
     @Id
     private int cameraId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 
     @Column
     private int euroNorm;
 
-    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, mappedBy = "camera")
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    @ManyToOne(targetEntity = Segment.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Segment.class)
+    @JoinColumn(name = "segment_id")
     private Segment segment;
+
+    public Camera(int cameraId) {
+        this.cameraId = cameraId;
+    }
 
     public void addCameraMessage(CameraMessage msg) {
         cameraMessages.add(msg);
@@ -39,5 +44,12 @@ public class Camera {
     public void removeCameraMessage(CameraMessage msg) {
         cameraMessages.remove(msg);
         msg.setCamera(null);
+    }
+
+    @Override
+    public String toString() {
+        return "Camera{" +
+                "cameraId=" + cameraId +
+                '}';
     }
 }
