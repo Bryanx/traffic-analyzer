@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,13 +30,6 @@ public class CameraServiceImpl implements CameraService {
     private final List<FineService> fineServices;
     private final ProxyCameraService proxyCameraService;
     private final GeneralConfig generalConfig;
-
-    @Override
-    public CameraMessage createCameraMessage(CameraMessage message) {
-        CameraMessage addedMsg = cameraMessageRepository.saveAndFlush(message);
-        if (addedMsg != null) LOGGER.debug("Added CameraMessage to DB: {}", addedMsg);
-        return addedMsg;
-    }
 
     @Override
     public Camera createCamera(Camera camera) {
@@ -59,17 +51,16 @@ public class CameraServiceImpl implements CameraService {
     @Override
     public void receiveCameraMessage(@Payload CameraMessage cameraMessageIn) {
         LOGGER.info("Received message: {}", cameraMessageIn);
-        Camera camera = proxyCameraService.fetchCamera(cameraMessageIn);
-        if (camera == null) {
-            return;
-        }
-        if (camera.getSegment() != null) {
-            Segment segment = createSegment(camera.getSegment());
-            camera.setSegment(segment);
+        proxyCameraService.fetchCamera(cameraMessageIn).ifPresent(camera -> {
+            if (camera.getSegment() != null) {
+                Segment segment = createSegment(camera.getSegment());
+                camera.setSegment(segment);
+            } else {
+                segmentRepository.findSegmentByConnectedCameraId(camera.getCameraId())
+                        .ifPresent(camera::setSegment);
+            }
             createCamera(camera);
-        } else {
-            createCamera(camera);
-        }
+        });
     }
 
     @Scheduled(fixedDelayString = "${buffer.config.time}000")
@@ -80,21 +71,8 @@ public class CameraServiceImpl implements CameraService {
         if (cameraMessages.size() == 0) return;
         LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
 
-        CameraMessage matchedMessage = null;
-        for (CameraMessage msg : cameraMessages) {
-            if (matchedMessage == msg) return;
-            for (CameraMessage otherMsg : cameraMessages) {
-                if (msg != otherMsg &&
-                        msg.getCamera().getSegment() != null &&
-                        msg.getCamera().getSegment().getConnectedCameraId() == otherMsg.getCameraId() &&
-                        msg.getLicensePlate().equals(otherMsg.getLicensePlate())) {
-                    LOGGER.debug("Found 2 CameraMessages with the same licenseplate: " + msg + ", " + otherMsg);
-                    fineServices.forEach(fineService -> {
-                        fineService.checkForFine(Arrays.asList(msg, otherMsg));
-                    });
-                    matchedMessage = otherMsg;
-                }
-            }
+        for (CameraMessage cameraMessage : cameraMessages) {
+            fineServices.forEach(fineService -> fineService.checkForFine(cameraMessage));
         }
     }
 }

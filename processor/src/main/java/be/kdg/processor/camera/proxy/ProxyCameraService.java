@@ -2,9 +2,9 @@ package be.kdg.processor.camera.proxy;
 
 import be.kdg.processor.camera.Camera;
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.camera.segment.Segment;
+
+import java.util.Optional;
 
 public interface ProxyCameraService {
-    Camera fetchCamera(CameraMessage message);
-    Segment fetchSegment(CameraMessage message1, CameraMessage message2);
+    Optional<Camera> fetchCamera(CameraMessage message);
 }

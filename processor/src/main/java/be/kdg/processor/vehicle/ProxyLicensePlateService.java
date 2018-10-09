@@ -1,5 +1,7 @@
 package be.kdg.processor.vehicle;
 
+import java.util.Optional;
+
 public interface ProxyLicensePlateService {
-    Vehicle get(String plate);
+    Optional<Vehicle> get(String plate);
 }

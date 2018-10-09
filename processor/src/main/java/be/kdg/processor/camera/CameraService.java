@@ -7,8 +7,6 @@ public interface CameraService {
 
     void receiveCameraMessage(CameraMessage msg);
 
-    CameraMessage createCameraMessage(CameraMessage cameraMessage);
-
     Segment createSegment(Segment segment);
 
     Camera createCamera(Camera camera);

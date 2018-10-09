@@ -24,14 +24,13 @@ public class EmissionFineService implements FineService {
     private final FineRepository fineRepository;
 
     @Override
-    public void checkForFine(List<CameraMessage> cameraMessages) {
-        cameraMessages.forEach(message -> {
-            Vehicle vehicle = vehicleService.getVehicleByProxyOrDb(message.getLicensePlate());
+    public void checkForFine(CameraMessage cameraMessage) {
+        vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).ifPresent(vehicle -> {
             if (alreadyFined(vehicle)) return;
-            int euroNorm = message.getCamera().getEuroNorm();
+            int euroNorm = cameraMessage.getCamera().getEuroNorm();
             int actualEuroNorm = vehicle.getEuroNumber();
             if (actualEuroNorm < euroNorm) {
-                createFine(new Fine(FineType.EMISSION, 0.0, euroNorm, actualEuroNorm), vehicle, Arrays.asList(message));
+                createFine(new Fine(FineType.EMISSION, 0.0, euroNorm, actualEuroNorm), vehicle, Arrays.asList(cameraMessage));
             }
         });
     }

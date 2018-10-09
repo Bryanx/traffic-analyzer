@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,12 +23,17 @@ public class SpeedFineService implements FineService {
     private final FineRepository fineRepository;
 
     @Override
-    public void checkForFine(List<CameraMessage> cameraMessages) {
-        Segment segment = cameraMessages.get(0).getCamera().getSegment();
+    public void checkForFine(CameraMessage cameraMessage) {
+        Segment segment = cameraMessage.getCamera().getSegment();
+        if (segment == null) return;
+        CameraMessage otherMessage = getConnectedCameraMessage(segment, cameraMessage);
+        if (otherMessage == null) return;
+        List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage);
+
         double maxSpeed = segment.getSpeedLimit();
         double actualSpeed = calculateActualSpeed((double) segment.getDistance(), cameraMessages);
-        Vehicle vehicle = vehicleService.getVehicleByProxyOrDb(cameraMessages.get(0).getLicensePlate());
         if (actualSpeed > maxSpeed) {
+            Vehicle vehicle = vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate());
             double price = calculateFinePrice(actualSpeed, maxSpeed);
             createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
         }
@@ -35,8 +41,10 @@ public class SpeedFineService implements FineService {
 
     @Override
     public void createFine(Fine fine, Vehicle vehicle, List<CameraMessage> cameraMessages) {
-        LOGGER.info(String.format("Creating speedfine for %s. Vehicle was driving: %.1f km/h, where only %.1f km/h is allowed",
+        LOGGER.info(String.format("Creating speedfine for %s. (Cams %d-%d) Vehicle was driving: %.1f km/h, where only %.1f km/h is allowed",
                 cameraMessages.get(0).getLicensePlate(),
+                cameraMessages.get(0).getCameraId(),
+                cameraMessages.get(1).getCameraId(),
                 fine.getActualSpeed(),
                 fine.getMaxSpeed()));
         Fine fineOut = fineRepository.saveAndFlush(fine);
@@ -57,5 +65,15 @@ public class SpeedFineService implements FineService {
 
     private double calculateFinePrice(double curSpeed, double maxSpeed) {
         return (curSpeed - maxSpeed) * curSpeed;
+    }
+
+    private CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
+        return segment.getCameras().stream()
+                .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())
+                .flatMap(c -> c.getCameraMessages().stream())
+                .filter(message -> cameraMessage != message &&
+                        cameraMessage.getLicensePlate().equals(message.getLicensePlate()))
+                .findFirst()
+                .orElse(null);
     }
 }

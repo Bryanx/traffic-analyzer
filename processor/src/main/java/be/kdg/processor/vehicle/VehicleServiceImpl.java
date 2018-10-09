@@ -26,11 +26,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle getVehicleByProxyOrDb(String licensePlate) {
+    public Optional<Vehicle> getVehicleByProxyOrDb(String licensePlate) {
         Optional<Vehicle> byLicensePlate = findByLicensePlate(licensePlate);
         if (byLicensePlate.isPresent()) {
             LOGGER.debug("Got vehicle from db: {}", byLicensePlate.get());
-            return byLicensePlate.get();
+            return byLicensePlate;
         }
         LOGGER.debug("Got vehicle from proxy");
         return proxyLicensePlateService.get(licensePlate);

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -18,15 +19,16 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     private final IoConverter ioConverter;
 
     @Override
-    public Vehicle get(String plate) {
+    public Optional<Vehicle> get(String plate) {
         try {
             String json = licensePlateServiceProxy.get(plate);
-            return ioConverter.readJson(json, Vehicle.class);
+            Vehicle vehicle = ioConverter.readJson(json, Vehicle.class);
+            return Optional.of(vehicle);
         } catch (IOException e) {
             LOGGER.warn("Licenseplate proxy with id {} forced a communication error.", plate);
         } catch (LicensePlateNotFoundException e) {
             LOGGER.warn("Licenseplate with id {} not found.", plate);
         }
-        return null;
+        return Optional.empty();
     }
 }
