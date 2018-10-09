@@ -30,7 +30,7 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
             camera.addCameraMessage(message);
             return camera;
         } catch (IOException e) {
-            LOGGER.error("Camera with id {} forced a communication error.", message.getCameraId());
+            LOGGER.warn("Camera with id {} forced a communication error.", message.getCameraId());
         } catch (CameraNotFoundException e) {
             LOGGER.warn("Camera with id {} not found.", message.getCameraId());
         }

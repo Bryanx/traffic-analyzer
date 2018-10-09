@@ -16,6 +16,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle createVehicle(Vehicle vehicle) {
+        LOGGER.debug("Added vehicle to db with licenseplate: {}", vehicle.getPlateId());
         return vehicleRepository.saveAndFlush(vehicle);
     }
 
@@ -26,8 +27,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle getVehicleByProxyOrDb(String licensePlate) {
-        return findByLicensePlate(licensePlate)
-                .orElse(proxyLicensePlateService.get(licensePlate));
+        Optional<Vehicle> byLicensePlate = findByLicensePlate(licensePlate);
+        if (byLicensePlate.isPresent()) {
+            LOGGER.debug("Got vehicle from db: {}", byLicensePlate.get());
+            return byLicensePlate.get();
+        }
+        LOGGER.debug("Got vehicle from proxy");
+        return proxyLicensePlateService.get(licensePlate);
     }
 
 }

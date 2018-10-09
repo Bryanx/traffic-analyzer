@@ -35,19 +35,19 @@ public class CameraServiceImpl implements CameraService {
     @Override
     public CameraMessage createCameraMessage(CameraMessage message) {
         CameraMessage addedMsg = cameraMessageRepository.saveAndFlush(message);
-        if (addedMsg != null) LOGGER.info("Added CameraMessage to DB: {}", addedMsg);
+        if (addedMsg != null) LOGGER.debug("Added CameraMessage to DB: {}", addedMsg);
         return addedMsg;
     }
 
     @Override
     public Camera createCamera(Camera camera) {
-        if (camera != null) LOGGER.info("Added camera to DB: {}", camera);
+        if (camera != null) LOGGER.debug("Added camera to DB: {}", camera);
         return cameraRepository.saveAndFlush(camera);
     }
 
     @Override
     public Segment createSegment(Segment segment) {
-        LOGGER.info("Adding segment to DB: " + segment);
+        LOGGER.debug("Adding segment to DB: " + segment);
         return segmentRepository.saveAndFlush(segment);
     }
 
@@ -88,7 +88,7 @@ public class CameraServiceImpl implements CameraService {
                         msg.getCamera().getSegment() != null &&
                         msg.getCamera().getSegment().getConnectedCameraId() == otherMsg.getCameraId() &&
                         msg.getLicensePlate().equals(otherMsg.getLicensePlate())) {
-                    LOGGER.info("Found 2 CameraMessages with the same licenseplate: " + msg + ", " + otherMsg);
+                    LOGGER.debug("Found 2 CameraMessages with the same licenseplate: " + msg + ", " + otherMsg);
                     fineServices.forEach(fineService -> {
                         fineService.checkForFine(Arrays.asList(msg, otherMsg));
                     });

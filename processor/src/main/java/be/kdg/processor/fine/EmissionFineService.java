@@ -51,13 +51,12 @@ public class EmissionFineService implements FineService {
     }
 
     private boolean alreadyFined(Vehicle vehicle) {
-        LOGGER.info(vehicle.getFines() + "");
-        for (Fine fine : vehicle.getFines()) {
-            LOGGER.info(fine.getType()+ "");
+        List<Fine> fines = fineRepository.findAllByVehicleIn(vehicle);
+        for (Fine fine : fines) {
             if (fine.getType() == FineType.EMISSION) {
                 double hoursSinceFine = dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate());
-                LOGGER.info(hoursSinceFine + " < " + generalConfig.getEmissionFineTimeBetween());
                 if (hoursSinceFine < generalConfig.getEmissionFineTimeBetween()) {
+                    LOGGER.debug("Found vehicle that was already fined: " + vehicle.getPlateId());
                     return true;
                 }
             }
