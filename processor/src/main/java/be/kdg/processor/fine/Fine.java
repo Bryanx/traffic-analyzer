@@ -4,6 +4,8 @@ import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.vehicle.Vehicle;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -43,10 +45,11 @@ public class Fine {
     @Column
     private boolean approved;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "fine")
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
-    @ManyToOne(targetEntity = Vehicle.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Vehicle.class)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
