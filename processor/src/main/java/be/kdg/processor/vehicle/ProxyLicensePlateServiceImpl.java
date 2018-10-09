@@ -23,9 +23,9 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
             String json = licensePlateServiceProxy.get(plate);
             return ioConverter.readJson(json, Vehicle.class);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.warn("Licenseplate proxy with id {} forced a communication error.", plate);
         } catch (LicensePlateNotFoundException e) {
-            LOGGER.warn(e.getMessage(), e);
+            LOGGER.warn("Licenseplate with id {} not found.", plate);
         }
         return null;
     }
