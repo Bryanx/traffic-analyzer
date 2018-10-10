@@ -20,7 +20,7 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
     private final CameraServiceProxy cameraServiceProxy;
     private final IoConverter ioConverter;
 
-    //TODO: Add cache
+//    @Cacheable("cameras")
     @Override
     public Optional<Camera> fetchCamera(CameraMessage message) {
         try {

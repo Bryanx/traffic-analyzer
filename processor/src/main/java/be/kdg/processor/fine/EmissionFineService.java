@@ -16,12 +16,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class EmissionFineService implements FineService {
+public class EmissionFineService implements FineEvaluationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmissionFineService.class);
     private final VehicleService vehicleService;
     private final DateUtil dateUtil;
     private final GeneralConfig generalConfig;
-    private final FineRepository fineRepository;
+    private final FineService fineService;
 
     @Override
     public void checkForFine(CameraMessage cameraMessage) {
@@ -42,15 +42,15 @@ public class EmissionFineService implements FineService {
                 vehicle.getPlateId(),
                 fine.getActualNorm(),
                 fine.getEuroNorm()));
-        Fine fineOut = fineRepository.saveAndFlush(fine);
+        Fine fineOut = fineService.saveAndFlush(fine);
         Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
         fineOut.setVehicle(vehicleOut);
         fineOut.addCameraMessage(cameraMessages.get(0));
-        fineRepository.saveAndFlush(fineOut);
+        fineService.saveAndFlush(fineOut);
     }
 
     private boolean alreadyFined(Vehicle vehicle) {
-        List<Fine> fines = fineRepository.findAllByVehicleIn(vehicle);
+        List<Fine> fines = fineService.findAllByVehicleIn(vehicle);
         for (Fine fine : fines) {
             if (fine.getType() == FineType.EMISSION) {
                 double hoursSinceFine = dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate());

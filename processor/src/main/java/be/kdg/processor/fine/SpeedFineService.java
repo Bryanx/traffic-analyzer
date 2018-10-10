@@ -13,30 +13,32 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class SpeedFineService implements FineService {
+public class SpeedFineService implements FineEvaluationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedFineService.class);
     private final DateUtil dateUtil;
     private final VehicleService vehicleService;
-    private final FineRepository fineRepository;
+    private final FineService fineService;
 
     @Override
     public void checkForFine(CameraMessage cameraMessage) {
         Segment segment = cameraMessage.getCamera().getSegment();
         if (segment == null) return;
-        CameraMessage otherMessage = getConnectedCameraMessage(segment, cameraMessage);
-        if (otherMessage == null) return;
-        List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage);
+        getConnectedCameraMessage(segment, cameraMessage).ifPresent(otherMessage -> {
+            List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage);
 
-        double maxSpeed = segment.getSpeedLimit();
-        double actualSpeed = calculateActualSpeed((double) segment.getDistance(), cameraMessages);
-        if (actualSpeed > maxSpeed) {
-            Vehicle vehicle = vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate());
-            double price = calculateFinePrice(actualSpeed, maxSpeed);
-            createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
-        }
+            double maxSpeed = segment.getSpeedLimit();
+            double actualSpeed = calculateActualSpeed((double) segment.getDistance(), cameraMessages);
+            if (actualSpeed > maxSpeed) {
+                vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).ifPresent(vehicle -> {
+                    double price = calculateFinePrice(actualSpeed, maxSpeed);
+                    createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
+                });
+            }
+        });
     }
 
     @Override
@@ -47,12 +49,12 @@ public class SpeedFineService implements FineService {
                 cameraMessages.get(1).getCameraId(),
                 fine.getActualSpeed(),
                 fine.getMaxSpeed()));
-        Fine fineOut = fineRepository.saveAndFlush(fine);
+        Fine fineOut = fineService.saveAndFlush(fine);
         Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
         fineOut.setVehicle(vehicleOut);
         fineOut.addCameraMessage(cameraMessages.get(0));
         fineOut.addCameraMessage(cameraMessages.get(1));
-        fineRepository.save(fineOut);
+        fineService.saveAndFlush(fineOut);
     }
 
     private double calculateActualSpeed(double distance, List<CameraMessage> msgs) {
@@ -67,13 +69,12 @@ public class SpeedFineService implements FineService {
         return (curSpeed - maxSpeed) * curSpeed;
     }
 
-    private CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
+    private Optional<CameraMessage> getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
         return segment.getCameras().stream()
                 .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())
                 .flatMap(c -> c.getCameraMessages().stream())
                 .filter(message -> cameraMessage != message &&
                         cameraMessage.getLicensePlate().equals(message.getLicensePlate()))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }

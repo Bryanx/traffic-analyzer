@@ -5,7 +5,7 @@ import be.kdg.processor.camera.message.CameraMessageRepository;
 import be.kdg.processor.camera.proxy.ProxyCameraService;
 import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.camera.segment.SegmentRepository;
-import be.kdg.processor.fine.FineService;
+import be.kdg.processor.fine.FineEvaluationService;
 import be.kdg.processor.shared.GeneralConfig;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class CameraServiceImpl implements CameraService {
     private final CameraMessageRepository cameraMessageRepository;
     private final CameraRepository cameraRepository;
     private final SegmentRepository segmentRepository;
-    private final List<FineService> fineServices;
+    private final List<FineEvaluationService> fineEvaluationServices;
     private final ProxyCameraService proxyCameraService;
     private final GeneralConfig generalConfig;
 
@@ -72,7 +72,7 @@ public class CameraServiceImpl implements CameraService {
         LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
 
         for (CameraMessage cameraMessage : cameraMessages) {
-            fineServices.forEach(fineService -> fineService.checkForFine(cameraMessage));
+            fineEvaluationServices.forEach(evaluationService -> evaluationService.checkForFine(cameraMessage));
         }
     }
 }
