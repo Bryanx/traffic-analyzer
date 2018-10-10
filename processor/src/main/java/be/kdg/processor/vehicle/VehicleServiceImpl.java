@@ -33,7 +33,7 @@ public class VehicleServiceImpl implements VehicleService {
             return byLicensePlate;
         }
         LOGGER.debug("Got vehicle from proxy");
-        return proxyLicensePlateService.get(licensePlate);
+        return proxyLicensePlateService.fetchVehicle(licensePlate);
     }
 
 }

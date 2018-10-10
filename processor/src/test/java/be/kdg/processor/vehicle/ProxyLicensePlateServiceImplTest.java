@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -20,8 +22,7 @@ public class ProxyLicensePlateServiceImplTest {
 
     @Test
     public void get() {
-        Vehicle vehicle = proxyLicensePlateService.get(TEST_PLATE);
-        System.out.println(vehicle);
-        assertNotNull(vehicle);
+        Optional<Vehicle> vehicle = proxyLicensePlateService.fetchVehicle(TEST_PLATE);
+        assertNotNull(vehicle.get());
     }
 }

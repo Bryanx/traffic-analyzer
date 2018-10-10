@@ -18,8 +18,9 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     private final LicensePlateServiceProxy licensePlateServiceProxy;
     private final IoConverter ioConverter;
 
+//    @Cacheable("vehicles")
     @Override
-    public Optional<Vehicle> get(String plate) {
+    public Optional<Vehicle> fetchVehicle(String plate) {
         try {
             String json = licensePlateServiceProxy.get(plate);
             Vehicle vehicle = ioConverter.readJson(json, Vehicle.class);
