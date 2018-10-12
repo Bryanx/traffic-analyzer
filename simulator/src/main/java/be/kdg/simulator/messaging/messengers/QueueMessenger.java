@@ -28,7 +28,6 @@ public class QueueMessenger implements Messenger {
             rabbitTemplate.convertAndSend(queue.getName(), msg);
         } catch (AmqpIOException e) {
             LOGGER.error("Please check your internet connection, " + e.getMessage());
-            System.exit(1);
         }
     }
 }

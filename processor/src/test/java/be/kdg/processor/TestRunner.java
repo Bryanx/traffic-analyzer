@@ -20,6 +20,5 @@ public class TestRunner {
         System.out.printf("%sSuccessful: %s%s%n", ANSI_GREEN, result.wasSuccessful(), ANSI_RESET);
         System.out.printf("Amount of testcases: %d%n", result.getRunCount());
         System.out.printf("Time: %d ms%n", result.getRunTime());
-        System.exit(0);
     }
 }
