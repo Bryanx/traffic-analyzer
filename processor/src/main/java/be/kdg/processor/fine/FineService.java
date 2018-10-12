@@ -15,4 +15,6 @@ public interface FineService {
     List<Fine> findAllByVehicleIn(Vehicle vehicle);
 
     List<Fine> findAllByCreationDateBetween(LocalDateTime start, LocalDateTime end);
+
+    void deleteById(int id);
 }

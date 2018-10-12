@@ -39,4 +39,9 @@ public class GeneralFineService implements FineService {
     public List<Fine> findAllByCreationDateBetween(LocalDateTime start, LocalDateTime end) {
         return fineRepository.findAllByCreationDateBetween(start, end);
     }
+
+    @Override
+    public void deleteById(int id) {
+        fineRepository.deleteById(id);
+    }
 }
