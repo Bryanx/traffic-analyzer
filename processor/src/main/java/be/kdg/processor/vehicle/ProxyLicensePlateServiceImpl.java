@@ -23,8 +23,7 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     public Optional<Vehicle> fetchVehicle(String plate) {
         try {
             String json = licensePlateServiceProxy.get(plate);
-            Vehicle vehicle = ioConverter.readJson(json, Vehicle.class);
-            return Optional.of(vehicle);
+            return ioConverter.readJson(json, Vehicle.class);
         } catch (IOException e) {
             LOGGER.warn("Licenseplate proxy with id {} forced a communication error.", plate);
         } catch (LicensePlateNotFoundException e) {

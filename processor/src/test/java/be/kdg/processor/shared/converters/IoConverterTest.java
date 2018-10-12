@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,12 +26,13 @@ public class IoConverterTest {
 
     @Test
     public void readJson() {
-        Vehicle vehicle = ioConverter.readJson(JSON_PLATE_TEST, Vehicle.class);
-        System.out.println(vehicle);
-        assertEquals("Expected licenseplate to be equal after json conversion.", vehicle.getPlateId(), expectedLicensePlate);
+        Optional<Vehicle> vehicle = ioConverter.readJson(JSON_PLATE_TEST, Vehicle.class);
+        assertTrue(vehicle.isPresent());
+        assertEquals("Expected licenseplate to be equal after json conversion.", vehicle.get(), expectedLicensePlate);
 
-        Camera camera = ioConverter.readJson(JSON_PROXY_TEST, Camera.class);
+        Optional<Camera> camera = ioConverter.readJson(JSON_PROXY_TEST, Camera.class);
         System.out.println(camera);
-        assertEquals(camera.getCameraId(), expectedCameraId);
+        assertTrue(camera.isPresent());
+        assertEquals(camera.get().getCameraId(), expectedCameraId);
     }
 }

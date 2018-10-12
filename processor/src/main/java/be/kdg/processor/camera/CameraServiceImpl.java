@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -38,9 +39,9 @@ public class CameraServiceImpl implements CameraService {
     }
 
     @Override
-    public Segment createSegment(Segment segment) {
+    public Optional<Segment> createSegment(Segment segment) {
         LOGGER.debug("Adding segment to DB: " + segment);
-        return segmentRepository.saveAndFlush(segment);
+        return Optional.ofNullable(segmentRepository.saveAndFlush(segment));
     }
 
     public List<CameraMessage> findAllCameraMessagesSince(LocalDateTime since) {
@@ -53,8 +54,8 @@ public class CameraServiceImpl implements CameraService {
         LOGGER.info("Received message: {}", cameraMessageIn);
         proxyCameraService.fetchCamera(cameraMessageIn).ifPresent(camera -> {
             if (camera.getSegment() != null) {
-                Segment segment = createSegment(camera.getSegment());
-                camera.setSegment(segment);
+                createSegment(camera.getSegment())
+                        .ifPresent(camera::setSegment);
             } else {
                 segmentRepository.findSegmentByConnectedCameraId(camera.getCameraId())
                         .ifPresent(camera::setSegment);

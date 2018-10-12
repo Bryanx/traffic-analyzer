@@ -25,9 +25,9 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
     public Optional<Camera> fetchCamera(CameraMessage message) {
         try {
             String json = cameraServiceProxy.get(message.getCameraId());
-            Camera camera = ioConverter.readJson(json, Camera.class);
-            camera.addCameraMessage(message);
-            return Optional.of(camera);
+            Optional<Camera> optionalCamera = ioConverter.readJson(json, Camera.class);
+            optionalCamera.ifPresent(camera -> camera.addCameraMessage(message));
+            return optionalCamera;
         } catch (IOException e) {
             LOGGER.warn("Camera with id {} forced a communication error.", message.getCameraId());
         } catch (CameraNotFoundException e) {
