@@ -19,6 +19,16 @@ public class CameraMessageRepositoryTest {
     private CameraMessageRepository cameraMessageRepository;
 
     @Test
+    public void save() {
+        CameraMessage msg1 = new CameraMessage();
+        msg1.setCameraId(5);
+        msg1.setLicensePlate("2-ABC-123");
+        msg1.setTimestamp(LocalDateTime.now());
+        CameraMessage savedMessage = cameraMessageRepository.save(msg1);
+        assertNotNull(savedMessage);
+    }
+
+    @Test
     public void findAllByTimestampBetween() {
         CameraMessage msg1 = new CameraMessage();
         msg1.setCameraId(5);
