@@ -15,7 +15,6 @@ public class IoConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(IoConverter.class);
     private final ObjectMapper objectMapper;
 
-    //TODO: Return optional
     public <T> Optional<T> readJson(String json, Class<T> instance) {
         try {
             return Optional.of(objectMapper.readValue(json, instance));

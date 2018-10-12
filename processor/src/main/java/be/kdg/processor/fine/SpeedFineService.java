@@ -49,12 +49,12 @@ public class SpeedFineService implements FineEvaluationService {
                 cameraMessages.get(1).getCameraId(),
                 fine.getActualSpeed(),
                 fine.getMaxSpeed()));
-        Fine fineOut = fineService.saveAndFlush(fine);
+        Fine fineOut = fineService.save(fine);
         Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
         fineOut.setVehicle(vehicleOut);
         fineOut.addCameraMessage(cameraMessages.get(0));
         fineOut.addCameraMessage(cameraMessages.get(1));
-        fineService.saveAndFlush(fineOut);
+        fineService.save(fineOut);
     }
 
     private double calculateActualSpeed(double distance, List<CameraMessage> msgs) {

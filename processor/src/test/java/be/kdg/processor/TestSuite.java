@@ -17,8 +17,6 @@ import org.junit.runners.Suite;
         IoConverterTest.class,
         FineControllerTest.class,
         VehicleServiceImplTest.class,
-
-
 })
 public class TestSuite {
 }

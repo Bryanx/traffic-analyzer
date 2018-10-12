@@ -42,11 +42,11 @@ public class EmissionFineService implements FineEvaluationService {
                 vehicle.getPlateId(),
                 fine.getActualNorm(),
                 fine.getEuroNorm()));
-        Fine fineOut = fineService.saveAndFlush(fine);
+        Fine fineOut = fineService.save(fine);
         Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
         fineOut.setVehicle(vehicleOut);
         fineOut.addCameraMessage(cameraMessages.get(0));
-        fineService.saveAndFlush(fineOut);
+        fineService.save(fineOut);
     }
 
     private boolean alreadyFined(Vehicle vehicle) {

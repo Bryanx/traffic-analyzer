@@ -19,7 +19,7 @@ public class Camera {
     @Id
     private int cameraId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Location location;
 
     @Column
