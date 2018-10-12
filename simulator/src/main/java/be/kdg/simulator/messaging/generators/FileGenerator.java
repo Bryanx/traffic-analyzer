@@ -53,15 +53,14 @@ public class FileGenerator implements MessageGenerator {
                         }
                     });
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(),e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
     private void scheduleNextMessage() {
         int delay = 2000;
-        if (lineCounter == messages.size()) {
-            System.exit(0);
-        } else if (lineCounter + 1 < messages.size()) {
+        if (lineCounter != messages.size()) return;
+        if (lineCounter + 1 < messages.size()) {
             delay = messages.get(lineCounter + 1).getDelay();
         }
         simulationScheduler.resetSimulationWithDelay(delay);

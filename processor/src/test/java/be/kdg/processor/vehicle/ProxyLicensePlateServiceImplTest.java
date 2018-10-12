@@ -23,6 +23,6 @@ public class ProxyLicensePlateServiceImplTest {
     @Test
     public void get() {
         Optional<Vehicle> vehicle = proxyLicensePlateService.fetchVehicle(TEST_PLATE);
-        assertNotNull(vehicle.get());
+        assertEquals(vehicle.get().getPlateId(), TEST_PLATE);
     }
 }

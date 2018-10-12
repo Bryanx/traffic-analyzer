@@ -28,7 +28,7 @@ public class IoConverterTest {
     public void readJson() {
         Optional<Vehicle> vehicle = ioConverter.readJson(JSON_PLATE_TEST, Vehicle.class);
         assertTrue(vehicle.isPresent());
-        assertEquals("Expected licenseplate to be equal after json conversion.", vehicle.get(), expectedLicensePlate);
+        assertEquals(vehicle.get().getPlateId(), expectedLicensePlate);
 
         Optional<Camera> camera = ioConverter.readJson(JSON_PROXY_TEST, Camera.class);
         System.out.println(camera);
