@@ -25,4 +25,12 @@ public class FineDTO {
     private boolean approved;
     private List<CameraMessage> cameraMessages = new ArrayList<>();
     private Vehicle vehicle;
+
+    public FineDTO(Integer id, FineType type, double price, int euroNorm, int actualNorm) {
+        this.id = id;
+        this.type = type;
+        this.price = price;
+        this.euroNorm = euroNorm;
+        this.actualNorm = actualNorm;
+    }
 }

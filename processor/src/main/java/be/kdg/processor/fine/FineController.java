@@ -21,7 +21,7 @@ public class FineController {
     }
 
     @PostMapping("/fines")
-    public ResponseEntity<FineDTO> createGreeting(@RequestBody FineDTO fineDTO) {
+    public ResponseEntity<FineDTO> createFine(@RequestBody FineDTO fineDTO) {
         Fine fineIn = modelMapper.map(fineDTO, Fine.class);
         Fine fineOut = fineService.saveAndFlush(fineIn);
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.CREATED);
