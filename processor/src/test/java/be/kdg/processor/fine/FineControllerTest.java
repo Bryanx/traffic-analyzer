@@ -15,11 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,24 +49,27 @@ public class FineControllerTest {
     }
 
     @Test
-    public void getFilteredFines() throws Exception {
+    public void getFilteredFinesEmpty() throws Exception {
         List<Fine> fines = Arrays.asList(fineService.save(FINE), fineService.save(FINE), fineService.save(FINE));
         fines.forEach(fine -> fine.setCreationDate(LocalDateTime.MIN));
         fines.forEach(fine -> fineService.save(fine));
-
         mockMvc.perform(get(String.format("/api/fines?from=%s&to=%s", LocalDateTime.now().minusDays(1), LocalDateTime.now()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(content().string(nullValue()));
+                .andExpect(content().string("[]"));
+    }
 
+    @Test
+    public void getFilteredFinesFilled() throws Exception {
+        List<Fine> fines = Arrays.asList(fineService.save(FINE), fineService.save(FINE), fineService.save(FINE));
         fines.forEach(fine -> fine.setCreationDate(LocalDateTime.now()));
         fines.forEach(fine -> fineService.save(fine));
         mockMvc.perform(get(String.format("/api/fines?from=%s&to=%s", LocalDateTime.now().minusDays(1), LocalDateTime.now()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(content().string(notNullValue()));
+                .andExpect(content().string(containsString("EMISSION")));
     }
 
     @Test

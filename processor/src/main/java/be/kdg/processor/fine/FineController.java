@@ -2,10 +2,12 @@ package be.kdg.processor.fine;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +27,17 @@ public class FineController {
         return new ResponseEntity<>(modelMapper.map(fine, FineDTO.class), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/fines", params = { "from", "to" }, method = GET)
-    public ResponseEntity<FineDTO[]> getFilteredFines(@RequestParam(value = "from") Optional<String> from,
-                                                      @RequestParam(value = "to") Optional<String> to) {
+    @RequestMapping(value = "/fines", params = {"from", "to"}, method = GET)
+    public ResponseEntity<FineDTO[]> getFilteredFines(
+            @RequestParam(value = "from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
+            @RequestParam(value = "to") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> to) {
         List<Fine> fines;
-//        if (!from.isPresent() && !to.isPresent()) fines = fineService.findAll();
-//        else if (!from.isPresent()) fines = fineService.findAllByCreationDateBetween(LocalDateTime.MIN, to.get());
-//        else if (!to.isPresent()) fines = fineService.findAllByCreationDateBetween(from.get(), LocalDateTime.MAX);
-//        else fines = fineService.findAllByCreationDateBetween(from.get(), to.get());
-//
-//        return new ResponseEntity<>(modelMapper.map(fines.toArray(), FineDTO[].class), HttpStatus.OK);
-        return null;
+        if (!from.isPresent() && !to.isPresent()) fines = fineService.findAll();
+        else if (!from.isPresent()) fines = fineService.findAllByCreationDateBetween(LocalDateTime.MIN, to.get());
+        else if (!to.isPresent()) fines = fineService.findAllByCreationDateBetween(from.get(), LocalDateTime.MAX);
+        else fines = fineService.findAllByCreationDateBetween(from.get(), to.get());
+
+        return new ResponseEntity<>(modelMapper.map(fines.toArray(), FineDTO[].class), HttpStatus.OK);
     }
 
     @PostMapping("/fines")
