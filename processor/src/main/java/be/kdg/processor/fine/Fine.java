@@ -21,28 +21,14 @@ public class Fine {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column
     private FineType type;
 
-    @Column
     private double price;
-
-    @Column
     double actualSpeed;
-
-    @Column
     double maxSpeed;
-
-    @Column
     int euroNorm;
-
-    @Column
     int actualNorm;
-
-    @Column
     private LocalDateTime creationDate;
-
-    @Column
     private boolean approved;
 
     @LazyCollection(LazyCollectionOption.FALSE)

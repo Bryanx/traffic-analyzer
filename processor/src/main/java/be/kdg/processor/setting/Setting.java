@@ -15,5 +15,5 @@ public class Setting {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
     private String key;
-    private String value;
+    private int value;
 }

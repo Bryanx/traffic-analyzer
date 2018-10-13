@@ -15,9 +15,6 @@ public class User {
     @GeneratedValue
     private Integer userId;
 
-    @Column
     private String username = null;
-
-    @Column
     private String encryptedPassword;
 }

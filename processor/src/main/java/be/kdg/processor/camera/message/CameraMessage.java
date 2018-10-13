@@ -28,7 +28,6 @@ public class CameraMessage {
     @JoinColumn(name = "camera_id_fk")
     private Camera camera;
 
-    @Column
     private String licensePlate;
 
     @Column(name = "`timestamp`")

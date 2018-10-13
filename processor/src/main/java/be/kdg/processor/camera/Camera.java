@@ -22,7 +22,6 @@ public class Camera {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Location location;
 
-    @Column
     private int euroNorm;
 
     @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, mappedBy = "camera")
