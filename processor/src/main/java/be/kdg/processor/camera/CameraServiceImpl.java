@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,9 +54,9 @@ public class CameraServiceImpl implements CameraService {
         proxyCameraService.fetchCamera(cameraMessageIn).ifPresent(this::persistCameraAndSegment);
     }
 
-    @Scheduled(fixedDelayString = "${buffer.config.time}000")
-    public void emptyBuffer() {
-        LocalDateTime bufferTime = LocalDateTime.now().minusSeconds(generalConfig.getBufferTime());
+    @Override
+    public void emptyBuffer(int delay) {
+        LocalDateTime bufferTime = LocalDateTime.now().minusSeconds(delay);
         findAllCameraMessagesSince(bufferTime).ifPresent(cameraMessages -> {
             LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
             cameraMessages.forEach(this::evaluateCameraMessage);
@@ -74,7 +73,7 @@ public class CameraServiceImpl implements CameraService {
         if (camera.getSegment() != null) {
             createSegment(camera.getSegment()).ifPresent(camera::setSegment);
         } else {
-            segmentRepository.findSegmentByConnectedCameraId(camera.getCameraId()).ifPresent(camera::setSegment);
+            segmentRepository.findFirstByConnectedCameraId(camera.getCameraId()).ifPresent(camera::setSegment);
         }
         createCamera(camera);
     }

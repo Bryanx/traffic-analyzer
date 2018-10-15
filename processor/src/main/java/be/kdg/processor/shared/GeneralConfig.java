@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Getter
 @Setter
@@ -20,11 +22,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @Configuration
 public class GeneralConfig {
-    @Value("${buffer.config.time}")
-    private int bufferTime;
-
     @Value("${fine.emission.time.between}")
     private int emissionFineTimeBetween;
+
+    private static final int POOL_SIZE = 100;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -44,5 +45,13 @@ public class GeneralConfig {
     @Bean
     public LicensePlateServiceProxy licensePlateServiceProxy(){
         return new LicensePlateServiceProxy();
+    }
+
+    @Bean
+    public TaskScheduler configureTasks() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(POOL_SIZE);
+        scheduler.initialize();
+        return scheduler;
     }
 }

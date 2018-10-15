@@ -13,4 +13,6 @@ public interface CameraService {
 
     Camera createCamera(Camera camera);
 
+    void emptyBuffer(int delay);
+
 }
