@@ -16,5 +16,4 @@ public interface FineService {
 
     List<Fine> findAllByCreationDateBetween(LocalDateTime start, LocalDateTime end);
 
-    void deleteById(int id);
 }

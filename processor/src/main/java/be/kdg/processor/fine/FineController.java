@@ -54,8 +54,4 @@ public class FineController {
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.OK);
     }
 
-    @DeleteMapping("/fines/{id}")
-    public void deleteFine(@PathVariable int id) {
-        fineService.deleteById(id);
-    }
 }

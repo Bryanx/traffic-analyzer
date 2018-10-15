@@ -40,8 +40,4 @@ public class FineServiceImpl implements FineService {
         return fineRepository.findAllByCreationDateBetween(start, end);
     }
 
-    @Override
-    public void deleteById(int id) {
-        fineRepository.deleteById(id);
-    }
 }
