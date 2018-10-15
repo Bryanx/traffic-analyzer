@@ -2,6 +2,8 @@ package be.kdg.processor.fine;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 @RequestMapping("/api")
 public class FineController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FineController.class);
     private final FineService fineService;
     private final ModelMapper modelMapper;
 
     @GetMapping("/fines/{id}")
     public ResponseEntity<FineDTO> getFine(@PathVariable int id) throws FineException {
+        LOGGER.info("GET request for fine: {}", id);
         Fine fine = fineService.findById(id);
         return new ResponseEntity<>(modelMapper.map(fine, FineDTO.class), HttpStatus.OK);
     }
@@ -31,12 +34,9 @@ public class FineController {
     public ResponseEntity<FineDTO[]> getFilteredFines(
             @RequestParam(value = "from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
             @RequestParam(value = "to") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> to) {
-        List<Fine> fines;
-        if (!from.isPresent() && !to.isPresent()) fines = fineService.findAll();
-        else if (!from.isPresent()) fines = fineService.findAllByCreationDateBetween(LocalDateTime.MIN, to.get());
-        else if (!to.isPresent()) fines = fineService.findAllByCreationDateBetween(from.get(), LocalDateTime.MAX);
-        else fines = fineService.findAllByCreationDateBetween(from.get(), to.get());
-
+        LocalDateTime fromDate = from.orElse(LocalDateTime.MIN);
+        LocalDateTime toDate = to.orElse(LocalDateTime.MAX);
+        List<Fine> fines = fineService.findAllByCreationDateBetween(fromDate, toDate);
         return new ResponseEntity<>(modelMapper.map(fines.toArray(), FineDTO[].class), HttpStatus.OK);
     }
 

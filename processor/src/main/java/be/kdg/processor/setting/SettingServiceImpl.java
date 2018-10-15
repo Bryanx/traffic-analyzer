@@ -18,7 +18,7 @@ public class SettingServiceImpl implements SettingService {
     @Override
     public Setting findByKey(String key) throws SettingNotFoundException {
         return settingRepository.findByKey(key)
-                .orElseThrow(() -> new SettingNotFoundException("User not found."));
+                .orElseThrow(() -> new SettingNotFoundException("Setting not found."));
     }
 
     @Override
