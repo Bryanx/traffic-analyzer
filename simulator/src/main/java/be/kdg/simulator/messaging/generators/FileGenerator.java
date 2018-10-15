@@ -58,11 +58,9 @@ public class FileGenerator implements MessageGenerator {
     }
 
     private void scheduleNextMessage() {
-        int delay = 2000;
-        if (lineCounter != messages.size()) return;
         if (lineCounter + 1 < messages.size()) {
-            delay = messages.get(lineCounter + 1).getDelay();
+            int delay = messages.get(lineCounter).getDelay();
+            simulationScheduler.resetSimulationWithDelay(delay);
         }
-        simulationScheduler.resetSimulationWithDelay(delay);
     }
 }
