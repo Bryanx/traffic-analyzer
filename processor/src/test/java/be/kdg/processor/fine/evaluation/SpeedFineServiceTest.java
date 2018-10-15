@@ -19,7 +19,7 @@ public class SpeedFineServiceTest {
     private SpeedFineService speedFineService;
 
     @Test
-    public void testCalculateSpeed() {
+    public void calculateSpeed() {
         CameraMessage msg1 = new CameraMessage("2-ABC-123", LocalDateTime.now().minusHours(1));
         CameraMessage msg2 = new CameraMessage("2-ABC-123", LocalDateTime.now());
         double speedTest1 = speedFineService.calculateSpeed(50000, msg1, msg2);
