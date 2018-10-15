@@ -34,8 +34,8 @@ public class CameraServiceImpl implements CameraService {
 
     @Override
     public Camera createCamera(Camera camera) {
-        if (camera != null) LOGGER.debug("Added camera to DB: {}", camera);
-        return cameraRepository.saveAndFlush(camera);
+        LOGGER.debug("Adding camera to DB: {}", camera);
+        return cameraRepository.save(camera);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CameraServiceImpl implements CameraService {
         return Optional.ofNullable(segmentRepository.saveAndFlush(segment));
     }
 
-    public List<CameraMessage> findAllCameraMessagesSince(LocalDateTime since) {
+    public Optional<List<CameraMessage>> findAllCameraMessagesSince(LocalDateTime since) {
         return cameraMessageRepository.findAllByTimestampBetween(since, LocalDateTime.now());
     }
 
@@ -52,28 +52,30 @@ public class CameraServiceImpl implements CameraService {
     @Override
     public void receiveCameraMessage(@Payload CameraMessage cameraMessageIn) {
         LOGGER.info("Received message: {}", cameraMessageIn);
-        proxyCameraService.fetchCamera(cameraMessageIn).ifPresent(camera -> {
-            if (camera.getSegment() != null) {
-                createSegment(camera.getSegment())
-                        .ifPresent(camera::setSegment);
-            } else {
-                segmentRepository.findSegmentByConnectedCameraId(camera.getCameraId())
-                        .ifPresent(camera::setSegment);
-            }
-            createCamera(camera);
-        });
+        proxyCameraService.fetchCamera(cameraMessageIn).ifPresent(this::persistCameraAndSegment);
     }
 
     @Scheduled(fixedDelayString = "${buffer.config.time}000")
     public void emptyBuffer() {
         LocalDateTime bufferTime = LocalDateTime.now().minusSeconds(generalConfig.getBufferTime());
-//        LocalDateTime bufferTime = LocalDateTime.now().minusSeconds(600000000);
-        List<CameraMessage> cameraMessages = findAllCameraMessagesSince(bufferTime);
-        if (cameraMessages.size() == 0) return;
-        LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
+        findAllCameraMessagesSince(bufferTime).ifPresent(cameraMessages -> {
+            LOGGER.info("Processing " + cameraMessages.size() + " buffered cameraMessages");
+            cameraMessages.forEach(this::evaluateCameraMessage);
+        });
+    }
 
-        for (CameraMessage cameraMessage : cameraMessages) {
-            fineEvaluationServices.forEach(evaluationService -> evaluationService.checkForFine(cameraMessage));
+    private void evaluateCameraMessage(CameraMessage cameraMessage) {
+        fineEvaluationServices.forEach(evaluationService -> {
+            evaluationService.checkForFine(cameraMessage);
+        });
+    }
+
+    private void persistCameraAndSegment(Camera camera) {
+        if (camera.getSegment() != null) {
+            createSegment(camera.getSegment()).ifPresent(camera::setSegment);
+        } else {
+            segmentRepository.findSegmentByConnectedCameraId(camera.getCameraId()).ifPresent(camera::setSegment);
         }
+        createCamera(camera);
     }
 }

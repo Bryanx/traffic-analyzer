@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -35,8 +36,8 @@ public class CameraMessageRepositoryTest {
         msg1.setLicensePlate("2-ABC-123");
         msg1.setTimestamp(LocalDateTime.now());
         cameraMessageRepository.save(msg1);
-        List<CameraMessage> allByTimestampBetween = cameraMessageRepository.findAllByTimestampBetween(LocalDateTime.now().minusSeconds(200), LocalDateTime.now());
-        System.out.println(allByTimestampBetween);
-        assertEquals(allByTimestampBetween.size(), 1);
+        Optional<List<CameraMessage>> allByTimestampBetween = cameraMessageRepository.findAllByTimestampBetween(LocalDateTime.now().minusSeconds(200), LocalDateTime.now());
+        System.out.println(allByTimestampBetween.get());
+        assertEquals(allByTimestampBetween.get().size(), 1);
     }
 }
