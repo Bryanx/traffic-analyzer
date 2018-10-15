@@ -61,7 +61,7 @@ public class SpeedFineService implements FineEvaluationService {
         fineService.save(fineOut);
     }
 
-    private double calculateSpeed(double distance, CameraMessage message1, CameraMessage message2) {
+    public double calculateSpeed(double distance, CameraMessage message1, CameraMessage message2) {
         LocalDateTime timestamp1 = message1.getTimestamp();
         LocalDateTime timestamp2 = message2.getTimestamp();
         double hours = dateUtil.getHoursBetweenDates(timestamp1, timestamp2);

@@ -2,6 +2,7 @@ package be.kdg.processor;
 
 import be.kdg.processor.camera.proxy.ProxyCameraServiceImplTest;
 import be.kdg.processor.fine.FineControllerTest;
+import be.kdg.processor.fine.evaluation.SpeedFineServiceTest;
 import be.kdg.processor.shared.converters.IoConverterTest;
 import be.kdg.processor.shared.utils.DateUtilTest;
 import be.kdg.processor.vehicle.ProxyLicensePlateServiceImplTest;
@@ -17,6 +18,7 @@ import org.junit.runners.Suite;
         IoConverterTest.class,
         FineControllerTest.class,
         VehicleServiceImplTest.class,
+        SpeedFineServiceTest.class
 })
 public class TestSuite {
 }
