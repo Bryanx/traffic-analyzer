@@ -1,5 +1,6 @@
 package be.kdg.processor.vehicle;
 
+import be.kdg.processor.vehicle.proxy.ProxyLicensePlateService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

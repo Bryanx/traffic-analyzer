@@ -29,7 +29,6 @@ public class CameraServiceImpl implements CameraService {
     private final SegmentRepository segmentRepository;
     private final List<FineEvaluationService> fineEvaluationServices;
     private final ProxyCameraService proxyCameraService;
-    private final GeneralConfig generalConfig;
 
     @Override
     public Camera createCamera(Camera camera) {

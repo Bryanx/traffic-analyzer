@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class Location {
     @Id
     @GeneratedValue
-    private int cameraId;
+    private int id;
 
     @JsonProperty(value = "lat")
     private double latitude;

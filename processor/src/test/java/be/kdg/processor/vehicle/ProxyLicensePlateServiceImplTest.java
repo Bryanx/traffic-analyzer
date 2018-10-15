@@ -1,5 +1,6 @@
 package be.kdg.processor.vehicle;
 
+import be.kdg.processor.vehicle.proxy.ProxyLicensePlateServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

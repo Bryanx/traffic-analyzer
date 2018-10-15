@@ -1,6 +1,7 @@
-package be.kdg.processor.vehicle;
+package be.kdg.processor.vehicle.proxy;
 
 import be.kdg.processor.shared.converters.IoConverter;
+import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.sa.services.LicensePlateNotFoundException;
 import be.kdg.sa.services.LicensePlateServiceProxy;
 import lombok.RequiredArgsConstructor;
