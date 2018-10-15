@@ -30,18 +30,19 @@ public class SpeedFineService implements FineEvaluationService {
     public void checkForFine(CameraMessage cameraMessage) {
         Segment segment = cameraMessage.getCamera().getSegment();
         if (segment == null) return;
-        getConnectedCameraMessage(segment, cameraMessage).ifPresent(otherMessage -> {
-            List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage);
+        Optional<CameraMessage> otherMessage = getConnectedCameraMessage(segment, cameraMessage);
+        if (!otherMessage.isPresent()) return;
 
-            double maxSpeed = segment.getSpeedLimit();
-            double actualSpeed = calculateSpeed((double) segment.getDistance(), cameraMessages);
-            if (actualSpeed > maxSpeed) {
-                vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).ifPresent(vehicle -> {
-                    double price = calculateFinePrice(actualSpeed, maxSpeed);
-                    createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
-                });
-            }
-        });
+
+        double maxSpeed = segment.getSpeedLimit();
+        double actualSpeed = calculateSpeed((double) segment.getDistance(), cameraMessage, otherMessage.get());
+        if (actualSpeed > maxSpeed) {
+            vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).ifPresent(vehicle -> {
+                double price = calculateFinePrice(actualSpeed, maxSpeed);
+                List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage.get());
+                createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
+            });
+        }
     }
 
     @Override
@@ -60,9 +61,9 @@ public class SpeedFineService implements FineEvaluationService {
         fineService.save(fineOut);
     }
 
-    private double calculateSpeed(double distance, List<CameraMessage> msgs) {
-        LocalDateTime timestamp1 = msgs.get(0).getTimestamp();
-        LocalDateTime timestamp2 = msgs.get(1).getTimestamp();
+    private double calculateSpeed(double distance, CameraMessage message1, CameraMessage message2) {
+        LocalDateTime timestamp1 = message1.getTimestamp();
+        LocalDateTime timestamp2 = message2.getTimestamp();
         double hours = dateUtil.getHoursBetweenDates(timestamp1, timestamp2);
         double km = distance / 1000;
         return km / hours;
