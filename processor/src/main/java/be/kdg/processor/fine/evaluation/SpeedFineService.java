@@ -38,7 +38,7 @@ public class SpeedFineService implements FineEvaluationService {
         double actualSpeed = calculateSpeed((double) segment.getDistance(), cameraMessage, otherMessage.get());
         if (actualSpeed > maxSpeed) {
             vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).ifPresent(vehicle -> {
-                double price = calculateFinePrice(actualSpeed, maxSpeed);
+                double price = calculatePrice(actualSpeed, maxSpeed);
                 List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage.get());
                 createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
             });
@@ -69,7 +69,7 @@ public class SpeedFineService implements FineEvaluationService {
         return km / hours;
     }
 
-    private double calculateFinePrice(double curSpeed, double maxSpeed) {
+    private double calculatePrice(double curSpeed, double maxSpeed) {
         return (curSpeed - maxSpeed) * curSpeed;
     }
 
