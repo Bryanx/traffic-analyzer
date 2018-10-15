@@ -7,7 +7,6 @@ import be.kdg.processor.fine.FineType;
 import be.kdg.processor.setting.Setting;
 import be.kdg.processor.setting.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
-import be.kdg.processor.shared.GeneralConfig;
 import be.kdg.processor.shared.utils.DateUtil;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.processor.vehicle.VehicleService;
@@ -26,10 +25,11 @@ import java.util.Optional;
 public class EmissionFineService implements FineEvaluationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmissionFineService.class);
     private static final String EMISSION_FACTOR_KEY = "emission-fine-factor";
+    private static final String EMISSION_DELAY_KEY = "emission-fine-delay";
     private static final double DEFAULT_EMISSION_FACTOR = 100.0;
+    private static final double DEFAULT_EMISSION_DELAY = 24;
     private final VehicleService vehicleService;
     private final DateUtil dateUtil;
-    private final GeneralConfig generalConfig;
     private final FineService fineService;
     private final SettingService settingService;
 
@@ -41,18 +41,9 @@ public class EmissionFineService implements FineEvaluationService {
         int euroNorm = cameraMessage.getCamera().getEuroNorm();
         int actualEuroNorm = vehicle.get().getEuroNumber();
         if (actualEuroNorm < euroNorm) {
-            createFine(new Fine(FineType.EMISSION, getPrice(), euroNorm, actualEuroNorm), vehicle.get(), Arrays.asList(cameraMessage));
+            double price = getFromService(EMISSION_FACTOR_KEY, DEFAULT_EMISSION_FACTOR);
+            createFine(new Fine(FineType.EMISSION, price, euroNorm, actualEuroNorm), vehicle.get(), Arrays.asList(cameraMessage));
         }
-    }
-
-    private double getPrice() {
-        try {
-            Setting setting = settingService.findByKey(EMISSION_FACTOR_KEY);
-            return setting.getValue();
-        } catch (SettingNotFoundException e) {
-            LOGGER.error(e.getMessage(),e);
-        }
-        return DEFAULT_EMISSION_FACTOR;
     }
 
     @Override
@@ -74,12 +65,23 @@ public class EmissionFineService implements FineEvaluationService {
         for (Fine fine : fines) {
             if (fine.getType() == FineType.EMISSION) {
                 double hoursSinceFine = dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate());
-                if (hoursSinceFine < generalConfig.getEmissionFineTimeBetween()) {
+                double emissionDelay = getFromService(EMISSION_DELAY_KEY, DEFAULT_EMISSION_DELAY);
+                if (hoursSinceFine < emissionDelay) {
                     LOGGER.debug("Found vehicle that was already fined: " + vehicle.getPlateId());
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private double getFromService(String key, double defaultValue) {
+        try {
+            Setting setting = settingService.findByKey(key);
+            return setting.getValue();
+        } catch (SettingNotFoundException e) {
+            LOGGER.error(e.getMessage(),e);
+        }
+        return defaultValue;
     }
 }
