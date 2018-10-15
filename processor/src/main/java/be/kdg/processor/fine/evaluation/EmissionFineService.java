@@ -69,7 +69,7 @@ public class EmissionFineService implements FineEvaluationService {
         fineService.save(fineOut);
     }
 
-    private boolean alreadyFined(Vehicle vehicle) {
+    public boolean alreadyFined(Vehicle vehicle) {
         List<Fine> fines = fineService.findAllByVehicleIn(vehicle);
         for (Fine fine : fines) {
             if (fine.getType() == FineType.EMISSION) {
