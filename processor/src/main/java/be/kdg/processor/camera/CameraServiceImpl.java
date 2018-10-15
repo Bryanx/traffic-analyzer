@@ -5,7 +5,7 @@ import be.kdg.processor.camera.message.CameraMessageRepository;
 import be.kdg.processor.camera.proxy.ProxyCameraService;
 import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.camera.segment.SegmentRepository;
-import be.kdg.processor.fine.FineEvaluationService;
+import be.kdg.processor.fine.evaluation.FineEvaluationService;
 import be.kdg.processor.shared.GeneralConfig;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

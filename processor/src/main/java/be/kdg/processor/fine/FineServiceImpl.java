@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class GeneralFineService implements FineService {
+public class FineServiceImpl implements FineService {
     private final FineRepository fineRepository;
 
     @Override
