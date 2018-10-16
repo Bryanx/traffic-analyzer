@@ -4,6 +4,7 @@ import be.kdg.processor.camera.proxy.ProxyCameraServiceImplTest;
 import be.kdg.processor.fine.FineControllerTest;
 import be.kdg.processor.fine.evaluation.EmissionFineServiceTest;
 import be.kdg.processor.fine.evaluation.SpeedFineServiceTest;
+import be.kdg.processor.setting.SettingControllerTest;
 import be.kdg.processor.shared.converters.IoConverterTest;
 import be.kdg.processor.shared.utils.DateUtilTest;
 import be.kdg.processor.vehicle.ProxyLicensePlateServiceImplTest;
@@ -18,6 +19,7 @@ import org.junit.runners.Suite;
         DateUtilTest.class,
         IoConverterTest.class,
         FineControllerTest.class,
+        SettingControllerTest.class,
         VehicleServiceImplTest.class,
         SpeedFineServiceTest.class,
         EmissionFineServiceTest.class

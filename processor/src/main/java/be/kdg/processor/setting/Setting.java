@@ -15,4 +15,5 @@ public class Setting {
     @Id
     private String key;
     private int value;
+    private String description;
 }

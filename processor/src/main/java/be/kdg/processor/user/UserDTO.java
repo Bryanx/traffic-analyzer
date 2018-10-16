@@ -1,19 +1,12 @@
 package be.kdg.processor.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
+@AllArgsConstructor
 @Data
-@Entity
-public class User {
-
-    @Id
-    @GeneratedValue
+public class UserDTO {
     private Integer userId;
-
     private String username = null;
     private String encryptedPassword;
 }
