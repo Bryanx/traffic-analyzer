@@ -1,6 +1,6 @@
-package be.kdg.processor.camera.message;
+package be.kdg.processor.camera.message.processor;
 
-import be.kdg.processor.camera.CameraService;
+import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.setting.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +13,29 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * Initiates the Processor, different processors can be added.
+ */
 @RequiredArgsConstructor
 @Component
-public class CameraMessageBufferScheduler implements SchedulingConfigurer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CameraMessageBufferScheduler.class);
+public class ProcessScheduler implements SchedulingConfigurer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessScheduler.class);
     private static final String BUFFER_TIME_KEY = "message-buffer-time";
-    private final CameraService cameraService;
+    private final Processor<CameraMessage> cameraMessageProcessor;
     private final TaskScheduler scheduler;
     private final SettingService settingService;
     private ScheduledFuture<?> scheduledFuture;
     private int bufferTime;
+
+
+    /**
+     * Initializes the scheduler.
+     */
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        updateBufferTime();
+        startSchedule();
+    }
 
     /**
      * Starts the schedule. If the bufferTime is changed, the schedule is reset with a new buffertime
@@ -31,7 +44,7 @@ public class CameraMessageBufferScheduler implements SchedulingConfigurer {
         LOGGER.debug("Starting schedule empty buffer, with delay: " + bufferTime);
         scheduledFuture = scheduler.scheduleWithFixedDelay(() -> {
             if (updateBufferTime()) resetSchedule();
-            else cameraService.emptyBuffer(bufferTime/1000);
+            else cameraMessageProcessor.process(bufferTime / 1000);
         }, bufferTime);
     }
 
@@ -44,14 +57,9 @@ public class CameraMessageBufferScheduler implements SchedulingConfigurer {
         startSchedule();
     }
 
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        updateBufferTime();
-        startSchedule();
-    }
-
     /**
      * Updates the buffertime with the buffertime from the database.
+     *
      * @return if the buffertime was changed in the database.
      */
     private boolean updateBufferTime() {

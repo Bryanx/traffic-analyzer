@@ -1,14 +1,13 @@
 package be.kdg.processor.setting;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @Entity
 public class Setting {
@@ -16,4 +15,9 @@ public class Setting {
     private String key;
     private int value;
     private String description;
+
+    public Setting(String key, int value) {
+        this.key = key;
+        this.value = value;
+    }
 }
