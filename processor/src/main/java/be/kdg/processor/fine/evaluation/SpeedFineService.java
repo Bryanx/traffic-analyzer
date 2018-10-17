@@ -34,7 +34,6 @@ public class SpeedFineService implements FineEvaluationService {
         Optional<CameraMessage> otherMessage = getConnectedCameraMessage(segment, cameraMessage);
         if (!otherMessage.isPresent()) return;
 
-
         double maxSpeed = segment.getSpeedLimit();
         double actualSpeed = calculateSpeed((double) segment.getDistance(), cameraMessage, otherMessage.get());
         if (actualSpeed > maxSpeed) {

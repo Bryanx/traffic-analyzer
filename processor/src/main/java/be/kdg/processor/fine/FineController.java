@@ -1,5 +1,6 @@
 package be.kdg.processor.fine;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class FineController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FineController.class);
     private final FineService fineService;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/fines/{id}")
     public ResponseEntity<FineDTO> getFine(@PathVariable int id) throws FineException {
@@ -47,10 +49,12 @@ public class FineController {
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.CREATED);
     }
 
-    @PutMapping("/fines/{id}/approve")
-    public ResponseEntity<FineDTO> toggleApproveFine(@PathVariable int id) throws FineException {
+    @PutMapping("/fines/{id}")
+    public ResponseEntity<FineDTO> updateFine(@PathVariable int id, @RequestBody FineDTO fineIn) throws FineException {
         Fine fineOut = fineService.findById(id);
-        fineOut.setApproved(!fineOut.isApproved());
+        fineOut.setComment(fineIn.getComment());
+        fineOut.setPrice(fineIn.getPrice());
+        fineOut.setApproved(fineIn.isApproved());
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.OK);
     }
 

@@ -29,7 +29,7 @@ public class Fine {
     int euroNorm;
     int actualNorm;
     private LocalDateTime creationDate;
-    private String comments;
+    private String comment;
     private boolean approved;
 
     @LazyCollection(LazyCollectionOption.FALSE)

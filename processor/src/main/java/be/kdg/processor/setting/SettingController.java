@@ -21,18 +21,12 @@ public class SettingController {
         Setting setting = settingService.findByKey(key);
         return new ResponseEntity<>(modelMapper.map(setting, SettingDTO.class), HttpStatus.OK);
     }
-    
+
     @PutMapping("/settings/{key}")
-    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody SettingDTO settingDTO) {
-        Setting setting;
-        try {
-            setting = settingService.findByKey(key);
-            setting.setValue(settingDTO.getValue());
-        } catch (SettingNotFoundException e) {
-            LOGGER.warn("PUT request for {}: key wasn't found. Creating new Setting.", key);
-            setting = modelMapper.map(settingDTO, Setting.class);
-        }
-        settingService.save(setting);
-        return new ResponseEntity<>(modelMapper.map(setting, SettingDTO.class), HttpStatus.OK);
+    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody int value) throws SettingNotFoundException {
+        Setting setting = settingService.findByKey(key);
+        setting.setValue(value);
+        Setting settingOut = settingService.save(setting);
+        return new ResponseEntity<>(modelMapper.map(settingOut, SettingDTO.class), HttpStatus.OK);
     }
 }

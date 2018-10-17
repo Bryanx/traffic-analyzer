@@ -17,10 +17,11 @@ public class FineDTO {
     private Integer id;
     private FineType type;
     private double price;
-    double actualSpeed;
-    double maxSpeed;
-    int euroNorm;
-    int actualNorm;
+    private double actualSpeed;
+    private double maxSpeed;
+    private int euroNorm;
+    private int actualNorm;
+    private String comment;
     private LocalDateTime creationDate;
     private boolean approved;
     private List<CameraMessage> cameraMessages = new ArrayList<>();

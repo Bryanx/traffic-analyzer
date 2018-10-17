@@ -84,13 +84,32 @@ public class FineControllerTest {
     }
 
     @Test
-    public void toggleApproveFine() throws Exception {
+    public void testApproveFine() throws Exception {
         Fine fine = fineService.save(FINE);
         Integer id = fine.getId();
-        mockMvc.perform(put("/api/fines/" + id + "/approve")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+        FINE_DTO.setApproved(true);
+        String requestJson = objectMapper.writeValueAsString(FINE_DTO);
+        mockMvc.perform(put("/api/fines/" + id)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(requestJson))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().string(containsString("\"approved\":true")));
+    }
+
+    @Test
+    public void testChangePrice() throws Exception {
+        Fine fine = fineService.save(FINE);
+        Integer id = fine.getId();
+        FINE_DTO.setPrice(1500);
+        FINE_DTO.setComment("Updated the price to 1500.");
+        String requestJson = objectMapper.writeValueAsString(FINE_DTO);
+        mockMvc.perform(put("/api/fines/" + id)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().string(containsString("\"comment\":\"Updated the price to 1500.\"")))
+                .andExpect(content().string(containsString("\"price\":1500")));
     }
 }
