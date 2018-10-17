@@ -25,6 +25,9 @@ repositories {
 
 
 dependencies {
+    compile('org.webjars:webjars-locator-core:0.35')
+    compile('org.webjars:bootstrap:4.1.3')
+    compile('org.webjars:jquery:3.0.0')
     compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.0"
     compile('com.rabbitmq:amqp-client:5.4.1')
