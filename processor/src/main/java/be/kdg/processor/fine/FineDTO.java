@@ -2,6 +2,7 @@ package be.kdg.processor.fine;
 
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.vehicle.Vehicle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,9 @@ public class FineDTO {
     private String comment;
     private LocalDateTime creationDate;
     private boolean approved;
+    @JsonIgnore
     private List<CameraMessage> cameraMessages = new ArrayList<>();
+    @JsonIgnore
     private Vehicle vehicle;
 
     public FineDTO(Integer id, FineType type, double price, int euroNorm, int actualNorm) {

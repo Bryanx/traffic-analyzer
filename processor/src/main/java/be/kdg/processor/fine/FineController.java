@@ -32,6 +32,13 @@ public class FineController {
         return new ResponseEntity<>(modelMapper.map(fine, FineDTO.class), HttpStatus.OK);
     }
 
+    @GetMapping("/fines")
+    public ResponseEntity<FineDTO[]> getFines() {
+        LOGGER.info("GET request for all fines: {}");
+        List<Fine> fines = fineService.findAll();
+        return new ResponseEntity<>(modelMapper.map(fines.toArray(), FineDTO[].class), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/fines", params = {"from", "to"}, method = GET)
     public ResponseEntity<FineDTO[]> getFilteredFines(
             @RequestParam(value = "from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
@@ -49,7 +56,7 @@ public class FineController {
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.CREATED);
     }
 
-    @PutMapping("/fines/{id}")
+    @PatchMapping("/fines/{id}")
     public ResponseEntity<FineDTO> updateFine(@PathVariable int id, @RequestBody FineDTO fineIn) throws FineException {
         Fine fineOut = fineService.findById(id);
         fineOut.setComment(fineIn.getComment());

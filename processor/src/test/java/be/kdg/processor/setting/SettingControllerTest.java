@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class SettingControllerTest {
 
-    public static final SettingDTO SETTING_DTO = new SettingDTO("test", 10, "test description");
+    public static final SettingDTO SETTING_DTO = new SettingDTO("test", 10, "test descriptionaaaa");
     public static final Setting SETTING = new Setting("test", 5);
 
     @Autowired
@@ -48,7 +48,7 @@ public class SettingControllerTest {
     public void updateSetting() throws Exception {
         Setting setting = settingService.save(SETTING);
         String requestJson = objectMapper.writeValueAsString(SETTING_DTO);
-        mockMvc.perform(put("/api/settings/" + setting.getKey() )
+        mockMvc.perform(patch("/api/settings/" + setting.getKey() )
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(requestJson))
                 .andExpect(status().isOk())

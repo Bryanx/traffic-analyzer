@@ -22,10 +22,10 @@ public class SettingController {
         return new ResponseEntity<>(modelMapper.map(setting, SettingDTO.class), HttpStatus.OK);
     }
 
-    @PutMapping("/settings/{key}")
-    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody int value) throws SettingNotFoundException {
+    @PatchMapping("/settings/{key}")
+    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody SettingDTO settingDTO) throws SettingNotFoundException {
         Setting setting = settingService.findByKey(key);
-        setting.setValue(value);
+        setting.setValue(settingDTO.getValue());
         Setting settingOut = settingService.save(setting);
         return new ResponseEntity<>(modelMapper.map(settingOut, SettingDTO.class), HttpStatus.OK);
     }

@@ -89,7 +89,7 @@ public class FineControllerTest {
         Integer id = fine.getId();
         FINE_DTO.setApproved(true);
         String requestJson = objectMapper.writeValueAsString(FINE_DTO);
-        mockMvc.perform(put("/api/fines/" + id)
+        mockMvc.perform(patch("/api/fines/" + id)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(requestJson))
                 .andExpect(status().isOk())
@@ -104,7 +104,7 @@ public class FineControllerTest {
         FINE_DTO.setPrice(1500);
         FINE_DTO.setComment("Updated the price to 1500.");
         String requestJson = objectMapper.writeValueAsString(FINE_DTO);
-        mockMvc.perform(put("/api/fines/" + id)
+        mockMvc.perform(patch("/api/fines/" + id)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(requestJson))
                 .andExpect(status().isOk())
