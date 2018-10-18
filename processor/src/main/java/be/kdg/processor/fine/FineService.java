@@ -12,7 +12,7 @@ public interface FineService {
 
     List<Fine> findAll();
 
-    List<Fine> findAllByVehicleIn(Vehicle vehicle);
+    List<Fine> findAllByTypeAndVehicle(FineType fineType, Vehicle vehicle);
 
     List<Fine> findAllByCreationDateBetween(LocalDateTime start, LocalDateTime end);
 

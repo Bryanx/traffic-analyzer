@@ -4,84 +4,53 @@ import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
 import be.kdg.processor.fine.FineType;
-import be.kdg.processor.setting.Setting;
-import be.kdg.processor.setting.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
 import be.kdg.processor.shared.utils.DateUtil;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.processor.vehicle.VehicleService;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
-public class EmissionFineService implements FineEvaluationService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmissionFineService.class);
+public class EmissionFineService extends FineEvaluationService {
     private static final String EMISSION_FACTOR_KEY = "emission-fine-factor";
     private static final String EMISSION_DELAY_KEY = "emission-fine-delay";
     private static final double DEFAULT_EMISSION_FACTOR = 100.0;
     private static final double DEFAULT_EMISSION_DELAY = 24;
-    private final VehicleService vehicleService;
-    private final DateUtil dateUtil;
-    private final FineService fineService;
-    private final SettingService settingService;
+
+    public EmissionFineService(VehicleService vehicleService, DateUtil dateUtil, FineService fineService, SettingService settingService) {
+        super(vehicleService, dateUtil, fineService, settingService);
+    }
 
     @Override
     public void checkForFine(CameraMessage cameraMessage) {
-        Optional<Vehicle> vehicle = vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate());
-        if (!vehicle.isPresent() || alreadyFined(vehicle.get())) return;
+        Vehicle vehicle = getVehicle(cameraMessage);
+        if (vehicle == null) return;
+        List<Fine> oldFines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle);
+        if (alreadyFined(oldFines)) return;
+        checkEuroNorm(cameraMessage, vehicle, oldFines);
+    }
 
+    private void checkEuroNorm(CameraMessage cameraMessage, Vehicle vehicle, List<Fine> oldFines) {
         int euroNorm = cameraMessage.getCamera().getEuroNorm();
-        int actualEuroNorm = vehicle.get().getEuroNumber();
+        int actualEuroNorm = vehicle.getEuroNumber();
         if (actualEuroNorm < euroNorm) {
-            double price = getFromService(EMISSION_FACTOR_KEY, DEFAULT_EMISSION_FACTOR);
-            createFine(new Fine(FineType.EMISSION, price, euroNorm, actualEuroNorm), vehicle.get(), Arrays.asList(cameraMessage));
+            createFine(new Fine(FineType.EMISSION, calculatePrice(oldFines), euroNorm, actualEuroNorm), vehicle, Arrays.asList(cameraMessage));
         }
     }
 
-    @Override
-    public void createFine(Fine fine, Vehicle vehicle, List<CameraMessage> cameraMessages) {
-        LOGGER.info(String.format("Creating emissionfine for: Camera %d detected vehicle below euronorm: %s (vehicle euronumber:%d, euronorm:%d).",
-                cameraMessages.get(0).getCameraId(),
-                vehicle.getPlateId(),
-                fine.getActualNorm(),
-                fine.getEuroNorm()));
-        Fine fineOut = fineService.save(fine);
-        Vehicle vehicleOut = vehicleService.createVehicle(vehicle);
-        fineOut.setVehicle(vehicleOut);
-        fineOut.addCameraMessage(cameraMessages.get(0));
-        fineService.save(fineOut);
+    private double calculatePrice(List<Fine> oldFines) {
+        double priceFromService = getSetting(EMISSION_FACTOR_KEY, DEFAULT_EMISSION_FACTOR);
+        return super.calculateFineHistoryPrice(oldFines, priceFromService);
     }
 
-    public boolean alreadyFined(Vehicle vehicle) {
-        List<Fine> fines = fineService.findAllByVehicleIn(vehicle);
-        for (Fine fine : fines) {
-            if (fine.getType() == FineType.EMISSION) {
-                double hoursSinceFine = dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate());
-                double emissionDelay = getFromService(EMISSION_DELAY_KEY, DEFAULT_EMISSION_DELAY);
-                if (hoursSinceFine < emissionDelay) {
-                    LOGGER.debug("Found vehicle that was already fined: " + vehicle.getPlateId());
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private double getFromService(String key, double defaultValue) {
-        try {
-            Setting setting = settingService.findByKey(key);
-            return setting.getValue();
-        } catch (SettingNotFoundException e) {
-            LOGGER.error(e.getMessage(),e);
-        }
-        return defaultValue;
+    public boolean alreadyFined(List<Fine> oldFines) {
+        double emissionDelay = getSetting(EMISSION_DELAY_KEY, DEFAULT_EMISSION_DELAY);
+        return oldFines.stream()
+                .mapToDouble(fine -> dateUtil.getHoursBetweenDates(LocalDateTime.now(), fine.getCreationDate()))
+                .anyMatch(hoursSinceFine -> hoursSinceFine < emissionDelay);
     }
 }

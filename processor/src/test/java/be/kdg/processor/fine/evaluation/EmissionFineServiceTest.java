@@ -46,7 +46,8 @@ public class EmissionFineServiceTest {
         CameraMessage msg2 = new CameraMessage("2-ABC-123", LocalDateTime.now());
         emissionFineService.createFine(new Fine(FineType.EMISSION, 150, 4, 2),
                 vehicle, Arrays.asList(msg1, msg2));
-        assertTrue(emissionFineService.alreadyFined(vehicle));
+        List<Fine> oldFines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle);
+        assertTrue(emissionFineService.alreadyFined(oldFines));
     }
 
     @Test
@@ -59,7 +60,7 @@ public class EmissionFineServiceTest {
         emissionFineService.checkForFine(cameraMessage);
         Optional<Vehicle> vehicle = vehicleService.getVehicleByProxyOrDb("2-ABC-123");
         assertTrue(vehicle.isPresent());
-        List<Fine> fines = fineService.findAllByVehicleIn(vehicle.get());
+        List<Fine> fines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle.get());
         assertTrue(fines.size() > 0);
     }
 }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FineRepository extends JpaRepository<Fine, Integer> {
-    List<Fine> findAllByVehicleIn(Vehicle licenseplate);
+    List<Fine> findAllByTypeEqualsAndVehicleIn(FineType fineType, Vehicle licenseplate);
 
     List<Fine> findAllByCreationDateBetween(LocalDateTime start, LocalDateTime end);
 }

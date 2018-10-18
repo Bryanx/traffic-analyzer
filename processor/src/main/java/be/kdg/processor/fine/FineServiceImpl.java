@@ -31,8 +31,8 @@ public class FineServiceImpl implements FineService {
     }
 
     @Override
-    public List<Fine> findAllByVehicleIn(Vehicle vehicle) {
-        return fineRepository.findAllByVehicleIn(vehicle);
+    public List<Fine> findAllByTypeAndVehicle(FineType fineType, Vehicle vehicle) {
+        return fineRepository.findAllByTypeEqualsAndVehicleIn(fineType, vehicle);
     }
 
     @Override
