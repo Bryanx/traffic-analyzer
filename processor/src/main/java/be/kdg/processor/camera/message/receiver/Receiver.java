@@ -11,8 +11,10 @@ public interface Receiver<T> {
 
     void receive(T entity);
 
-    List<T> empty();
+    List<T> emptyMemoryBuffer();
 
-    void persist(T entity);
+    void bufferInDatabase(T entity);
+
+    void bufferInMemory(T entity);
 }
 

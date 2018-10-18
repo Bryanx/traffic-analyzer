@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Evaluates the vehicle in a CameraMessage.
+ * If the eurnorm of the vehicle is below the euronorm in the camera, a fine is added to the vehicle.
+ */
 @Service
 public class EmissionFineService extends FineEvaluationService {
     private static final String EMISSION_FACTOR_KEY = "emission-fine-factor";
@@ -47,6 +51,12 @@ public class EmissionFineService extends FineEvaluationService {
         return super.calculateFineHistoryPrice(oldFines, priceFromService);
     }
 
+    /**
+     * Checks if there is fine a that was created in the emission-fine-delay time period.
+     *
+     * @param oldFines A list of previous fines from a certain vehicle
+     * @return true or false
+     */
     public boolean alreadyFined(List<Fine> oldFines) {
         double emissionDelay = getSetting(EMISSION_DELAY_KEY, DEFAULT_EMISSION_DELAY);
         return oldFines.stream()

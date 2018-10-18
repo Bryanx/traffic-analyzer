@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Abstract evaluation service class.
+ * This class can be called in a list to contain all the derived fine evaluations.
+ */
 @RequiredArgsConstructor
 public abstract class FineEvaluationService {
     static final Logger LOGGER = LoggerFactory.getLogger(FineEvaluationService.class);
@@ -26,7 +30,7 @@ public abstract class FineEvaluationService {
     public abstract void checkForFine(CameraMessage cameraMessage);
 
     void createFine(Fine fine, Vehicle vehicle, List<CameraMessage> cameraMessages) {
-        LOGGER.info(String.format("Creating %s for vehicle %s. Detected by camera('s) %s",
+        LOGGER.info(String.format("Creating %s fine for vehicle %s. Detected by camera('s) %s",
                 fine.getType(),
                 vehicle.getPlateId(),
                 cameraMessages.stream().map(CameraMessage::getCameraId).collect(Collectors.toList())));
@@ -41,6 +45,13 @@ public abstract class FineEvaluationService {
         return vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).orElse(null);
     }
 
+    /**
+     * Retrieves a setting from the database.
+     *
+     * @param key          The key for the requested setting.
+     * @param defaultValue If the setting is not found this value is returned.
+     * @return Value of the setting.
+     */
     double getSetting(String key, double defaultValue) {
         try {
             return settingService.findByKey(key).getValue();
@@ -50,6 +61,13 @@ public abstract class FineEvaluationService {
         return defaultValue;
     }
 
+    /**
+     * The fine price is increased based on the previous amount of fines.
+     *
+     * @param oldFines         previous fines
+     * @param priceFromService original price.
+     * @return new price.
+     */
     double calculateFineHistoryPrice(List<Fine> oldFines, double priceFromService) {
         if (oldFines.size() > 0) return priceFromService * oldFines.size();
         return priceFromService;

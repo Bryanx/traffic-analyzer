@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Evaluates the speed of a vehicle.
+ * If the speed of the vehicle is higher than the maximum speed on the segment, a fine is added to the vehicle.
+ */
 @Service
 public class SpeedFineService extends FineEvaluationService {
 
@@ -28,14 +32,17 @@ public class SpeedFineService extends FineEvaluationService {
         if (segment == null) return;
         CameraMessage otherMessage = getConnectedCameraMessage(segment, cameraMessage);
         if (otherMessage == null) return;
+        checkSpeed(cameraMessage, otherMessage, segment);
+    }
 
+    private void checkSpeed(CameraMessage message1, CameraMessage message2, Segment segment) {
         double maxSpeed = segment.getSpeedLimit();
-        double actualSpeed = calculateSpeed((double) segment.getDistance(), cameraMessage, otherMessage);
+        double actualSpeed = calculateSpeed((double) segment.getDistance(), message1, message2);
         if (actualSpeed > maxSpeed) {
-            Vehicle vehicle = getVehicle(cameraMessage);
+            Vehicle vehicle = getVehicle(message1);
             if (vehicle == null) return;
             double price = calculatePrice(vehicle, actualSpeed, maxSpeed);
-            List<CameraMessage> cameraMessages = Arrays.asList(cameraMessage, otherMessage);
+            List<CameraMessage> cameraMessages = Arrays.asList(message1, message2);
             createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
         }
     }
@@ -53,6 +60,9 @@ public class SpeedFineService extends FineEvaluationService {
         return super.calculateFineHistoryPrice(fineService.findAllByTypeAndVehicle(FineType.SPEED, vehicle), price);
     }
 
+    /**
+     * For a given segment and cameramessage, finds the corresponding cameramessage.
+     */
     private CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
         return segment.getCameras().stream()
                 .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())

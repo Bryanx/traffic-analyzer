@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Received CamerMessage from the queue.
+ * The CameraMessages can be buffered in the database or in memory.
+ */
 @RequiredArgsConstructor
 @Service
 public class CameraMessageReceiver implements Receiver<CameraMessage> {
@@ -24,12 +28,11 @@ public class CameraMessageReceiver implements Receiver<CameraMessage> {
     @RabbitListener(queues = "camera-message-queue")
     public void receive(@Payload CameraMessage message) {
         LOGGER.info("Received message: {}", message);
-//        cameraMessages.add(message);
-        persist(message);
+        bufferInDatabase(message);
     }
 
     @Override
-    public List<CameraMessage> empty() {
+    public List<CameraMessage> emptyMemoryBuffer() {
         final List<CameraMessage> temp = cameraMessages;
         cameraMessages = new ArrayList<>();
         return temp;
@@ -37,7 +40,12 @@ public class CameraMessageReceiver implements Receiver<CameraMessage> {
 
     @Override
     @Transactional
-    public void persist(CameraMessage message) {
+    public void bufferInDatabase(CameraMessage message) {
         cameraService.saveCameraWithSegment(message);
+    }
+
+    @Override
+    public void bufferInMemory(CameraMessage message) {
+        cameraMessages.add(message);
     }
 }
