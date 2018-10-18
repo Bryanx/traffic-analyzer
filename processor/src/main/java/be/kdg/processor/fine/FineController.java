@@ -23,7 +23,6 @@ public class FineController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FineController.class);
     private final FineService fineService;
     private final ModelMapper modelMapper;
-    private final ObjectMapper objectMapper;
 
     @GetMapping("/fines/{id}")
     public ResponseEntity<FineDTO> getFine(@PathVariable int id) throws FineException {

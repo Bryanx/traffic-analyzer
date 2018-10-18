@@ -22,9 +22,6 @@ public class SettingWebControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     public void getAllSettings() throws Exception {
         mockMvc.perform(get("/settings"))
