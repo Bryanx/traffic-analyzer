@@ -204,10 +204,8 @@ iframe {
   overflow: hidden;
   padding: 55px 55px 37px 55px;
   background: #56ab2f;
-  background: -webkit-linear-gradient(bottom right, #56ab2f, #a8e063);  /* Chrome 10-25, Safari 5.1-6 */
-  background: -o-linear-gradient(bottom right, #56ab2f, #a8e063);
-  background: -moz-linear-gradient(bottom right, #56ab2f, #a8e063);
-  background: linear-gradient(bottom right, #56ab2f, #a8e063);
+  background: -webkit-linear-gradient(bottom right, #000046, #1cb5e0);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(bottom right, #000046, #1cb5e0);
   animation: .5s ease-out 0s 1 fadeIn;
 }
 
