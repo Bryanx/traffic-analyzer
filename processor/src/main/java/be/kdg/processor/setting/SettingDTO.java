@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class SettingDTO {
     private String key;
     private int value;
+    private String description;
 }

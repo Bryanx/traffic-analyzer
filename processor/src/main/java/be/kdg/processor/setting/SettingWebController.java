@@ -6,27 +6,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/setting")
 public class SettingWebController {
     private final ModelMapper modelMapper;
     private final SettingService settingService;
 
-    @GetMapping("/setting.do")
-    public ModelAndView showSettingForm(SettingDTO settingDTO) {
-        return new ModelAndView("settingForm", "settingDTO", settingDTO);
+    @GetMapping("/settings")
+    public ModelAndView getAllSettings() {
+        List<SettingDTO> settingDTOS = Arrays.asList(modelMapper.map(settingService.findAll().toArray(), SettingDTO[].class));
+        SettingDTOwrapper settings = new SettingDTOwrapper();
+        settings.setSettingDTOs(settingDTOS);
+        return new ModelAndView("settings", "settings", settings);
     }
 
-    @PostMapping("/newsetting.do")
-    public ModelAndView createSetting(@Valid @ModelAttribute SettingDTO settingDTO) {
-        Setting setting = settingService.save(modelMapper.map(settingDTO, Setting.class));
-        //TODO: redirect url to prevent refresh create post
-        return new ModelAndView("settingOverview", "settingDTO", modelMapper.map(setting, SettingDTO.class));
+    @PostMapping("/settings")
+    public ModelAndView updateSettings(@ModelAttribute SettingDTOwrapper settings) {
+        for (SettingDTO settingDTO : settings.getSettingDTOs()) {
+            settingService.save(modelMapper.map(settingDTO, Setting.class));
+        }
+        return new ModelAndView(new RedirectView("/settings"), "settingOut", settings);
     }
 }

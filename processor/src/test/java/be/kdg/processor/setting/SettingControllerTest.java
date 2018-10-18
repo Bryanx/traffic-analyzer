@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class SettingControllerTest {
 
-    public static final SettingDTO SETTING_DTO = new SettingDTO("test", 10);
+    public static final SettingDTO SETTING_DTO = new SettingDTO("test", 10, "test description");
     public static final Setting SETTING = new Setting("test", 5);
 
     @Autowired
