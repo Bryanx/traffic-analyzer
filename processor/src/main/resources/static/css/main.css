@@ -87,6 +87,11 @@ ul, li {
 input {
 	outline: none;
 	border: none;
+    animation-name: fadeInRight;
+    animation-duration: .5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
 }
 
 textarea {
@@ -128,6 +133,10 @@ button {
 	outline: none !important;
 	border: none;
 	background: transparent;
+    animation-name: bounceIn;
+    animation-duration: .5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
 button:hover {
@@ -199,6 +208,7 @@ iframe {
   background: -o-linear-gradient(bottom right, #56ab2f, #a8e063);
   background: -moz-linear-gradient(bottom right, #56ab2f, #a8e063);
   background: linear-gradient(bottom right, #56ab2f, #a8e063);
+  animation: .5s ease-out 0s 1 fadeIn;
 }
 
 
@@ -234,7 +244,6 @@ iframe {
   line-height: 1.2;
   text-align: center;
   text-transform: uppercase;
-
   display: block;
 }
 
