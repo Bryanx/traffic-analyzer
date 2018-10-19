@@ -3,7 +3,7 @@ package be.kdg.processor.fine.evaluation;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
-import be.kdg.processor.setting.SettingNotFoundException;
+import be.kdg.processor.setting.web.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
 import be.kdg.processor.shared.utils.DateUtil;
 import be.kdg.processor.vehicle.Vehicle;

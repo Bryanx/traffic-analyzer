@@ -1,6 +1,7 @@
-package be.kdg.processor.fine;
+package be.kdg.processor.fine.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import be.kdg.processor.fine.Fine;
+import be.kdg.processor.fine.FineService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

@@ -1,5 +1,7 @@
 package be.kdg.processor.setting;
 
+import be.kdg.processor.setting.web.SettingDTO;
+import be.kdg.processor.setting.web.SettingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

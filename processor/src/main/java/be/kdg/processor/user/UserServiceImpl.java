@@ -1,5 +1,6 @@
 package be.kdg.processor.user;
 
+import be.kdg.processor.user.web.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

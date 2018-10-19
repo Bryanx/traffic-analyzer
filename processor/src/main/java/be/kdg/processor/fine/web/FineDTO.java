@@ -1,6 +1,7 @@
-package be.kdg.processor.fine;
+package be.kdg.processor.fine.web;
 
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.fine.FineType;
 import be.kdg.processor.vehicle.Vehicle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class FineDTO {
     private String comment;
     private LocalDateTime creationDate;
     private boolean approved;
+    private int messageSize;
     @JsonIgnore
     private List<CameraMessage> cameraMessages = new ArrayList<>();
     @JsonIgnore

@@ -1,4 +1,4 @@
-package be.kdg.processor.setting;
+package be.kdg.processor.setting.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

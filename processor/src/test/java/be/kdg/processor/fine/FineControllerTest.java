@@ -1,5 +1,6 @@
 package be.kdg.processor.fine;
 
+import be.kdg.processor.fine.web.FineDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;

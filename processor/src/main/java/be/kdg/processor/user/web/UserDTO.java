@@ -1,4 +1,4 @@
-package be.kdg.processor.user;
+package be.kdg.processor.user.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

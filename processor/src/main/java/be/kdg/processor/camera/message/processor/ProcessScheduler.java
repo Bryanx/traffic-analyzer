@@ -1,7 +1,7 @@
 package be.kdg.processor.camera.message.processor;
 
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.setting.SettingNotFoundException;
+import be.kdg.processor.setting.web.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

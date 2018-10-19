@@ -37,7 +37,7 @@ public class CameraMessageProcessor implements Processor<CameraMessage> {
     }
 
     /**
-     * For each implementation of the FineEvaluationServie the cameraMessage is evaluated.
+     * For each implementation of the FineEvaluationService the cameraMessage is evaluated.
      */
     @Override
     public void validate(CameraMessage message) {

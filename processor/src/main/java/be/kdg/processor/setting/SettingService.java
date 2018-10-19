@@ -1,5 +1,7 @@
 package be.kdg.processor.setting;
 
+import be.kdg.processor.setting.web.SettingNotFoundException;
+
 import java.util.List;
 
 public interface SettingService {

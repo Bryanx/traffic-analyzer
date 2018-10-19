@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Received CamerMessage from the queue.
+ * Receives CamerMessages from the queue.
  * The CameraMessages can be buffered in the database or in memory.
  */
 @RequiredArgsConstructor

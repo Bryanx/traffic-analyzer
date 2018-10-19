@@ -1,5 +1,7 @@
-package be.kdg.processor.user;
+package be.kdg.processor.user.web;
 
+import be.kdg.processor.user.User;
+import be.kdg.processor.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) throws UserNotFoundException {
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         userService.save(user);
         return new ResponseEntity<>(modelMapper.map(user,UserDTO.class), HttpStatus.OK);

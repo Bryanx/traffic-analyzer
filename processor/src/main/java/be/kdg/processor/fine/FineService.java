@@ -1,5 +1,6 @@
 package be.kdg.processor.fine;
 
+import be.kdg.processor.fine.web.FineException;
 import be.kdg.processor.vehicle.Vehicle;
 
 import java.time.LocalDateTime;

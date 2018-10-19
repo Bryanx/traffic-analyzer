@@ -1,5 +1,7 @@
-package be.kdg.processor.setting;
+package be.kdg.processor.setting.web;
 
+import be.kdg.processor.setting.Setting;
+import be.kdg.processor.setting.SettingService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
