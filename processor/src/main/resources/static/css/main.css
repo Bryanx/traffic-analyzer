@@ -87,11 +87,6 @@ ul, li {
 input {
 	outline: none;
 	border: none;
-    animation-name: fadeInRight;
-    animation-duration: .5s;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-out;
-    animation-fill-mode: forwards;
 }
 
 textarea {
@@ -198,17 +193,41 @@ iframe {
   background-color: rgba(255,255,255,0.9);
 }
 
+.wrap-extra {
+  font-size: 11px;
+  color: white;
+  position: absolute;
+  width: 200px;
+  margin-left: 360px;
+  top: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 30px;
+  background: #1270A5;
+  background: -webkit-linear-gradient(bottom right, #f12711, #f5af19);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(bottom right, #f12711, #f5af19);
+}
+
+.wrap-extra p {
+  color: white;
+  font-size: 11px;
+}
+
+.wrap-extra header {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
 .wrap-login100 {
   width: 500px;
   border-radius: 10px;
   overflow: hidden;
   padding: 55px 55px 37px 55px;
-  background: #56ab2f;
+  background: #1cb5e0;
   background: -webkit-linear-gradient(bottom right, #000046, #1cb5e0);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(bottom right, #000046, #1cb5e0);
-  animation: .5s ease-out 0s 1 fadeIn;
+  z-index: 9999;
 }
-
 
 /*------------------------------------------------------------------
 [ Form ]*/

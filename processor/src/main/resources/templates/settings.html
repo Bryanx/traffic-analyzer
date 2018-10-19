@@ -8,13 +8,25 @@
 
 <div class="limiter">
     <div class="container-login100">
+        <div class="wrap-extra animated fadeInLeft delay-ps">
+            <header class="p-b-8">
+                Live stats
+            </header>
+            <p>Messages received:</p>
+            <p>112</p>
+            <p>Messages processed:</p>
+            <p>112</p>
+            <p>Total fines:</p>
+            <p>6</p>
+            <p class="p-t-8">Stop - Start</p>
+        </div>
         <div class="wrap-login100">
             <form class="login100-form validate-form" th:action="@{/settings}" th:object="${settings}" method="post">
                 <span class="login100-form-title p-b-34 p-t-15 m-b-15">Settings</span>
 
                 <div th:each="setting, itemStat : *{settingDTOs}" class="wrap-input100 validate-input">
                     <label class="label-input" th:text="*{settingDTOs[__${itemStat.index}__].description}"></label>
-                    <input class="input100" type="text" th:field="*{settingDTOs[__${itemStat.index}__].value}">
+                    <input class="input100 animated fadeInRight faster" type="text" th:field="*{settingDTOs[__${itemStat.index}__].value}">
                     <span class="focus-input100" data-placeholder="&#xf1c6;"></span>
                     <div>
                         <input hidden th:field="*{settingDTOs[__${itemStat.index}__].key}">
