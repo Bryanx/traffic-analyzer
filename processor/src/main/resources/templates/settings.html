@@ -9,9 +9,9 @@
 <div class="limiter">
     <div class="container-login100">
         <ul class="wrap-nav-parent">
-            <li class="wrap-nav animated slideInUp delay-ps1-25s"><a href="/users">Users</a></li>
-            <li class="wrap-nav animated slideInUp delay-ps1-50s"><a href="/fines">Fines</a></li>
-            <li class="wrap-nav animated slideInUp delay-ps1-75s"><a href="/settings">Settings</a></li>
+            <li class="wrap-nav animated slideInUp delay-ps1-25s" th:onclick="|window.location.href='@{/users}'|">Users</li>
+            <li class="wrap-nav animated slideInUp delay-ps1-50s" th:onclick="|window.location.href='@{/fines}'|">Fines</li>
+            <li class="wrap-nav animated slideInUp delay-ps1-75s" th:onclick="|window.location.href='@{/settings}'|">Settings</li>
         </ul>
         <div class="wrap-extra animated slideInLeft delay-ps">
             <header class="p-b-8">
@@ -40,11 +40,11 @@
                 </div>
 
                 <div class="container-login100-form-btn p-t-40">
-                    <button type="submit" th:value="Save" class="login100-form-btn">
+                    <button th:type="submit" th:value="Save" class="login100-form-btn">
                         Save
                     </button>
-                    <button class="login100-form-btn m-l-10">
-                        <a href="/">Back</a>
+                    <button th:type="button" class="login100-form-btn m-l-10" th:onclick="|window.location.href='@{/}'|">
+                        Back
                     </button>
                 </div>
             </form>

@@ -1,6 +1,17 @@
 package be.kdg.processor.fine;
 
 public enum FineType {
-    EMISSION,
-    SPEED
+    EMISSION("Emission"),
+    SPEED("Speed");
+
+    private String string;
+
+    FineType(String string) {
+        this.string = string;
+    }
+
+    @Override
+    public String toString() {
+        return string;
+    }
 }

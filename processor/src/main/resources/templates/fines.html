@@ -29,25 +29,25 @@
             <span class="login100-form-title p-b-34 p-t-15 m-b-15">Fines</span>
             <table class="table table-hover text-white">
                 <colgroup>
+                    <col style="width: 15%">
                     <col style="width: 25%">
-                    <col style="width: 25%">
-                    <col style="width: 25%">
+                    <col style="width: 35%">
                     <col style="width: 25%">
                 </colgroup>
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Type</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Vehicle</th>
                     <th scope="col">Approved</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="fine, itemStat : *{fines}">
                     <th scope="row" th:text="*{fines[__${itemStat.index}__].id}"></th>
-                    <td th:text="*{fines[__${itemStat.index}__].type}"></td>
-                    <td th:text="*{fines[__${itemStat.index}__].price}"></td>
-                    <td><input type="checkbox" th:checked="*{fines[__${itemStat.index}__].approved}"/></td>
+                    <td th:text="*{fines[__${itemStat.index}__].type.toString()}"></td>
+                    <td th:text="*{fines[__${itemStat.index}__].vehicle.plateId}"></td>
+                    <td><input type="checkbox" th:checked="*{fines[__${itemStat.index}__].approved}"></td>
                 </tr>
                 </tbody>
             </table>

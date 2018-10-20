@@ -148,6 +148,11 @@ iframe {
   line-height: 1.5;
 }
 
+.table td, .table th {
+  vertical-align: middle !important;
+  border-top: none !important;
+}
+
 
 /*//////////////////////////////////////////////////////////////////
 [ login ]*/

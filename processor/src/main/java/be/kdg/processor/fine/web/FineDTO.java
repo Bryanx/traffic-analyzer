@@ -2,7 +2,7 @@ package be.kdg.processor.fine.web;
 
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.fine.FineType;
-import be.kdg.processor.vehicle.Vehicle;
+import be.kdg.processor.vehicle.web.VehicleDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +29,7 @@ public class FineDTO {
     private int messageSize;
     @JsonIgnore
     private List<CameraMessage> cameraMessages = new ArrayList<>();
-    @JsonIgnore
-    private Vehicle vehicle;
+    private VehicleDTO vehicle;
 
     public FineDTO(Integer id, FineType type, double price, int euroNorm, int actualNorm) {
         this.id = id;
