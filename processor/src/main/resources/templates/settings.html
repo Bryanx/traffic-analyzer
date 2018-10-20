@@ -8,7 +8,12 @@
 
 <div class="limiter">
     <div class="container-login100">
-        <div class="wrap-extra animated fadeInLeft delay-ps">
+        <ul class="wrap-nav-parent">
+            <li class="wrap-nav animated slideInUp delay-ps1-25s"><a href="/users">Users</a></li>
+            <li class="wrap-nav animated slideInUp delay-ps1-50s"><a href="/fines">Fines</a></li>
+            <li class="wrap-nav animated slideInUp delay-ps1-75s"><a href="/settings">Settings</a></li>
+        </ul>
+        <div class="wrap-extra animated slideInLeft delay-ps">
             <header class="p-b-8">
                 Live stats
             </header>
@@ -26,7 +31,7 @@
 
                 <div th:each="setting, itemStat : *{settingDTOs}" class="wrap-input100 validate-input">
                     <label class="label-input" th:text="*{settingDTOs[__${itemStat.index}__].description}"></label>
-                    <input class="input100 animated fadeInRight faster" type="text" th:field="*{settingDTOs[__${itemStat.index}__].value}">
+                    <input class="input100" type="text" th:field="*{settingDTOs[__${itemStat.index}__].value}">
                     <span class="focus-input100" data-placeholder="&#xf1c6;"></span>
                     <div>
                         <input hidden th:field="*{settingDTOs[__${itemStat.index}__].key}">

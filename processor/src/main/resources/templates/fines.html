@@ -1,0 +1,59 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <object th:include="fragments/head :: head" th:remove="tag"/>
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-login100">
+        <ul class="wrap-nav-parent">
+            <li class="wrap-nav animated slideInUp delay-ps1-25s"><a href="/users">Users</a></li>
+            <li class="wrap-nav animated slideInUp delay-ps1-50s"><a href="/fines">Fines</a></li>
+            <li class="wrap-nav animated slideInUp delay-ps1-75s"><a href="/settings">Settings</a></li>
+        </ul>
+        <div class="wrap-extra animated slideInLeft delay-ps">
+            <header class="p-b-8">
+                Live stats
+            </header>
+            <p>Messages received:</p>
+            <p>112</p>
+            <p>Messages processed:</p>
+            <p>112</p>
+            <p>Total fines:</p>
+            <p>6</p>
+            <p class="p-t-8">Stop - Start</p>
+        </div>
+        <div class="wrap-login100">
+            <span class="login100-form-title p-b-34 p-t-15 m-b-15">Fines</span>
+            <table class="table table-hover text-white">
+                <colgroup>
+                    <col style="width: 25%">
+                    <col style="width: 25%">
+                    <col style="width: 25%">
+                    <col style="width: 25%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Approved</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="fine, itemStat : *{fines}">
+                    <th scope="row" th:text="*{fines[__${itemStat.index}__].id}"></th>
+                    <td th:text="*{fines[__${itemStat.index}__].type}"></td>
+                    <td th:text="*{fines[__${itemStat.index}__].price}"></td>
+                    <td><input type="checkbox" th:checked="*{fines[__${itemStat.index}__].approved}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

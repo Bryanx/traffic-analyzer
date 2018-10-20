@@ -68,7 +68,7 @@ public class ProcessScheduler implements SchedulingConfigurer {
             bufferTime = settingService.findByKey(BUFFER_TIME_KEY).getValue();
             return oldBufferTime != bufferTime;
         } catch (SettingNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("Setting not found {}", BUFFER_TIME_KEY);
         }
         return true;
     }

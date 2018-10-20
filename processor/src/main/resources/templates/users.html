@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <object th:include="fragments/head :: head" th:remove="tag"/>
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-login100">
+        <ul class="wrap-nav-parent">
+            <li class="wrap-nav animated fadeInUp delay-ps"><a href="/users">Users</a></li>
+            <li class="wrap-nav animated fadeInUp delay-ps"><a href="/fines">Fines</a></li>
+            <li class="wrap-nav animated fadeInUp delay-ps"><a href="/settings">Settings</a></li>
+        </ul>
+        <div class="wrap-extra animated fadeInLeft delay-ps">
+            <header class="p-b-8">
+                Live stats
+            </header>
+            <p>Messages received:</p>
+            <p>112</p>
+            <p>Messages processed:</p>
+            <p>112</p>
+            <p>Total fines:</p>
+            <p>6</p>
+            <p class="p-t-8">Stop - Start</p>
+        </div>
+        <div class="wrap-login100">
+            <form class="login100-form validate-form">
+                <span class="login100-form-title p-b-34 p-t-15 m-b-15">Users</span>
+
+                <!--<div th:each="setting, itemStat : *{settingDTOs}" class="wrap-input100 validate-input">-->
+                    <!--<label class="label-input" th:text="*{settingDTOs[__${itemStat.index}__].description}"></label>-->
+                    <!--<input class="input100 animated fadeInRight faster" type="text" th:field="*{settingDTOs[__${itemStat.index}__].value}">-->
+                    <!--<span class="focus-input100" data-placeholder="&#xf1c6;"></span>-->
+                    <!--<div>-->
+                        <!--<input hidden th:field="*{settingDTOs[__${itemStat.index}__].key}">-->
+                        <!--<input hidden th:field="*{settingDTOs[__${itemStat.index}__].description}">-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--<div class="container-login100-form-btn p-t-40">-->
+                    <!--<button type="submit" th:value="Save" class="login100-form-btn">-->
+                        <!--Save-->
+                    <!--</button>-->
+                    <!--<button class="login100-form-btn m-l-10">-->
+                        <!--<a href="/">Back</a>-->
+                    <!--</button>-->
+                <!--</div>-->
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
