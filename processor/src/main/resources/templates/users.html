@@ -9,18 +9,7 @@
 <div class="limiter">
     <div class="container-login100">
         <object th:include="fragments/nav :: nav"/>
-        <div class="wrap-extra animated fadeInLeft delay-ps">
-            <header class="p-b-8">
-                Live stats
-            </header>
-            <p>Messages received:</p>
-            <p>112</p>
-            <p>Messages processed:</p>
-            <p>112</p>
-            <p>Total fines:</p>
-            <p>6</p>
-            <p class="p-t-8">Stop - Start</p>
-        </div>
+        <object th:include="fragments/livestats :: livestats"/>
         <div class="wrap-login100">
             <span class="login100-form-title p-b-34 p-t-15 m-b-15">Users</span>
             <table class="table table-hover text-white">

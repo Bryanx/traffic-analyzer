@@ -260,8 +260,8 @@ iframe {
   color: white;
   position: absolute;
   width: 200px;
-  margin-left: 360px;
-  margin-top:-237px;
+  margin-left: 20px;
+  margin-top: -350px;
   border-radius: 10px;
   overflow: hidden;
   padding: 30px;
@@ -290,8 +290,8 @@ iframe {
   overflow: hidden;
   padding: 55px 55px 37px 55px;
   background: #1cb5e0;
-  background: -webkit-linear-gradient(bottom right, #000046, #1cb5e0);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(bottom right, #000046, #1cb5e0);
+  background-image: repeating-radial-gradient(ellipse farthest-corner at left top,#1cb5e0 0%, #000046 100%);
+  background-size: 100% 100%;
   z-index: 9999;
   box-shadow: 2px 2px 3px rgba(0,0,0,.3);
 }
