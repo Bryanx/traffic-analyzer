@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service("userService")
 @Transactional
@@ -25,5 +27,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(int id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

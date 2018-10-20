@@ -174,27 +174,42 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background-image: url("../images/bg-01.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   position: relative;
-  z-index: 1;  
+  z-index: 1;
+  background-image: repeating-radial-gradient(ellipse farthest-corner at left top,rgb(255, 255, 255) 0%, rgb(255, 255, 255) 15.6%, rgb(88, 88, 88) 100%);
+  background-size: 200% 200%;
+}
+/* IE8- CSS hack */
+@media \0screen\,screen\9 {
+  .gradient {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffffff",endColorstr="#ffa6a6a6",GradientType=0);
+  }
 }
 
-.container-login100::before {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(255,255,255,0.9);
+/* IE8- CSS hack */
+@media \0screen\,screen\9 {
+  .gradient {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffffff",endColorstr="#ffa6a6a6",GradientType=0);
+  }
+}
+
+
+/* IE8- CSS hack */
+@media \0screen\,screen\9 {
+  .gradient {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffffff",endColorstr="#ffebebeb",GradientType=0);
+  }
+}
+
+
+@keyframes AnimationName {
+  0%{background-position:0% 2%}
+  50%{background-position:100% 99%}
+  100%{background-position:0% 2%}
 }
 
 .wrap-nav-parent {
+  margin-right: 500px;
   transform: rotate(-90deg);
   text-transform: uppercase;
   text-align: center;
@@ -246,13 +261,14 @@ iframe {
   position: absolute;
   width: 200px;
   margin-left: 360px;
-  margin-top:-200px;
+  margin-top:-237px;
   border-radius: 10px;
   overflow: hidden;
   padding: 30px;
   background: #f12711;
   background: -webkit-linear-gradient(bottom right, #f12711, #f5af19);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(bottom right, #f12711, #f5af19);
+  box-shadow: 2px 2px 3px rgba(0,0,0,.3);
 }
 
 .wrap-extra p {
@@ -266,6 +282,7 @@ iframe {
 }
 
 .wrap-login100 {
+  position: absolute;
   min-height: 700px;
   max-height: 700px;
   width: 500px;
@@ -276,6 +293,7 @@ iframe {
   background: -webkit-linear-gradient(bottom right, #000046, #1cb5e0);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(bottom right, #000046, #1cb5e0);
   z-index: 9999;
+  box-shadow: 2px 2px 3px rgba(0,0,0,.3);
 }
 
 /*------------------------------------------------------------------

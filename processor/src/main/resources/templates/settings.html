@@ -8,11 +8,7 @@
 
 <div class="limiter">
     <div class="container-login100">
-        <ul class="wrap-nav-parent">
-            <li class="wrap-nav animated slideInUp delay-ps1-25s" th:onclick="|window.location.href='@{/users}'|">Users</li>
-            <li class="wrap-nav animated slideInUp delay-ps1-50s" th:onclick="|window.location.href='@{/fines}'|">Fines</li>
-            <li class="wrap-nav animated slideInUp delay-ps1-75s" th:onclick="|window.location.href='@{/settings}'|">Settings</li>
-        </ul>
+        <object th:include="fragments/nav :: nav"/>
         <div class="wrap-extra animated slideInLeft delay-ps">
             <header class="p-b-8">
                 Live stats
