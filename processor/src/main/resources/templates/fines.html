@@ -28,7 +28,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="fine, itemStat : *{fines}">
+                <tr class="clickable" th:each="fine, itemStat : *{fines}" th:onclick="|window.location.href='@{/fines/details/{id}/(id=*{fines[__${itemStat.index}__].id})}'|">
                     <th scope="row" th:text="*{fines[__${itemStat.index}__].id}"></th>
                     <td th:text="*{fines[__${itemStat.index}__].type.toString()}"></td>
                     <td th:text="*{fines[__${itemStat.index}__].vehicle.plateId}"></td>

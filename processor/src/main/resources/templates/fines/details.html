@@ -1,0 +1,23 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <object th:include="fragments/head :: head" th:remove="tag"/>
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-login100">
+        <object th:include="fragments/nav :: nav"/>
+        <object th:include="fragments/livestats :: livestats"/>
+        <div class="wrap-login100">
+            <span class="login100-form-title p-b-34 p-t-15 m-b-15">
+                <span th:text="${fine.id}"></span>:
+                <span th:text="${fine.type}"></span> fine
+            </span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

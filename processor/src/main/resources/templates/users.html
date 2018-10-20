@@ -25,7 +25,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="user-row" th:each="user, itemStat : *{users}" th:onclick="|window.location.href='@{/users/details/{id}/(id=*{users[__${itemStat.index}__].id})}'|">
+                <tr class="clickable" th:each="user, itemStat : *{users}" th:onclick="|window.location.href='@{/users/details/{id}/(id=*{users[__${itemStat.index}__].id})}'|">
                     <th scope="row" th:text="*{users[__${itemStat.index}__].id}"></th>
                     <td th:text="*{users[__${itemStat.index}__].username}"></td>
                 </tr>
