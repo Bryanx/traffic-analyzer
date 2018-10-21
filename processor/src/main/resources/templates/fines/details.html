@@ -11,10 +11,41 @@
         <object th:include="fragments/nav :: nav"/>
         <object th:include="fragments/livestats :: livestats"/>
         <div class="wrap-login100">
+            <form class="login100-form validate-form" th:action="@{/fines/__${fine.id}__}" th:object="${fine}"
+                  method="post">
             <span class="login100-form-title p-b-34 p-t-15 m-b-15">
                 <span th:text="${fine.id}"></span>:
                 <span th:text="${fine.type}"></span> fine
             </span>
+                <div class="wrap-input100 validate-input">
+                    <label class="label-input">Price</label>
+                    <input class="input100" type="text" th:field="*{price}">
+                    <span class="focus-input100" data-placeholder="&#xf19a;"></span>
+                </div>
+                <div class="wrap-input100 validate-input">
+                    <label class="label-input">Comment</label>
+                    <input class="input100" type="text" th:field="*{comment}">
+                    <span class="focus-input100" data-placeholder="&#xf263;"></span>
+                </div>
+                <div class="approve-checkbox">
+                Approve this fine?
+                <label class="m-l-10">
+                    <input type="checkbox" th:field="*{approved}">
+                </label>
+                </div>
+                <div>
+                    <input hidden th:field="*{id}">
+                </div>
+                <div class="container-login100-form-btn p-t-40">
+                    <button th:type="submit" th:value="Save" class="login100-form-btn">
+                        Save
+                    </button>
+                    <button th:type="button" class="login100-form-btn m-l-10"
+                            th:onclick="|window.location.href='@{/fines}'|">
+                        Back
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
