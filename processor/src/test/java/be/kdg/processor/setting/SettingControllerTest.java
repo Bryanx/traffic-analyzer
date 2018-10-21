@@ -1,6 +1,7 @@
 package be.kdg.processor.setting;
 
 import be.kdg.processor.setting.web.SettingDTO;
+import be.kdg.processor.setting.web.SettingNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ public class SettingControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void getSetting() throws Exception {
+    public void getSetting() throws Exception, SettingNotFoundException {
         Setting setting = settingService.save(SETTING);
         mockMvc.perform(get("/api/settings/" + setting.getKey())
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -46,7 +47,7 @@ public class SettingControllerTest {
     }
 
     @Test
-    public void updateSetting() throws Exception {
+    public void updateSetting() throws Exception, SettingNotFoundException {
         Setting setting = settingService.save(SETTING);
         String requestJson = objectMapper.writeValueAsString(SETTING_DTO);
         mockMvc.perform(patch("/api/settings/" + setting.getKey() )

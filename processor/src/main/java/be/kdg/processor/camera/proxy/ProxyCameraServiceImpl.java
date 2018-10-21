@@ -8,6 +8,7 @@ import be.kdg.sa.services.CameraServiceProxy;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,19 +20,21 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyCameraServiceImpl.class);
     private final CameraServiceProxy cameraServiceProxy;
     private final IoConverter ioConverter;
+    private final RetryTemplate retryTemplate;
 
-//    @Cacheable("cameras")
+    //    @Cacheable("cameras")
     @Override
     public Optional<Camera> fetchCamera(CameraMessage message) {
         try {
-            String json = cameraServiceProxy.get(message.getCameraId());
+            String json = retryTemplate.execute(ctx -> {
+                if (ctx.getRetryCount() > 1) LOGGER.debug("Retrying camera, count: " + ctx.getRetryCount() + ". For message {}", message);
+                return cameraServiceProxy.get(message.getCameraId());
+            });
             Optional<Camera> optionalCamera = ioConverter.readJson(json, Camera.class);
             optionalCamera.ifPresent(camera -> camera.addCameraMessage(message));
             return optionalCamera;
-        } catch (IOException e) {
-            LOGGER.warn("Camera with id {} forced a communication error.", message.getCameraId());
-        } catch (CameraNotFoundException e) {
-            LOGGER.warn("Camera with id {} not found.", message.getCameraId());
+        } catch (IOException | CameraNotFoundException e) {
+            LOGGER.warn(e.getMessage());
         }
         return Optional.empty();
     }

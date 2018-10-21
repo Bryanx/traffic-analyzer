@@ -7,6 +7,7 @@ import be.kdg.sa.services.LicensePlateServiceProxy;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,17 +19,19 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyLicensePlateServiceImpl.class);
     private final LicensePlateServiceProxy licensePlateServiceProxy;
     private final IoConverter ioConverter;
+    private final RetryTemplate retryTemplate;
 
-//    @Cacheable("vehicles")
+    //    @Cacheable("vehicles")
     @Override
     public Optional<Vehicle> fetchVehicle(String plate) {
         try {
-            String json = licensePlateServiceProxy.get(plate);
+            String json = retryTemplate.execute(ctx -> {
+                if (ctx.getRetryCount() > 1) LOGGER.debug("Retrying vehicle {}, retry count: " + ctx.getRetryCount(), plate);
+                return licensePlateServiceProxy.get(plate);
+            });
             return ioConverter.readJson(json, Vehicle.class);
-        } catch (IOException e) {
-            LOGGER.warn("Licenseplate proxy with id {} forced a communication error.", plate);
-        } catch (LicensePlateNotFoundException e) {
-            LOGGER.warn("Licenseplate with id {} not found.", plate);
+        } catch (IOException | LicensePlateNotFoundException e) {
+            LOGGER.warn(e.getMessage());
         }
         return Optional.empty();
     }

@@ -29,7 +29,7 @@ public class SettingWebController {
     }
 
     @PostMapping("/settings")
-    public ModelAndView updateSettings(@ModelAttribute SettingDTOwrapper settings) {
+    public ModelAndView updateSettings(@ModelAttribute SettingDTOwrapper settings) throws SettingNotFoundException {
         for (SettingDTO settingDTO : settings.getSettingDTOs()) {
             settingService.save(modelMapper.map(settingDTO, Setting.class));
         }
