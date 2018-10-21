@@ -11,7 +11,7 @@
         <object th:include="fragments/nav :: nav"/>
         <object th:include="fragments/livestats :: livestats"/>
         <div class="wrap-login100">
-            <form class="login100-form validate-form" th:action="@{/fines/__${fine.id}__}" th:object="${fine}"
+            <form class="login100-form validate-form" th:action="@{/saveFine}" th:object="${fine}"
                   method="post">
             <span class="login100-form-title p-b-34 p-t-15 m-b-15">
                 <span th:text="${fine.id}"></span>:

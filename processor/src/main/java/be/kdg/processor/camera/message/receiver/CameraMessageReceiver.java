@@ -25,7 +25,7 @@ public class CameraMessageReceiver implements Receiver<CameraMessage> {
     private final CameraService cameraService;
 
     @Override
-    @RabbitListener(queues = "camera-message-queue")
+    @RabbitListener(id = "cameraMessageReceiver", queues = "camera-message-queue")
     public void receive(@Payload CameraMessage message) {
         LOGGER.info("Received message: {}", message);
         bufferInDatabase(message);

@@ -19,13 +19,15 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> getSetting(@PathVariable Integer id) throws UserNotFoundException {
+    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) throws UserNotFoundException {
+        LOGGER.info("Get request for user with id: {}", id);
         User user = userService.findById(id);
         return new ResponseEntity<>(modelMapper.map(user, UserDTO.class), HttpStatus.OK);
     }
 
     @PostMapping("/users")
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
+        LOGGER.info("Post request for create user: {}", userDTO);
         User user = modelMapper.map(userDTO, User.class);
         userService.save(user);
         return new ResponseEntity<>(modelMapper.map(user, UserDTO.class), HttpStatus.CREATED);

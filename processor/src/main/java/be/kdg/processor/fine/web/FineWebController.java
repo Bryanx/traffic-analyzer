@@ -5,9 +5,15 @@ import be.kdg.processor.fine.FineService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @Controller
@@ -27,13 +33,16 @@ public class FineWebController {
         return new ModelAndView("fines/details", "fine", fine);
     }
 
-    @PostMapping("/fines/{id}")
-    public ModelAndView updateFine(@PathVariable int id, @ModelAttribute FineDTO fineDTO) throws FineException {
-        Fine fine = fineService.findById(id);
-        fine.setApproved(fineDTO.isApproved());
-        fine.setComment(fineDTO.getComment());
-        fine.setPrice(fineDTO.getPrice());
-        Fine fineOut = fineService.save(fine);
-        return new ModelAndView(new RedirectView("/fines"), "fineOut", fineOut);
+    @PostMapping("/saveFine")
+    public ModelAndView updateFine(@Valid @ModelAttribute FineDTO fineDTO, BindingResult errors) throws FineException {
+        if (!errors.hasErrors()) {
+            Fine fine = fineService.findById(fineDTO.getId());
+            fine.setApproved(fineDTO.isApproved());
+            fine.setComment(fineDTO.getComment());
+            fine.setPrice(fineDTO.getPrice());
+            Fine fineOut = fineService.save(fine);
+            return new ModelAndView(new RedirectView("/fines"), "fineOut", fineOut);
+        }
+        return new ModelAndView(new RedirectView("/fines/details/"+fineDTO.getId()));
     }
 }
