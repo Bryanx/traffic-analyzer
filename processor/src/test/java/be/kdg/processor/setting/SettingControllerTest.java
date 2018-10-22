@@ -3,6 +3,7 @@ package be.kdg.processor.setting;
 import be.kdg.processor.setting.web.SettingDTO;
 import be.kdg.processor.setting.web.SettingNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,14 @@ public class SettingControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Before
+    public void setUp() throws SettingNotFoundException {
+        settingService.save(SETTING);
+    }
+
     @Test
     public void getSetting() throws Exception, SettingNotFoundException {
-        Setting setting = settingService.save(SETTING);
+        Setting setting = settingService.findByKey("test");
         mockMvc.perform(get("/api/settings/" + setting.getKey())
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -48,7 +54,7 @@ public class SettingControllerTest {
 
     @Test
     public void updateSetting() throws Exception, SettingNotFoundException {
-        Setting setting = settingService.save(SETTING);
+        Setting setting = settingService.findByKey("test");
         String requestJson = objectMapper.writeValueAsString(SETTING_DTO);
         mockMvc.perform(patch("/api/settings/" + setting.getKey() )
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
