@@ -8,6 +8,7 @@ import be.kdg.sa.services.CameraServiceProxy;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +23,13 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
     private final IoConverter ioConverter;
     private final RetryTemplate retryTemplate;
 
-    //    @Cacheable("cameras")
     @Override
     public Optional<Camera> fetchCamera(CameraMessage message) {
         try {
             String json = retryTemplate.execute(ctx -> {
-                if (ctx.getRetryCount() > 1) LOGGER.debug("Retrying camera, count: " + ctx.getRetryCount() + ". For message {}", message);
-                return cameraServiceProxy.get(message.getCameraId());
+                if (ctx.getRetryCount() > 1)
+                    LOGGER.debug("Retrying camera, count: " + ctx.getRetryCount() + ". For message {}", message);
+                return fetchCameraFromProxy(message.getCameraId());
             });
             Optional<Camera> optionalCamera = ioConverter.readJson(json, Camera.class);
             optionalCamera.ifPresent(camera -> camera.addCameraMessage(message));
@@ -37,6 +38,11 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
             LOGGER.warn(e.getMessage());
         }
         return Optional.empty();
+    }
+
+    @Cacheable("cameras")
+    public String fetchCameraFromProxy(int id) throws IOException {
+        return cameraServiceProxy.get(id);
     }
 
 }
