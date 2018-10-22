@@ -38,6 +38,7 @@ dependencies {
     compile group: 'org.glassfish', name: 'javax.json', version: '1.0.4'
     compile group: 'org.springframework', name: 'spring-oxm', version: '3.0.4.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.5.RELEASE'
+    compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
@@ -47,5 +48,6 @@ dependencies {
     compileOnly('org.projectlombok:lombok:1.18.2')
     runtime('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.security:spring-security-test')
     testCompile('javax.xml.bind:jaxb-api')
 }

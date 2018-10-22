@@ -19,7 +19,7 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) throws UserNotFoundException {
+    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) throws UserException {
         LOGGER.info("Get request for user with id: {}", id);
         User user = userService.findById(id);
         return new ResponseEntity<>(modelMapper.map(user, UserDTO.class), HttpStatus.OK);
