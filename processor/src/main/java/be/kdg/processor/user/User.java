@@ -1,7 +1,6 @@
 package be.kdg.processor.user;
 
 import be.kdg.processor.user.roles.Role;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -69,7 +66,7 @@ public class User implements UserDetails {
     }
     @Override
     public int hashCode() {
-        int result = userId != null ? this.hashCode() : 0;
+        int result = 0;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (encryptedPassword != null ? encryptedPassword.hashCode() : 0);
         result = 31 * result + (roles != null ? roles.hashCode() : 0);

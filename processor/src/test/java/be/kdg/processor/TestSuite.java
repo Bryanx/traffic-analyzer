@@ -7,6 +7,7 @@ import be.kdg.processor.fine.evaluation.SpeedFineServiceTest;
 import be.kdg.processor.setting.SettingControllerTest;
 import be.kdg.processor.shared.converters.IoConverterTest;
 import be.kdg.processor.shared.utils.DateUtilTest;
+import be.kdg.processor.user.UserControllerTest;
 import be.kdg.processor.vehicle.ProxyLicensePlateServiceImplTest;
 import be.kdg.processor.vehicle.VehicleServiceImplTest;
 import org.junit.runner.RunWith;
@@ -22,7 +23,8 @@ import org.junit.runners.Suite;
         SettingControllerTest.class,
         VehicleServiceImplTest.class,
         SpeedFineServiceTest.class,
-        EmissionFineServiceTest.class
+        EmissionFineServiceTest.class,
+        UserControllerTest.class
 })
 public class TestSuite {
 }
