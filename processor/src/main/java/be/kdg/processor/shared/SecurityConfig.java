@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -44,12 +45,12 @@ public class SecurityConfig {
                     .defaultSuccessUrl("/settings")
                     .failureForwardUrl("/login?error=true")
                     .and()
-                    .logout().logoutSuccessUrl("/login")
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
                     .and()
-                    .csrf().disable();
-            //TODO: Fix csrf
-            //.csrf().ignoringAntMatchers("/h2-console/**").and().headers().frameOptions().sameOrigin();
-            http.authorizeRequests().antMatchers("/resources/**", "/h2_console*").permitAll().anyRequest().permitAll();
+                    .csrf().ignoringAntMatchers("/h2-console/**").and().headers().frameOptions().sameOrigin();
+            http.authorizeRequests().antMatchers("/resources/**").permitAll().anyRequest().permitAll();
         }
     }
 }
