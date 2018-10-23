@@ -70,8 +70,8 @@ public class FineServiceImpl implements FineService {
     /**
      * Checks if there is a fine that was created in the emission-fine-delay time period.
      *
-     * @param vehicle
-     * @return
+     * @param vehicle Vehicle to be checked.
+     * @return true or false
      */
     @Override
     public boolean checkIfAlreadyHasEmissionFine(Vehicle vehicle) throws ProcessorException {

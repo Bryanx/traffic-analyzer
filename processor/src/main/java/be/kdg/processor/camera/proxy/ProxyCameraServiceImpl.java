@@ -35,7 +35,7 @@ public class ProxyCameraServiceImpl implements ProxyCameraService {
             camera.addCameraMessage(message);
             return camera;
         } catch (IOException | CameraNotFoundException e) {
-            throw new ProcessorException(e.getMessage());
+            throw new ProcessorException(e.getMessage(), e);
         }
     }
 

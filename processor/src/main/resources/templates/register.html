@@ -2,7 +2,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <object th:include="fragments/head :: head" th:remove="tag"/>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
 </head>
 <body>
 
@@ -11,7 +11,7 @@
         <div class="wrap-login100">
             <form class="login100-form validate-form" th:action="@{/register}" th:object="${user}" method="post">
 					<span class="login100-form-logo">
-						<i class="zmdi zmdi-landscape"></i>
+						<i class="zmdi zmdi-camera-alt"></i>
 					</span>
                 <span class="login100-form-title p-b-34 p-t-27">Register</span>
 

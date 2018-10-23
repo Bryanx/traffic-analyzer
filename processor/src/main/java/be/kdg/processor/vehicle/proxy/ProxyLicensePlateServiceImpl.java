@@ -31,7 +31,7 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
             });
             return ioConverter.readJson(json, Vehicle.class);
         } catch (IOException | LicensePlateNotFoundException e) {
-            throw new ProcessorException(e.getMessage());
+            throw new ProcessorException(e.getMessage(), e);
         }
     }
 

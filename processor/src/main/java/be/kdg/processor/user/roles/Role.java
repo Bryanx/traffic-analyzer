@@ -37,7 +37,7 @@ public abstract class Role {
         List<Role> roles = user.getRoles();
         Optional<T> result = (Optional<T>) roles
                 .stream()
-                .filter(r -> role.isInstance(r))
+                .filter(role::isInstance)
                 .findAny();
         if (!result.isPresent()) throw new ProcessorException("Incorrect role for user");
         return result.get();

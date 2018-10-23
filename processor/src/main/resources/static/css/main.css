@@ -176,8 +176,7 @@ iframe {
   padding: 15px;
   position: relative;
   z-index: 1;
-  background-image: repeating-radial-gradient(ellipse farthest-corner at left top,rgb(255, 255, 255) 0%, rgb(255, 255, 255) 15.6%, rgb(88, 88, 88) 100%);
-  background-size: 200% 200%;
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 /* IE8- CSS hack */
 @media \0screen\,screen\9 {
@@ -294,6 +293,13 @@ iframe {
   background-size: 100% 100%;
   z-index: 9999;
   box-shadow: 2px 2px 3px rgba(0,0,0,.3);
+}
+
+.logo {
+  background: url(../images/logo.png);
+  height: 75px;
+  width: 75px;
+  background-size: contain;
 }
 
 .clickable {

@@ -4,7 +4,7 @@ public enum FineType {
     EMISSION("Emission"),
     SPEED("Speed");
 
-    private String string;
+    private final String string;
 
     FineType(String string) {
         this.string = string;
