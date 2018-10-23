@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,8 +14,11 @@ import java.util.List;
 @Data
 public class UserDTO {
     private int id;
+    @NotNull
     private String email;
+    @NotNull
     private String username;
+    @NotNull
     private String encryptedPassword;
     @JsonIgnore
     private List<RoleType> roleTypes;
