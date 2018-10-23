@@ -1,4 +1,14 @@
 # Traffic Analyzer
+## Custom Fine Evaluations
+To create a custom fine evaluation follow these steps:
+- Create a class that extends _FineEvaluationService_.
+- Override "checkForFine(message)" and check if the message should get a fine.
+- If it does, create a new Fine with "createFine".
+
+For fines based on a segment:
+- Call "getConnectedCameraMessage" to find the corresponding message in the same segment.
+- Proceed by checking both messages and optionally calling "createFine".
+
 ## Used articles
 I've only noted the articles that were most beneficial to the project.
 - [GaryGregory: Understanding jUnit method order execution](https://garygregory.wordpress.com/2011/09/25/understaning-junit-method-order-execution/)
