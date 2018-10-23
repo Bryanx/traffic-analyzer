@@ -2,6 +2,7 @@ package be.kdg.processor.camera.message.receiver;
 
 import be.kdg.processor.camera.CameraService;
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,11 @@ public class CameraMessageReceiver implements Receiver<CameraMessage> {
     @Override
     @Transactional
     public void bufferInDatabase(CameraMessage message) {
-        cameraService.saveCameraWithSegment(message);
+        try {
+            cameraService.saveCameraWithSegment(message);
+        } catch (ProcessorException e) {
+            LOGGER.warn(e.getMessage());
+        }
     }
 
     @Override

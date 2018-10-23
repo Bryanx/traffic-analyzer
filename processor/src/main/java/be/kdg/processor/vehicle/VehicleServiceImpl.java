@@ -1,12 +1,11 @@
 package be.kdg.processor.vehicle;
 
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.vehicle.proxy.ProxyLicensePlateService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,19 +21,21 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Optional<Vehicle> findByLicensePlate(String licenseplate) {
-        return vehicleRepository.findById(licenseplate);
+    public Vehicle findByLicensePlate(String licenseplate) throws ProcessorException {
+        return vehicleRepository.findById(licenseplate)
+                .orElseThrow(() -> new ProcessorException("Licenseplate not found in db: " + licenseplate));
     }
 
     @Override
-    public Optional<Vehicle> getVehicleByProxyOrDb(String licensePlate) {
-        Optional<Vehicle> byLicensePlate = findByLicensePlate(licensePlate);
-        if (byLicensePlate.isPresent()) {
-            LOGGER.debug("Got vehicle from db: {}", byLicensePlate.get());
-            return byLicensePlate;
+    public Vehicle getVehicleByProxyOrDb(String licensePlate) throws ProcessorException {
+        try {
+            Vehicle vehicle = findByLicensePlate(licensePlate);
+            LOGGER.debug("Got vehicle from db: {}", vehicle);
+            return vehicle;
+        } catch (ProcessorException e) {
+            LOGGER.debug("Got vehicle from proxy");
+            return proxyLicensePlateService.fetchVehicle(licensePlate);
         }
-        LOGGER.debug("Got vehicle from proxy");
-        return proxyLicensePlateService.fetchVehicle(licensePlate);
     }
 
 }

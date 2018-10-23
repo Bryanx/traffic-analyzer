@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -25,14 +24,12 @@ public class IoConverterTest {
     private IoConverter ioConverter;
 
     @Test
-    public void readJson() {
-        Optional<Vehicle> vehicle = ioConverter.readJson(JSON_PLATE_TEST, Vehicle.class);
-        assertTrue(vehicle.isPresent());
-        assertEquals(vehicle.get().getPlateId(), expectedLicensePlate);
+    public void readJson() throws IOException {
+        Vehicle vehicle = ioConverter.readJson(JSON_PLATE_TEST, Vehicle.class);
+        assertEquals(vehicle.getPlateId(), expectedLicensePlate);
 
-        Optional<Camera> camera = ioConverter.readJson(JSON_PROXY_TEST, Camera.class);
+        Camera camera = ioConverter.readJson(JSON_PROXY_TEST, Camera.class);
         System.out.println(camera);
-        assertTrue(camera.isPresent());
-        assertEquals(camera.get().getCameraId(), expectedCameraId);
+        assertEquals(camera.getCameraId(), expectedCameraId);
     }
 }

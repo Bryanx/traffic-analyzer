@@ -2,6 +2,7 @@ package be.kdg.processor.fine.web;
 
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -28,13 +29,13 @@ public class FineWebController {
     }
 
     @GetMapping("/fines/details/{id}")
-    public ModelAndView GetFine(@PathVariable int id) throws FineException {
+    public ModelAndView GetFine(@PathVariable int id) throws ProcessorException {
         FineDTO fine = modelMapper.map(fineService.findById(id), FineDTO.class);
         return new ModelAndView("fines/details", "fine", fine);
     }
 
     @PostMapping("/saveFine")
-    public ModelAndView updateFine(@Valid @ModelAttribute FineDTO fineDTO, BindingResult errors) throws FineException {
+    public ModelAndView updateFine(@Valid @ModelAttribute FineDTO fineDTO, BindingResult errors) throws ProcessorException {
         if (!errors.hasErrors()) {
             Fine fine = fineService.findById(fineDTO.getId());
             fine.setApproved(fineDTO.isApproved());

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -15,12 +14,7 @@ public class IoConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(IoConverter.class);
     private final ObjectMapper objectMapper;
 
-    public <T> Optional<T> readJson(String json, Class<T> instance) {
-        try {
-            return Optional.of(objectMapper.readValue(json, instance));
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-        return Optional.empty();
+    public <T> T readJson(String json, Class<T> instance) throws IOException {
+        return objectMapper.readValue(json, instance);
     }
 }

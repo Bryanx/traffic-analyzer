@@ -1,6 +1,6 @@
 package be.kdg.processor.setting;
 
-import be.kdg.processor.setting.web.SettingNotFoundException;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
@@ -21,7 +21,7 @@ public class SettingServiceImpl implements SettingService {
     private final RetryTemplate retryTemplate;
 
     @Override
-    public Setting save(Setting setting) throws SettingNotFoundException {
+    public Setting save(Setting setting) throws ProcessorException {
         switch (setting.getKey()) {
             case RETRY_DELAY_KEY: updateRetryDelay();break;
             case RETRY_COUNT_KEY: updateRetryCount();break;
@@ -30,9 +30,9 @@ public class SettingServiceImpl implements SettingService {
     }
 
     @Override
-    public Setting findByKey(String key) throws SettingNotFoundException {
+    public Setting findByKey(String key) throws ProcessorException {
         return settingRepository.findByKey(key)
-                .orElseThrow(() -> new SettingNotFoundException("Setting not found."));
+                .orElseThrow(() -> new ProcessorException("Setting not found."));
     }
 
     @Override
@@ -45,13 +45,20 @@ public class SettingServiceImpl implements SettingService {
         return settingRepository.findAll();
     }
 
+    @Override
+    public Setting updateSetting(String key, int value) throws ProcessorException {
+        Setting setting = findByKey(key);
+        setting.setValue(value);
+        return setting;
+    }
+
     @PostConstruct
-    private void updateRetryCount() throws SettingNotFoundException {
+    private void updateRetryCount() throws ProcessorException {
         retryTemplate.setRetryPolicy(new SimpleRetryPolicy(findByKey(RETRY_COUNT_KEY).getValue()));
     }
 
     @PostConstruct
-    private void updateRetryDelay() throws SettingNotFoundException {
+    private void updateRetryDelay() throws ProcessorException {
         FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
         fixedBackOffPolicy.setBackOffPeriod(findByKey(RETRY_DELAY_KEY).getValue());
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);

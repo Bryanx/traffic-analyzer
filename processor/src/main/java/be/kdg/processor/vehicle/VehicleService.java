@@ -1,9 +1,9 @@
 package be.kdg.processor.vehicle;
 
-import java.util.Optional;
+import be.kdg.processor.shared.exception.ProcessorException;
 
 public interface VehicleService {
     Vehicle createVehicle(Vehicle vehicle);
-    Optional<Vehicle> findByLicensePlate(String licenseplate);
-    Optional<Vehicle> getVehicleByProxyOrDb(String licensePlate);
+    Vehicle findByLicensePlate(String licenseplate) throws ProcessorException;
+    Vehicle getVehicleByProxyOrDb(String licensePlate) throws ProcessorException;
 }

@@ -2,6 +2,7 @@ package be.kdg.processor.camera.proxy;
 
 import be.kdg.processor.camera.Camera;
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.shared.exception.ProcessorException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,13 +21,13 @@ public class ProxyCameraServiceImplTest {
     private ProxyCameraServiceImpl proxyCameraService;
 
     @Test
-    public void getCamera() {
+    public void getCamera() throws ProcessorException {
         CameraMessage msg = new CameraMessage();
         msg.setCameraId(5);
         msg.setLicensePlate("2-ABC-123");
         msg.setTimestamp(LocalDateTime.now());
-        Optional<Camera> result = proxyCameraService.fetchCamera(msg);
-        System.out.println(result.get());
-        Assert.assertNotNull(result.get());
+        Camera result = proxyCameraService.fetchCamera(msg);
+        System.out.println(result);
+        Assert.assertNotNull(result);
     }
 }

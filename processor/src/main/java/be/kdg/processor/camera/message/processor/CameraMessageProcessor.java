@@ -4,6 +4,7 @@ import be.kdg.processor.camera.CameraService;
 import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.camera.message.receiver.Receiver;
 import be.kdg.processor.fine.evaluation.FineEvaluationService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,11 @@ public class CameraMessageProcessor implements Processor<CameraMessage> {
     @Override
     public void validate(CameraMessage message) {
         fineEvaluationServices.forEach(evaluationService -> {
-            evaluationService.checkForFine(message);
+            try {
+                evaluationService.checkForFine(message);
+            } catch (ProcessorException e) {
+                LOGGER.error(e.getMessage());
+            }
         });
     }
 }

@@ -2,6 +2,7 @@ package be.kdg.processor.setting.web;
 
 import be.kdg.processor.setting.Setting;
 import be.kdg.processor.setting.SettingService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -19,16 +20,14 @@ public class SettingController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/settings/{key}")
-    public ResponseEntity<SettingDTO> getSetting(@PathVariable String key) throws SettingNotFoundException {
+    public ResponseEntity<SettingDTO> getSetting(@PathVariable String key) throws ProcessorException {
         Setting setting = settingService.findByKey(key);
         return new ResponseEntity<>(modelMapper.map(setting, SettingDTO.class), HttpStatus.OK);
     }
 
     @PatchMapping("/settings/{key}")
-    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody SettingDTO settingDTO) throws SettingNotFoundException {
-        Setting setting = settingService.findByKey(key);
-        setting.setValue(settingDTO.getValue());
-        Setting settingOut = settingService.save(setting);
+    public ResponseEntity<SettingDTO> updateSetting(@PathVariable String key, @RequestBody SettingDTO settingDTO) throws ProcessorException {
+        Setting settingOut= settingService.updateSetting(key, settingDTO.getValue());
         return new ResponseEntity<>(modelMapper.map(settingOut, SettingDTO.class), HttpStatus.OK);
     }
 }

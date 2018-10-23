@@ -1,8 +1,8 @@
 package be.kdg.processor.camera.message.processor;
 
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.setting.web.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class ProcessScheduler implements SchedulingConfigurer {
             int oldBufferTime = bufferTime;
             bufferTime = settingService.findByKey(BUFFER_TIME_KEY).getValue();
             return oldBufferTime != bufferTime;
-        } catch (SettingNotFoundException e) {
+        } catch (ProcessorException e) {
             LOGGER.error("Setting not found {}", BUFFER_TIME_KEY);
         }
         return true;

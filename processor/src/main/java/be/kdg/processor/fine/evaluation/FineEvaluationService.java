@@ -1,11 +1,11 @@
 package be.kdg.processor.fine.evaluation;
 
+import be.kdg.processor.camera.CameraService;
 import be.kdg.processor.camera.message.CameraMessage;
-import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
-import be.kdg.processor.setting.web.SettingNotFoundException;
 import be.kdg.processor.setting.SettingService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.shared.utils.DateUtil;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.processor.vehicle.VehicleService;
@@ -27,10 +27,11 @@ public abstract class FineEvaluationService {
     final DateUtil dateUtil;
     final FineService fineService;
     final SettingService settingService;
+    final CameraService cameraService;
 
-    public abstract void checkForFine(CameraMessage cameraMessage);
+    public abstract void checkForFine(CameraMessage cameraMessage) throws ProcessorException;
 
-    void createFine(Fine fine, List<CameraMessage> cameraMessages) {
+    void createFine(Fine fine, List<CameraMessage> cameraMessages) throws ProcessorException {
         Vehicle vehicle = getVehicle(cameraMessages.get(0));
         LOGGER.info(String.format("Creating %s fine for vehicle %s. Detected by camera('s) %s",
                 fine.getType(),
@@ -43,8 +44,8 @@ public abstract class FineEvaluationService {
         fineService.save(fineOut);
     }
 
-    Vehicle getVehicle(CameraMessage cameraMessage) {
-        return vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate()).orElse(null);
+    Vehicle getVehicle(CameraMessage cameraMessage) throws ProcessorException {
+        return vehicleService.getVehicleByProxyOrDb(cameraMessage.getLicensePlate());
     }
 
     /**
@@ -57,10 +58,10 @@ public abstract class FineEvaluationService {
     double getSetting(String key, double defaultValue) {
         try {
             return settingService.findByKey(key).getValue();
-        } catch (SettingNotFoundException e) {
-            LOGGER.error(e.getMessage(), e);
+        } catch (ProcessorException e) {
+            LOGGER.warn(e.getMessage());
+            return defaultValue;
         }
-        return defaultValue;
     }
 
     /**
@@ -72,18 +73,5 @@ public abstract class FineEvaluationService {
      */
     double calculateFineHistoryPrice(List<Fine> oldFines, double priceFromService) {
         return priceFromService + oldFines.size() * 20;
-    }
-
-    /**
-     * For a given segment and cameramessage, finds the corresponding cameramessage.
-     */
-    CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
-        return segment.getCameras().stream()
-                .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())
-                .flatMap(c -> c.getCameraMessages().stream())
-                .filter(message -> cameraMessage != message &&
-                        cameraMessage.getLicensePlate().equals(message.getLicensePlate()))
-                .findFirst()
-                .orElse(null);
     }
 }

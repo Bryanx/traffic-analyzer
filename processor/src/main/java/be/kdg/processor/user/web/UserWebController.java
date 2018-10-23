@@ -1,5 +1,6 @@
 package be.kdg.processor.user.web;
 
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.user.User;
 import be.kdg.processor.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class UserWebController {
     }
 
     @GetMapping("/users/details/{id}")
-    public ModelAndView getUser(@PathVariable int id) throws UserException {
+    public ModelAndView getUser(@PathVariable int id) throws ProcessorException {
         UserDTO user = modelMapper.map(userService.findById(id), UserDTO.class);
         return new ModelAndView("users/details", "user", user);
     }

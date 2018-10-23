@@ -1,6 +1,7 @@
 package be.kdg.processor.vehicle.proxy;
 
 import be.kdg.processor.shared.converters.IoConverter;
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.sa.services.LicensePlateNotFoundException;
 import be.kdg.sa.services.LicensePlateServiceProxy;
@@ -12,7 +13,6 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -23,18 +23,16 @@ public class ProxyLicensePlateServiceImpl implements ProxyLicensePlateService {
     private final RetryTemplate retryTemplate;
 
     @Override
-    public Optional<Vehicle> fetchVehicle(String plate) {
+    public Vehicle fetchVehicle(String plate) throws ProcessorException {
         try {
             String json = retryTemplate.execute(ctx -> {
-                if (ctx.getRetryCount() > 1)
-                    LOGGER.debug("Retrying vehicle {}, retry count: " + ctx.getRetryCount(), plate);
+                if (ctx.getRetryCount() > 1) LOGGER.debug("Retrying vehicle {}, retry count: " + ctx.getRetryCount(), plate);
                 return fetchVehicleFromProxy(plate);
             });
             return ioConverter.readJson(json, Vehicle.class);
         } catch (IOException | LicensePlateNotFoundException e) {
-            LOGGER.warn(e.getMessage());
+            throw new ProcessorException(e.getMessage());
         }
-        return Optional.empty();
     }
 
     @Cacheable("vehicles")

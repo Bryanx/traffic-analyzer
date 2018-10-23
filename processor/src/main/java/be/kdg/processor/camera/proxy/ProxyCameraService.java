@@ -2,9 +2,8 @@ package be.kdg.processor.camera.proxy;
 
 import be.kdg.processor.camera.Camera;
 import be.kdg.processor.camera.message.CameraMessage;
-
-import java.util.Optional;
+import be.kdg.processor.shared.exception.ProcessorException;
 
 public interface ProxyCameraService {
-    Optional<Camera> fetchCamera(CameraMessage message);
+    Camera fetchCamera(CameraMessage message) throws ProcessorException;
 }

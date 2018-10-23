@@ -1,7 +1,7 @@
 package be.kdg.processor.user.roles;
 
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.user.User;
-import be.kdg.processor.user.web.UserException;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -28,18 +28,18 @@ public abstract class Role {
     @Column(nullable = false, insertable = false, updatable = false)
     private RoleType roleType;
 
-    public static <T extends Role> boolean hasRole(User user, Class<T> role) throws UserException {
+    public static <T extends Role> boolean hasRole(User user, Class<T> role) throws ProcessorException {
         loadRole(user, role);
         return true;
     }
 
-    public static <T extends Role> T loadRole(User user, Class<T> role) throws UserException {
+    public static <T extends Role> T loadRole(User user, Class<T> role) throws ProcessorException {
         List<Role> roles = user.getRoles();
         Optional<T> result = (Optional<T>) roles
                 .stream()
                 .filter(r -> role.isInstance(r))
                 .findAny();
-        if (!result.isPresent()) throw new UserException("Incorrect role for user");
+        if (!result.isPresent()) throw new ProcessorException("Incorrect role for user");
         return result.get();
     }
 

@@ -1,9 +1,9 @@
 package be.kdg.processor.user;
 
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.user.roles.Role;
 import be.kdg.processor.user.roles.RoleRepository;
 import be.kdg.processor.user.roles.RoleType;
-import be.kdg.processor.user.web.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,9 +31,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(int id) throws UserException {
+    public User findById(int id) throws ProcessorException {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserException("User not found."));
+                .orElseThrow(() -> new ProcessorException("User not found."));
     }
 
     @Override
@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
 
-    public void checkLogin(Integer userId, String currentPassword) throws UserException {
+    public void checkLogin(Integer userId, String currentPassword) throws ProcessorException {
         User u = findById(userId);
 
         if (u == null || !passwordEncoder.matches(currentPassword, u.getEncryptedPassword())) {
-            throw new UserException(("Username or password is wrong for id: " + userId));
+            throw new ProcessorException(("Username or password is wrong for id: " + userId));
         }
     }
 }

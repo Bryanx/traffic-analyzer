@@ -5,6 +5,7 @@ import be.kdg.processor.camera.message.CameraMessage;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
 import be.kdg.processor.fine.FineType;
+import be.kdg.processor.shared.exception.ProcessorException;
 import be.kdg.processor.vehicle.Vehicle;
 import be.kdg.processor.vehicle.VehicleService;
 import org.junit.Test;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,7 +47,7 @@ public class SpeedFineServiceTest {
     }
 
     @Test
-    public void checkForFine() {
+    public void checkForFine() throws ProcessorException {
         CameraMessage message1 = new CameraMessage("4-ABC-123", LocalDateTime.now().minusSeconds(1));
         CameraMessage message2 = new CameraMessage("4-ABC-123", LocalDateTime.now());
         message1.setCameraId(1);
@@ -58,9 +58,8 @@ public class SpeedFineServiceTest {
         for (CameraMessage message : allCameraMessagesSince.get()) {
             speedFineService.checkForFine(message);
         }
-        Optional<Vehicle> vehicle = vehicleService.getVehicleByProxyOrDb("4-ABC-123");
-        assertTrue(vehicle.isPresent());
-        List<Fine> fines = fineService.findAllByTypeAndVehicle(FineType.SPEED, vehicle.get());
+        Vehicle vehicle = vehicleService.getVehicleByProxyOrDb("4-ABC-123");
+        List<Fine> fines = fineService.findAllByTypeAndVehicle(FineType.SPEED, vehicle);
         assertEquals(1, fines.size());
         assertEquals(FineType.SPEED, fines.get(0).getType());
     }

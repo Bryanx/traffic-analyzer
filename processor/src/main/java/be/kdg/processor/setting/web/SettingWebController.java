@@ -2,6 +2,7 @@ package be.kdg.processor.setting.web;
 
 import be.kdg.processor.setting.Setting;
 import be.kdg.processor.setting.SettingService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class SettingWebController {
     }
 
     @PostMapping("/settings")
-    public ModelAndView updateSettings(@ModelAttribute SettingDTOwrapper settings) throws SettingNotFoundException {
+    public ModelAndView updateSettings(@ModelAttribute SettingDTOwrapper settings) throws ProcessorException {
         for (SettingDTO settingDTO : settings.getSettingDTOs()) {
             settingService.save(modelMapper.map(settingDTO, Setting.class));
         }

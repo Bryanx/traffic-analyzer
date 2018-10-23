@@ -2,6 +2,7 @@ package be.kdg.processor.fine.web;
 
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
+import be.kdg.processor.shared.exception.ProcessorException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class FineController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/fines/{id}")
-    public ResponseEntity<FineDTO> getFine(@PathVariable int id) throws FineException {
+    public ResponseEntity<FineDTO> getFine(@PathVariable int id) throws ProcessorException {
         LOGGER.info("GET request for fine: {}", id);
         Fine fine = fineService.findById(id);
         return new ResponseEntity<>(modelMapper.map(fine, FineDTO.class), HttpStatus.OK);
@@ -41,11 +42,9 @@ public class FineController {
 
     @RequestMapping(value = "/fines", params = {"from", "to"}, method = GET)
     public ResponseEntity<FineDTO[]> getFilteredFines(
-            @RequestParam(value = "from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
-            @RequestParam(value = "to") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> to) {
-        LocalDateTime fromDate = from.orElse(LocalDateTime.MIN);
-        LocalDateTime toDate = to.orElse(LocalDateTime.MAX);
-        List<Fine> fines = fineService.findAllByCreationDateBetween(fromDate, toDate);
+            @RequestParam(value = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> from,
+            @RequestParam(value = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> to) {
+        List<Fine> fines = fineService.findAllByCreationDateBetween(from, to);
         return new ResponseEntity<>(modelMapper.map(fines.toArray(), FineDTO[].class), HttpStatus.OK);
     }
 
@@ -57,11 +56,9 @@ public class FineController {
     }
 
     @PatchMapping("/fines/{id}")
-    public ResponseEntity<FineDTO> updateFine(@PathVariable int id, @RequestBody FineDTO fineIn) throws FineException {
-        Fine fineOut = fineService.findById(id);
-        fineOut.setComment(fineIn.getComment());
-        fineOut.setPrice(fineIn.getPrice());
-        fineOut.setApproved(fineIn.isApproved());
+    public ResponseEntity<FineDTO> updateFine(@PathVariable int id, @RequestBody FineDTO fineIn) throws ProcessorException {
+        fineService.updatePrice(id, fineIn.getPrice(), fineIn.getComment());
+        Fine fineOut = fineService.updateApproved(id, fineIn.isApproved());
         return new ResponseEntity<>(modelMapper.map(fineOut, FineDTO.class), HttpStatus.OK);
     }
 
