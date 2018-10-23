@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -40,12 +41,11 @@ public class EmissionFineServiceTest {
     @Test
     public void alreadyFined() {
         Vehicle vehicle = new Vehicle();
-        vehicle.setPlateId("123-ABC-2");
+        vehicle.setPlateId("2-ABC-123");
         vehicle.setEuroNumber(2);
+        vehicleService.createVehicle(vehicle);
         CameraMessage msg1 = new CameraMessage("2-ABC-123", LocalDateTime.now().minusHours(1));
-        CameraMessage msg2 = new CameraMessage("2-ABC-123", LocalDateTime.now());
-        emissionFineService.createFine(new Fine(FineType.EMISSION, 150, 4, 2),
-                vehicle, Arrays.asList(msg1, msg2));
+        emissionFineService.createFine(new Fine(FineType.EMISSION, 150, 4, 2), Arrays.asList(msg1));
         List<Fine> oldFines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle);
         assertTrue(emissionFineService.alreadyFined(oldFines));
     }
@@ -61,6 +61,7 @@ public class EmissionFineServiceTest {
         Optional<Vehicle> vehicle = vehicleService.getVehicleByProxyOrDb("2-ABC-123");
         assertTrue(vehicle.isPresent());
         List<Fine> fines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle.get());
-        assertTrue(fines.size() > 0);
+        assertEquals(1, fines.size());
+        assertEquals(FineType.EMISSION, fines.get(0).getType());
     }
 }
