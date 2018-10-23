@@ -1,6 +1,7 @@
 package be.kdg.processor.fine.evaluation;
 
 import be.kdg.processor.camera.message.CameraMessage;
+import be.kdg.processor.camera.segment.Segment;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
 import be.kdg.processor.setting.web.SettingNotFoundException;
@@ -29,7 +30,8 @@ public abstract class FineEvaluationService {
 
     public abstract void checkForFine(CameraMessage cameraMessage);
 
-    void createFine(Fine fine, Vehicle vehicle, List<CameraMessage> cameraMessages) {
+    void createFine(Fine fine, List<CameraMessage> cameraMessages) {
+        Vehicle vehicle = getVehicle(cameraMessages.get(0));
         LOGGER.info(String.format("Creating %s fine for vehicle %s. Detected by camera('s) %s",
                 fine.getType(),
                 vehicle.getPlateId(),
@@ -62,14 +64,26 @@ public abstract class FineEvaluationService {
     }
 
     /**
-     * The fine price is increased based on the previous amount of fines.
+     * The fine price is increased with 20 for each previous speedfine.
      *
      * @param oldFines         previous fines
      * @param priceFromService original price.
      * @return new price.
      */
     double calculateFineHistoryPrice(List<Fine> oldFines, double priceFromService) {
-        if (oldFines.size() > 0) return priceFromService * oldFines.size();
-        return priceFromService;
+        return priceFromService + oldFines.size() * 20;
+    }
+
+    /**
+     * For a given segment and cameramessage, finds the corresponding cameramessage.
+     */
+    CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
+        return segment.getCameras().stream()
+                .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())
+                .flatMap(c -> c.getCameraMessages().stream())
+                .filter(message -> cameraMessage != message &&
+                        cameraMessage.getLicensePlate().equals(message.getLicensePlate()))
+                .findFirst()
+                .orElse(null);
     }
 }

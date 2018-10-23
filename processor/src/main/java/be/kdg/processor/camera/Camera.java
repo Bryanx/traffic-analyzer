@@ -24,7 +24,7 @@ public class Camera {
 
     private int euroNorm;
 
-    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, mappedBy = "camera")
+    @OneToMany(targetEntity = CameraMessage.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "camera")
     private List<CameraMessage> cameraMessages = new ArrayList<>();
 
     @ManyToOne(targetEntity = Segment.class)

@@ -43,7 +43,7 @@ public class SpeedFineService extends FineEvaluationService {
             if (vehicle == null) return;
             double price = calculatePrice(vehicle, actualSpeed, maxSpeed);
             List<CameraMessage> cameraMessages = Arrays.asList(message1, message2);
-            createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), vehicle, cameraMessages);
+            createFine(new Fine(FineType.SPEED, price, actualSpeed, maxSpeed), cameraMessages);
         }
     }
 
@@ -58,18 +58,5 @@ public class SpeedFineService extends FineEvaluationService {
     private double calculatePrice(Vehicle vehicle, double curSpeed, double maxSpeed) {
         double price = (curSpeed - maxSpeed) * curSpeed;
         return super.calculateFineHistoryPrice(fineService.findAllByTypeAndVehicle(FineType.SPEED, vehicle), price);
-    }
-
-    /**
-     * For a given segment and cameramessage, finds the corresponding cameramessage.
-     */
-    private CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) {
-        return segment.getCameras().stream()
-                .filter(camera -> camera.getCameraId() == segment.getConnectedCameraId())
-                .flatMap(c -> c.getCameraMessages().stream())
-                .filter(message -> cameraMessage != message &&
-                        cameraMessage.getLicensePlate().equals(message.getLicensePlate()))
-                .findFirst()
-                .orElse(null);
     }
 }

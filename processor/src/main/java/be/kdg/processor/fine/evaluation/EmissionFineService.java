@@ -35,14 +35,13 @@ public class EmissionFineService extends FineEvaluationService {
         if (vehicle == null) return;
         List<Fine> oldFines = fineService.findAllByTypeAndVehicle(FineType.EMISSION, vehicle);
         if (alreadyFined(oldFines)) return;
-        checkEuroNorm(cameraMessage, vehicle, oldFines);
+        checkEuroNorm(cameraMessage, vehicle.getEuroNumber(), oldFines);
     }
 
-    private void checkEuroNorm(CameraMessage cameraMessage, Vehicle vehicle, List<Fine> oldFines) {
+    private void checkEuroNorm(CameraMessage cameraMessage, int actualEuroNorm, List<Fine> oldFines) {
         int euroNorm = cameraMessage.getCamera().getEuroNorm();
-        int actualEuroNorm = vehicle.getEuroNumber();
         if (actualEuroNorm < euroNorm) {
-            createFine(new Fine(FineType.EMISSION, calculatePrice(oldFines), euroNorm, actualEuroNorm), vehicle, Arrays.asList(cameraMessage));
+            createFine(new Fine(FineType.EMISSION, calculatePrice(oldFines), euroNorm, actualEuroNorm), Arrays.asList(cameraMessage));
         }
     }
 

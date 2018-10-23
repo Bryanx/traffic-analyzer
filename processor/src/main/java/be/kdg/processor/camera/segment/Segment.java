@@ -15,7 +15,7 @@ public class Segment {
     @GeneratedValue
     private int id;
 
-    @OneToMany(targetEntity = Camera.class, cascade = CascadeType.ALL, mappedBy = "segment")
+    @OneToMany(targetEntity = Camera.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "segment")
     private List<Camera> cameras = new ArrayList<>();
 
     private int connectedCameraId;
