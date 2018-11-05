@@ -178,6 +178,21 @@ iframe {
   z-index: 1;
   background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
+
+.error-bg {
+  background-image: linear-gradient(135deg, #fa0e51 0%, #bc016d 100%);
+}
+
+.error-image {
+  height: 450px;
+  margin: auto;
+}
+
+.error-txt {
+  color: black !important;
+  opacity: .4;
+}
+
 /* IE8- CSS hack */
 @media \0screen\,screen\9 {
   .gradient {

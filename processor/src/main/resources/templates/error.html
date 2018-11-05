@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-login100 error-bg flex-c-t">
+        <div class="flex-c w-full">
+            <img class="error-image" th:src="@{/images/oops.png}">
+        </div>
+        <div class="login100-form-title m-b-7 error-txt" th:text="${errorMsg}"></div>
+        <div class="container-login100-form-btn m-b-20">
+            <button th:type="button" class="login100-form-btn m-l-10" th:onclick="|window.location.href='@{/}'|">
+                Back to home
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
