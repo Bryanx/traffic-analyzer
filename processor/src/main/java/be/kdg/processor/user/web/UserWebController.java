@@ -1,9 +1,11 @@
 package be.kdg.processor.user.web;
 
+import be.kdg.processor.camera.CameraService;
+import be.kdg.processor.fine.FineService;
 import be.kdg.processor.shared.exception.ProcessorException;
+import be.kdg.processor.shared.livestats.LiveStatsController;
 import be.kdg.processor.user.User;
 import be.kdg.processor.user.UserService;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -12,11 +14,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
-@RequiredArgsConstructor
 @Controller
-public class UserWebController {
+public class UserWebController extends LiveStatsController {
     private final ModelMapper modelMapper;
     private final UserService userService;
+
+    public UserWebController(FineService fineService, CameraService cameraService, ModelMapper modelMapper, UserService userService) {
+        super(fineService, cameraService);
+        this.modelMapper = modelMapper;
+        this.userService = userService;
+    }
 
     @RequestMapping("/login")
     public String login() {

@@ -16,11 +16,12 @@ public interface CameraService {
 
     Camera createCamera(Camera camera);
 
+    List<CameraMessage> findAllCameraMessages();
+
     Optional<List<CameraMessage>> findAllCameraMessagesSince(LocalDateTime since);
 
     void saveCameraWithSegment(CameraMessage message) throws ProcessorException;
 
     CameraMessage getConnectedCameraMessage(Segment segment, CameraMessage cameraMessage) throws ProcessorException;
-
 
 }

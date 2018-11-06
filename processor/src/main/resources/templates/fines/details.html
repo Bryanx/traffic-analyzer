@@ -9,7 +9,7 @@
 <div class="limiter">
     <div class="container-login100">
         <object th:include="fragments/nav :: nav"/>
-        <object th:include="fragments/livestats :: livestats"/>
+        <object th:include="fragments/livestats :: livestats(${data})"/>
         <div class="wrap-login100">
             <form class="login100-form validate-form" th:action="@{/saveFine}" th:object="${fine}"
                   method="post">

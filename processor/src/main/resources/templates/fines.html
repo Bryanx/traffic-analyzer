@@ -9,7 +9,7 @@
 <div class="limiter">
     <div class="container-login100">
         <object th:include="fragments/nav :: nav"/>
-        <object th:include="fragments/livestats :: livestats"/>
+        <object th:include="fragments/livestats :: livestats(${data})"/>
         <div class="wrap-login100">
             <span class="login100-form-title p-b-34 p-t-15 m-b-15">Fines</span>
             <table class="table table-hover text-white">

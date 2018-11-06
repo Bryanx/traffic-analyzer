@@ -23,4 +23,6 @@ public interface FineService {
     List<Fine> findAllByCreationDateBetween(Optional<LocalDateTime> start, Optional<LocalDateTime> end);
 
     boolean checkIfAlreadyHasEmissionFine(Vehicle vehicle) throws ProcessorException;
+
+    double getAverageFinePrice();
 }

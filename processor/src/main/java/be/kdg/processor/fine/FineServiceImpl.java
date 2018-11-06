@@ -81,4 +81,12 @@ public class FineServiceImpl implements FineService {
                 .anyMatch(hoursSinceFine -> hoursSinceFine < emissionDelay);
     }
 
+    @Override
+    public double getAverageFinePrice() {
+        return findAll()
+                .stream()
+                .mapToDouble(Fine::getPrice)
+                .average()
+                .orElse(0.0);
+    }
 }

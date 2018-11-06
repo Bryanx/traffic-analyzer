@@ -1,9 +1,10 @@
 package be.kdg.processor.fine.web;
 
+import be.kdg.processor.camera.CameraService;
 import be.kdg.processor.fine.Fine;
 import be.kdg.processor.fine.FineService;
 import be.kdg.processor.shared.exception.ProcessorException;
-import lombok.RequiredArgsConstructor;
+import be.kdg.processor.shared.livestats.LiveStatsController;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -16,11 +17,14 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 
-@RequiredArgsConstructor
 @Controller
-public class FineWebController {
+public class FineWebController extends LiveStatsController {
     private final ModelMapper modelMapper;
-    private final FineService fineService;
+
+    public FineWebController(FineService fineService, CameraService cameraService, ModelMapper modelMapper, FineService fineService1) {
+        super(fineService, cameraService);
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping("/fines")
     public ModelAndView getAllFines() {

@@ -34,6 +34,11 @@ public class CameraServiceImpl implements CameraService {
     }
 
     @Override
+    public List<CameraMessage> findAllCameraMessages() {
+        return cameraMessageRepository.findAll();
+    }
+
+    @Override
     public Optional<Segment> createSegment(Segment segment) {
         LOGGER.debug("Adding segment to DB: " + segment);
         return Optional.ofNullable(segmentRepository.saveAndFlush(segment));

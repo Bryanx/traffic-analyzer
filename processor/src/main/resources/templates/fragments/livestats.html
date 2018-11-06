@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<object th:fragment="livestats">
+<object th:fragment="livestats (data)">
     <div class="wrap-extra animated slideInLeft delay-ps">
         <header class="p-b-8">
             Live stats
         </header>
         <p>Messages received:</p>
-        <p>112</p>
-        <p>Messages processed:</p>
-        <p>112</p>
+        <p th:text="${data.totalMessages}"></p>
         <p>Total fines:</p>
-        <p>23</p>
+        <p th:text="${data.totalFines}"></p>
+        <p>Average fine price:</p>
+        <p>€ <span th:text="${#numbers.formatDecimal(data.averageFinePrice, 0, 'POINT', 2, 'COMMA')}"></span></p>
         <p class="p-t-8"><a class="hov-pointer" onclick="$.post({url: '/api/receiver/start'})">Start</a> -
             <a class="hov-pointer" onclick="$.post({url: '/api/receiver/stop'})">Stop</a></p>
     </div>
