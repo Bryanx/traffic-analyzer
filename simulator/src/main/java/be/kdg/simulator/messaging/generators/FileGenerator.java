@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 @ConditionalOnProperty(name = "generator.type", havingValue = "file")
 public class FileGenerator implements MessageGenerator {
     public static final Logger LOGGER = LoggerFactory.getLogger(FileGenerator.class);
-    private static final String FILE_PATH = "simulator/files/cameramessages.csv";
+    private static final String FOLDER_PATH = "simulator/files";
     private final SimulationScheduler simulationScheduler;
     private List<CameraMessage> messages = new ArrayList<>();
     public static int lineCounter = 0;
@@ -40,17 +41,26 @@ public class FileGenerator implements MessageGenerator {
     }
 
     @PostConstruct
-    public void readFile() {
-        try (Stream<String> lines = Files.lines(Paths.get(FILE_PATH))) {
+    public void readFolder() {
+        try (Stream<Path> paths = Files.walk(Paths.get(FOLDER_PATH))) {
+            paths.filter(Files::isRegularFile)
+                    .forEach(path -> {
+                        LOGGER.info("Started reading from file: " + path.toString());
+                        readFile(path);
+                    });
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    private void readFile(Path path) {
+        try (Stream<String> lines = Files.lines(path)) {
             lines.map(line -> line.split(","))
                     .forEach(splittedLine -> {
                         int id = Integer.parseInt(splittedLine[0]);
                         String plate = splittedLine[1];
                         int delay = Integer.parseInt(splittedLine[2]);
-                        CameraMessage newMsg = new CameraMessage(id, plate, LocalDateTime.now(), delay);
-                        if (messages.add(newMsg)) {
-                            LOGGER.info("Message succesfully loaded: {}", newMsg);
-                        }
+                        messages.add(new CameraMessage(id, plate, LocalDateTime.now(), delay));
                     });
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
