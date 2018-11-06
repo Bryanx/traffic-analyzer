@@ -18,6 +18,7 @@ I've only noted the articles that were most beneficial to the project.
 - [Baeldung: Logging in Spring Boot](https://www.baeldung.com/spring-boot-logging)
 - [Baeldung: Intro to the Jackson ObjectMapper](https://www.baeldung.com/jackson-object-mapper-tutorial)
 - [Baeldung: Spring Security Form Login](https://www.baeldung.com/spring-security-login)
+- [Baeldung: Working with Fragments](https://www.baeldung.com/spring-thymeleaf-fragments)
 - Baeldung: Building your API with Spring (e-book)
 - [Github: Thymeleaf fragment project](https://github.com/eugenp/tutorials/tree/master/spring-thymeleaf)
 - [StackOverflow: How to stop consuming messages with @RabbitListener](https://stackoverflow.com/questions/41035454/how-to-stop-consuming-messages-with-rabbitlistener)
